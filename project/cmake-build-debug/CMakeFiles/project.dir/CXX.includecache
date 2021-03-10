@@ -1,0 +1,16 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+F:/projectSet/HUAWEI_abaaba_2021/project/main.cpp
+iostream
+-
+cstdio
+-
+cstdlib
+-
+

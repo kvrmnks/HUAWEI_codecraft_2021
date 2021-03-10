@@ -1,1 +1,4 @@
-Toolchains are not configured Configure Disable profile
+"D:\Program Files\JetBrains\CLion 2020.2.4\bin\cmake\win\bin\cmake.exe" -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - MinGW Makefiles" F:\projectSet\HUAWEI_abaaba_2021\project
+-- Configuring done
+-- Generating done
+-- Build files have been written to: F:/projectSet/HUAWEI_abaaba_2021/project/cmake-build-debug
