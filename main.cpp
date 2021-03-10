@@ -1,69 +1,70 @@
-#include <iostream>
+ï»¿#include <iostream>
 #include <cstdio>
+#include <cstdlib>
 
-int N;										//¿ÉÒÔ²É¹º·şÎñÆ÷µÄÊıÁ¿,[1,100]
-struct ServerInformation					//·şÎñÆ÷ĞÅÏ¢
+int N;										//å¯ä»¥é‡‡è´­æœåŠ¡å™¨çš„æ•°é‡,[1,100]
+struct ServerInformation					//æœåŠ¡å™¨ä¿¡æ¯
 {
-	char typeName[21];						//·şÎñÆ÷ĞÍºÅ
-	int coreNum;							//CPUºËÊı£¬²»³¬¹ı1024
-	int memorySize;							//ÄÚ´æ´óĞ¡,µ¥Î»G£¬²»³¬¹ı1024G
-	int hardwareCost;						//Ó²¼ş³É±¾£¬²»³¬¹ı5e5
-	int dayCost;							//Ã¿ÈÕºÄÄÜ³É±¾£¬²»³¬¹ı5000
-}severInformation[100];						//¿ÉÒÔ²É¹ºµÄ·şÎñÆ÷ÀàĞÍĞÅÏ¢
+	char typeName[21];						//æœåŠ¡å™¨å‹å·
+	int coreNum;							//CPUæ ¸æ•°ï¼Œä¸è¶…è¿‡1024
+	int memorySize;							//å†…å­˜å¤§å°,å•ä½Gï¼Œä¸è¶…è¿‡1024G
+	int hardwareCost;						//ç¡¬ä»¶æˆæœ¬ï¼Œä¸è¶…è¿‡5e5
+	int dayCost;							//æ¯æ—¥è€—èƒ½æˆæœ¬ï¼Œä¸è¶…è¿‡5000
+}severInformation[100];						//å¯ä»¥é‡‡è´­çš„æœåŠ¡å™¨ç±»å‹ä¿¡æ¯
 
-int M;										//ÊÛÂòĞéÄâ»úµÄÊıÁ¿,[1,1000]
+int M;										//å”®ä¹°è™šæ‹Ÿæœºçš„æ•°é‡,[1,1000]
 struct VirtualMachineInformation
 {
-	char typeName[21];						//ĞéÄâ»úĞÍºÅ
-	int coreNum;							//CPUºËÊı
-	int memorySize;							//ÄÚ´æ´óĞ¡
-	int isDoubleNode;						//ÊÇ·ñË«½Úµã²¿Êô£¬0Îªµ¥½Úµã²¿Êğ£¬1ÎªË«½Úµã²¿Êô
+	char typeName[21];						//è™šæ‹Ÿæœºå‹å·
+	int coreNum;							//CPUæ ¸æ•°
+	int memorySize;							//å†…å­˜å¤§å°
+	int isDoubleNode;						//æ˜¯å¦åŒèŠ‚ç‚¹éƒ¨å±ï¼Œ0ä¸ºå•èŠ‚ç‚¹éƒ¨ç½²ï¼Œ1ä¸ºåŒèŠ‚ç‚¹éƒ¨å±
 
-	int coreNumNode;						//µ¥½ÚµãCPUºËÊı
-	int memorySizeNode;						//µ¥½ÚµãCPUÄÚ´æÕ¼ÓÃ
-}virtualMachineInformation[1000];			//ĞéÄâ»úĞÍºÅĞÅÏ¢
+	int coreNumNode;						//å•èŠ‚ç‚¹CPUæ ¸æ•°
+	int memorySizeNode;						//å•èŠ‚ç‚¹CPUå†…å­˜å ç”¨
+}virtualMachineInformation[1000];			//è™šæ‹Ÿæœºå‹å·ä¿¡æ¯
 
-int T;										//TÌìÓÃ»§ÇëÇóĞòÁĞÊı¾İ,[1,1000]
-int requireNum[1000];						//µÚi+1ÌìÓÃ»§ÇëÇóÊıÄ¿
-int requireRank[1000];						//µÚi+1ÌìÓÃ»§ÇëÇóµÄÆğÊ¼µØÖ·
+int T;										//Tå¤©ç”¨æˆ·è¯·æ±‚åºåˆ—æ•°æ®,[1,1000]
+int requireNum[1000];						//ç¬¬i+1å¤©ç”¨æˆ·è¯·æ±‚æ•°ç›®
+int requireRank[1000];						//ç¬¬i+1å¤©ç”¨æˆ·è¯·æ±‚çš„èµ·å§‹åœ°å€
 struct Require
 {
-	int type;								//ÇëÇóÀàĞÍ¡£0Îªadd²Ù×÷£¬1Î»del²Ù×÷
-	int virtualMachineNum;					//ÇëÇóµÄĞéÄâ»úÀàĞÍ±àºÅ
-	int id;									//ĞéÄâ»úID
-}require[100000];							//ÓÃ»§ÇëÇó
+	int type;								//è¯·æ±‚ç±»å‹ã€‚0ä¸ºaddæ“ä½œï¼Œ1ä½delæ“ä½œ
+	int virtualMachineNum;					//è¯·æ±‚çš„è™šæ‹Ÿæœºç±»å‹ç¼–å·
+	int id;									//è™šæ‹ŸæœºID
+}require[100000];							//ç”¨æˆ·è¯·æ±‚
 
-struct VirtualMachine						//ÇëÇóÊ¹ÓÃµÄĞéÄâ»ú
+struct VirtualMachine						//è¯·æ±‚ä½¿ç”¨çš„è™šæ‹Ÿæœº
 {
-	int id;									//ĞéÄâ»úID
-	int type;								//ĞéÄâ»úĞÍºÅ
+	int id;									//è™šæ‹ŸæœºID
+	int type;								//è™šæ‹Ÿæœºå‹å·
 }virtualMachine[100000 + 10];
 
-struct Sever								//ÒÑ¾­¹ºÂòµÄ¡¢Ê¹ÓÃÖĞµÄ·şÎñÆ÷
+struct Sever								//å·²ç»è´­ä¹°çš„ã€ä½¿ç”¨ä¸­çš„æœåŠ¡å™¨
 {
-	int type;								//·şÎñÆ÷ĞÍºÅ±àºÅ
+	int type;								//æœåŠ¡å™¨å‹å·ç¼–å·
 
-	int remainCoreNodeA;					//·şÎñÆ÷A½áµãÊ£ÓàÄÚºË
-	int remainCoreNodeB;					//·şÎñÆ÷B½áµãÊ£ÓàÄÚºË
-	int remainMemoryNodeA;					//·şÎñÆ÷A½áµãÊ£ÓàÄÚ´æ
-	int remainMemoryNodeB;					//·şÎñÆ÷B½áµãÊ£ÓàÄÚ´æ
+	int remainCoreNodeA;					//æœåŠ¡å™¨Aç»“ç‚¹å‰©ä½™å†…æ ¸
+	int remainCoreNodeB;					//æœåŠ¡å™¨Bç»“ç‚¹å‰©ä½™å†…æ ¸
+	int remainMemoryNodeA;					//æœåŠ¡å™¨Aç»“ç‚¹å‰©ä½™å†…å­˜
+	int remainMemoryNodeB;					//æœåŠ¡å™¨Bç»“ç‚¹å‰©ä½™å†…å­˜
 
-	int open;								//·şÎñÆ÷ÊÇ·ñ¹¤×÷ÖĞ
-	int cost;								//¸Ã·şÎñÆ÷µÄÀÛ¼Æ³É±¾
+	int open;								//æœåŠ¡å™¨æ˜¯å¦å·¥ä½œä¸­
+	int cost;								//è¯¥æœåŠ¡å™¨çš„ç´¯è®¡æˆæœ¬
 
-	VirtualMachine* vmLinkHead = nullptr;	//¸Ã·şÎñÆ÷ÖĞµ±Ç°´æÔÚµÄĞéÄâ»ú
+	VirtualMachine* vmLinkHead = nullptr;	//è¯¥æœåŠ¡å™¨ä¸­å½“å‰å­˜åœ¨çš„è™šæ‹Ÿæœº
 
-	static int severNum;					//ÒÑ¾­¹ºÂòµÄ·şÎñÆ÷ÊıÁ¿
+	static int severNum;					//å·²ç»è´­ä¹°çš„æœåŠ¡å™¨æ•°é‡
 
-	void addVirtualMachine(int type, int id)//Ìí¼ÓĞéÄâ»ú
+	void addVirtualMachine(int type, int id)//æ·»åŠ è™šæ‹Ÿæœº
 	{
 
 	}
-	void delVirtualMachine(int id)			//É¾³ıĞéÄâ»ú
+	void delVirtualMachine(int id)			//åˆ é™¤è™šæ‹Ÿæœº
 	{
 
 	}
-}sever[100000 + 10];						//sever[i] ±àºÅÎªiµÄ·şÎñÆ÷
+}sever[100000 + 10];						//sever[i] ç¼–å·ä¸ºiçš„æœåŠ¡å™¨
 
 int severIDVM[1000000 + 10];
 
