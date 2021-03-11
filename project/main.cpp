@@ -49,9 +49,15 @@ void readData()
 //    }
 }
 
+void init()
+{
+    for(int i = 0;i < 100000 + 10;++ i) sever[i].id = i;
+}
+
 int main() {
     auto p = freopen("training-1.txt", "r", stdin);
 //    std::cout << p << std::endl;
     readData();
+    init();
     return 0;
 }

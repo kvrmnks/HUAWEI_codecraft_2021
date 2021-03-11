@@ -55,11 +55,14 @@ struct VirtualMachine						//请求使用的虚拟机
     int nodeNum;                            //如果虚拟机在服务器中存储，nodeNum表示被部署到了哪个节点。双节点部署模式无效。
     int serverNum;                          //如果虚拟机在服务器中存储，serverNum表示该虚拟机被部署到服务器的下标
 }virtualMachine[100000 + 10];
+int virtualMachineNum = 0;                  //虚拟机最大下标
+
 map<int, int> vmIdToRank;                    //虚拟机id到下标的映射
 
 struct Server								//已经购买的、使用中的服务器
 {
     int type;								//服务器型号编号
+    int id;                                 //服务器编号
 
     int remainCoreNodeA;					//服务器A结点剩余内核
     int remainCoreNodeB;					//服务器B结点剩余内核
@@ -69,15 +72,17 @@ struct Server								//已经购买的、使用中的服务器
     bool open;								//服务器是否工作中
     int cost;								//该服务器的累计成本
 
-    VirtualMachine* virtualMachineLinkHead = nullptr;	//该服务器中当前存在的虚拟机
+    list<int> vmList;               	    //该服务器中当前存在的虚拟机下标链表
 
     static int severNum;					//已经购买的服务器数量
 
     //添加虚拟机到服务器,接受其在virtualMachine的下标
+    //如果虚拟机是单核模式，core表示加载到哪一个内核。0表示内核A，1表示内核B
     //返回是否添加成功
-    bool addVirtualMachine(int rank)
+    bool addVirtualMachine(int rank, int core = 0)
     {
-        VirtualMachineInformation = virtualMachine[rank].
+        VirtualMachine& vm = virtualMachine[rank];
+        VirtualMachineInformation& vmInfor= virtualMachineInformation[vm.type];
         if(vmInfor.isDoubleNode)
         {
             if(remainCoreNodeA < vmInfor.coreNumNode || remainCoreNodeB < vmInfor.coreNumNode)
@@ -103,6 +108,7 @@ struct Server								//已经购买的、使用中的服务器
                 remainMemoryNodeA -= vmInfor.memorySizeNode;
 
                 open = true;
+                vm.nodeNum = 0;
             }
             else if(core == 1)
             {
@@ -115,15 +121,12 @@ struct Server								//已经购买的、使用中的服务器
                 remainMemoryNodeB -= vmInfor.memorySizeNode;
 
                 open = true;
+                vm.nodeNum = 1;
             }
             else return false;
         }
 
-        VirtualMachine* now = new VirtualMachine();
-        now->id = id;
-        now->type = type;
-        now->next = virtualMachineLinkHead;
-        virtualMachineLinkHead = now;
+        vmList.push_back(rank);
 
         return true;
     }
@@ -132,55 +135,48 @@ struct Server								//已经购买的、使用中的服务器
     //若不存在ID为id的虚拟机，返回false
     bool delVirtualMachine(int id)
     {
-        VirtualMachine* now = virtualMachineLinkHead;
-        while(now != nullptr)
+        auto it = vmList.begin();
+        while(it != vmList.end() && virtualMachine[(*it)].id != id)
+            ++ it;
+        if(it == vmList.end()) return false;
+        VirtualMachine& vm = virtualMachine[(*it)];
+        if(vm.id == id)
         {
-            if(now->id == id)
+            VirtualMachineInformation& vmInfor = virtualMachineInformation[vm.type];
+            if(vmInfor.isDoubleNode)
             {
-                if(vmInfor.isDoubleNode)
-                {
-                    remainCoreNodeA += vmInfor.coreNumNode, remainCoreNodeB += vmInfor.coreNumNode;
-                    remainMemoryNodeA += vmInfor.memorySizeNode, remainMemoryNodeB += vmInfor.memorySizeNode;
-                }
-                else
-                {
-                    if(now->nodeNum == 1)
-                    {
-                        if(remainCoreNodeA < vmInfor.coreNumNode)
-                            return false;
-                        if(remainMemoryNodeA < vmInfor.memorySizeNode)
-                            return false;
-
-                        remainCoreNodeA -= vmInfor.coreNumNode;
-                        remainMemoryNodeA -= vmInfor.memorySizeNode;
-
-                        open = true;
-                    }
-                    else if(now->nodeNum == 2)
-                    {
-                        if(remainCoreNodeB < vmInfor.coreNumNode)
-                            return false;
-                        if(remainMemoryNodeB < vmInfor.memorySizeNode)
-                            return false;
-
-                        remainCoreNodeB -= vmInfor.coreNumNode;
-                        remainMemoryNodeB -= vmInfor.memorySizeNode;
-
-                        open = true;
-                    }
-                }
-
-
-                if(virtualMachineLinkHead == nullptr)
-                    open = false;
-                return true;
+                remainCoreNodeA += vmInfor.coreNumNode, remainCoreNodeB += vmInfor.coreNumNode;
+                remainMemoryNodeA += vmInfor.memorySizeNode, remainMemoryNodeB += vmInfor.memorySizeNode;
             }
-            else now = now->next;
+            else
+            {
+                if(vm.nodeNum == 0)
+                {
+                    remainCoreNodeA += vmInfor.coreNumNode;
+                    remainMemoryNodeA += vmInfor.memorySizeNode;
+                }
+                else if(vm.nodeNum == 1)
+                {
+                    remainCoreNodeB += vmInfor.coreNumNode;
+                    remainMemoryNodeB += vmInfor.memorySizeNode;
+                }
+            }
+
+            if(vmList.empty())
+                open = false;
+            return true;
         }
-        return false;
+
+        return true;
     }
 }sever[100000 + 10];						//sever[i] 编号为i的服务器
+int severNum = 0;                           //已有服务器数量
+
 int severIDVM[1000000 + 10];
 
+void addServer(int type)
+{
+
+}
 
 #endif //PROJECT_DATASTRUCTURE_H
