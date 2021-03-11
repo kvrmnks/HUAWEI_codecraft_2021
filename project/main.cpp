@@ -1,12 +1,6 @@
 #include "input.h"
 #include "DataStructure.h"
 
-void addSever(int type)
-{
-
-}
-
-
 void readData()
 {
     scanf("%d", &N);
@@ -53,7 +47,7 @@ void readData()
 
 void init()
 {
-    for(int i = 0;i < 100000 + 10;++ i) sever[i].id = i;
+    for(int i = 0;i < 100000 + 10;++ i) server[i].rank = i;
 }
 
 int main() {

@@ -62,7 +62,7 @@ map<int, int> vmIdToRank;                    //虚拟机id到下标的映射
 struct Server								//已经购买的、使用中的服务器
 {
     int type;								//服务器型号编号
-    int id;                                 //服务器编号
+    int rank;                               //服务器编号
 
     int remainCoreNodeA;					//服务器A结点剩余内核
     int remainCoreNodeB;					//服务器B结点剩余内核
@@ -71,6 +71,7 @@ struct Server								//已经购买的、使用中的服务器
 
     bool open;								//服务器是否工作中
     int cost;								//该服务器的累计成本
+    int dayCost;                            //该服务器每天耗电成本
 
     list<int> vmList;               	    //该服务器中当前存在的虚拟机下标链表
 
@@ -127,7 +128,7 @@ struct Server								//已经购买的、使用中的服务器
         }
 
         vmList.push_back(rank);
-
+        vm.serverNum = this->rank;
         return true;
     }
 
@@ -169,14 +170,35 @@ struct Server								//已经购买的、使用中的服务器
 
         return true;
     }
-}sever[100000 + 10];						//sever[i] 编号为i的服务器
-int severNum = 0;                           //已有服务器数量
+}server[100000 + 10];						//sever[i] 编号为i的服务器
+int serverNum = 0;                           //已有服务器数量
 
-int severIDVM[1000000 + 10];
+int serverIDVM[1000000 + 10];
 
 void addServer(int type)
 {
+    ServerInformation& seInfor = serverInformation[type];
+    Server& se = server[serverNum];
 
+    se.type = type;
+    se.id = serverNum;
+    se.remainMemoryNodeA = se.remainMemoryNodeB = (seInfor.memorySize >> 2);
+    se.remainCoreNodeA = se.remainCoreNodeB = (seInfor.coreNum >> 2);
+    se.dayCost = seInfor.dayCost;
+    se.cost += seInfor.hardwareCost;
+
+    ++ serverNum;
+}
+
+void addVirtualMachine(int type, int id)
+{
+    VirtualMachine& vm = virtualMachine[virtualMachineInformation];
+    VirtualMachineInformation& vmInfor = virtualMachineInformation[vm.type];
+
+    vm.id = id;
+    vm.type = type;
+
+    ++ virtualMachineNum;
 }
 
 #endif //PROJECT_DATASTRUCTURE_H
