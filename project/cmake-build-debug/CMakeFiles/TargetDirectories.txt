@@ -1,3 +1,0 @@
-F:/competition/2021Huawei software star challenge/space/HUAWEI_abaaba_2021/project/cmake-build-debug/CMakeFiles/project.dir
-F:/competition/2021Huawei software star challenge/space/HUAWEI_abaaba_2021/project/cmake-build-debug/CMakeFiles/edit_cache.dir
-F:/competition/2021Huawei software star challenge/space/HUAWEI_abaaba_2021/project/cmake-build-debug/CMakeFiles/rebuild_cache.dir
