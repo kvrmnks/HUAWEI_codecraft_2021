@@ -1,18 +1,5 @@
 #include "input.h"
-
-int N;										//可以采购服务器的数量,[1,100]
-ServerInformation serverInformation[100];						//可以采购的服务器类型信息
-int M;										//售买虚拟机的数量,[1,1000]
-VirtualMachineInformation virtualMachineInformation[1000];			//虚拟机型号信息
-
-int T;										//T天用户请求序列数据,[1,1000]
-int requireNum[1000];						//第i+1天用户请求数目
-int requireRank[1000];						//第i+1天用户请求的起始地址
-Require require[100000];							//用户请求
-
-VirtualMachine virtualMachine[100000 + 10];
-Server sever[100000 + 10];						//sever[i] 编号为i的服务器
-int severIDVM[1000000 + 10];
+#include "DataStructure.h"
 
 void addSever(int type)
 {

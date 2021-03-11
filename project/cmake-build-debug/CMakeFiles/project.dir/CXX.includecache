@@ -6,11 +6,21 @@
 
 #IncludeRegexTransform: 
 
-F:/projectSet/HUAWEI_abaaba_2021/project/main.cpp
+F:/competition/2021Huawei software star challenge/space/HUAWEI_abaaba_2021/project/DataStructure.h
+
+F:/competition/2021Huawei software star challenge/space/HUAWEI_abaaba_2021/project/input.h
+DataStructure.h
+F:/competition/2021Huawei software star challenge/space/HUAWEI_abaaba_2021/project/DataStructure.h
 iostream
 -
 cstdio
 -
 cstdlib
 -
+
+F:/competition/2021Huawei software star challenge/space/HUAWEI_abaaba_2021/project/main.cpp
+input.h
+F:/competition/2021Huawei software star challenge/space/HUAWEI_abaaba_2021/project/input.h
+DataStructure.h
+F:/competition/2021Huawei software star challenge/space/HUAWEI_abaaba_2021/project/DataStructure.h
 
