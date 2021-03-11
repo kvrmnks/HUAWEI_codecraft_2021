@@ -8,7 +8,8 @@
 
 #include <map>
 #include <string>
-using namespace std
+#include <list>
+using namespace std;
 
 int N;										//可以采购服务器的数量,[1,100]
 struct ServerInformation					//服务器信息
@@ -52,12 +53,9 @@ struct VirtualMachine						//请求使用的虚拟机
     int type;								//虚拟机型号
 
     int nodeNum;                            //如果虚拟机在服务器中存储，nodeNum表示被部署到了哪个节点。双节点部署模式无效。
-    VirtualMachine* next = nullptr;         //如果虚拟机在服务器中存储，next表征链表
+    int serverNum;                          //如果虚拟机在服务器中存储，serverNum表示该虚拟机被部署到服务器的下标
 }virtualMachine[100000 + 10];
-
-
-
-
+map<int, int> vmIdToRank;                    //虚拟机id到下标的映射
 
 struct Server								//已经购买的、使用中的服务器
 {
@@ -75,18 +73,11 @@ struct Server								//已经购买的、使用中的服务器
 
     static int severNum;					//已经购买的服务器数量
 
-//    //检查type类型虚拟机是否能添加到当前服务器
-//    //core=0表示添加到A核，core=1表示添加到B核。若虚拟机为双节点部署,core无效
-//    void canAddVirtualMachine(int type, int id, int core = 0)
-//    {
-//
-//    }
-
-    //添加虚拟机到服务器;
-    //core=0表示添加到A核，core=1表示添加到B核。若虚拟机为双节点部署,core无效
+    //添加虚拟机到服务器,接受其在virtualMachine的下标
     //返回是否添加成功
-    bool addVirtualMachine(const VirtualMachineInformation& vmInfor, int type, int id, int core = 0)
+    bool addVirtualMachine(int rank)
     {
+        VirtualMachineInformation = virtualMachine[rank].
         if(vmInfor.isDoubleNode)
         {
             if(remainCoreNodeA < vmInfor.coreNumNode || remainCoreNodeB < vmInfor.coreNumNode)
@@ -139,7 +130,7 @@ struct Server								//已经购买的、使用中的服务器
 
     //删除虚拟机
     //若不存在ID为id的虚拟机，返回false
-    bool delVirtualMachine(const VirtualMachineInformation& vmInfor, int id)
+    bool delVirtualMachine(int id)
     {
         VirtualMachine* now = virtualMachineLinkHead;
         while(now != nullptr)
