@@ -13,11 +13,13 @@ void readData()
     for(int i = 0; i < N; i ++)
     {
         serverInformation[i] = readOneServer();
+        mpSevere[string(serverInformation[i].typeName)] = i;
     }
     scanf("%d", &M);
     for(int i = 0; i < M; i ++)
     {
         virtualMachineInformation[i] = readOneVirtualMachine();
+        mpVirtualMachine[string(virtualMachineInformation[i].typeName)] = i;
     }
     scanf("%d", &T);
 
@@ -44,7 +46,7 @@ void readData()
 //    for(int i = 0; i < T; i ++){
 //        for(int j = 0; j < requireNum[i]; j ++){
 //            auto p = require[requireRank[i] + j];
-//            std::cout << p.virtualMachineName << " " << p.id << " " << p.type << std::endl;
+//            std::cout << p.virtualMachineNum << " " << p.virtualMachineName << " " << p.id << " " << p.type << std::endl;
 //        }
 //    }
 }

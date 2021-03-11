@@ -25,7 +25,7 @@ ServerInformation readOneServer()
     while(ch != ','){buf[cnt++] = ch; ch = getchar();}
     for(int i = 0; i < cnt; i++){serverType.typeName[i] = buf[i];}
     serverType.typeName[cnt] = 0;
-    puts(serverType.typeName);
+//    puts(serverType.typeName);
 
     // 读取服务器的核心数
     int number = 0;
@@ -118,7 +118,7 @@ Require readOneRequire()
             re.virtualMachineName[i] = buf[i];
         }
         re.virtualMachineName[cnt] = 0;
-
+        re.virtualMachineNum = mpVirtualMachine[string(re.virtualMachineName)];
         int number = 0;
         while(ch < '0' || ch > '9'){ch = getchar();}
         while(ch != ')'){number = number * 10 + ch - '0'; ch = getchar();}
