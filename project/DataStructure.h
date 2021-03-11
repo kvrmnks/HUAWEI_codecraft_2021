@@ -77,10 +77,9 @@ struct Server								//已经购买的、使用中的服务器
 
     static int severNum;					//已经购买的服务器数量
 
-    //添加虚拟机到服务器,接受其在virtualMachine的下标
+    //检查是否能把下标为rank的虚拟机添加到该服务器
     //如果虚拟机是单核模式，core表示加载到哪一个内核。0表示内核A，1表示内核B
-    //返回是否添加成功
-    bool addVirtualMachine(int rank, int core = 0)
+    bool canAddVirtualMachine(int rank, int core = 0)
     {
         VirtualMachine& vm = virtualMachine[rank];
         VirtualMachineInformation& vmInfor= virtualMachineInformation[vm.type];
@@ -90,11 +89,6 @@ struct Server								//已经购买的、使用中的服务器
                 return false;
             if(remainMemoryNodeA < vmInfor.memorySizeNode || remainMemoryNodeB < vmInfor.memorySizeNode)
                 return false;
-
-            remainCoreNodeA -= vmInfor.coreNumNode, remainCoreNodeB -= vmInfor.coreNumNode;
-            remainMemoryNodeA -= vmInfor.memorySizeNode, remainMemoryNodeB -= vmInfor.memorySizeNode;
-
-            open = true;
         }
         else
         {
@@ -104,7 +98,39 @@ struct Server								//已经购买的、使用中的服务器
                     return false;
                 if(remainMemoryNodeA < vmInfor.memorySizeNode)
                     return false;
+            }
+            else if(core == 1)
+            {
+                if(remainCoreNodeB < vmInfor.coreNumNode)
+                    return false;
+                if(remainMemoryNodeB < vmInfor.memorySizeNode)
+                    return false;
+            }
+            else return false;
+        }
 
+        return true;
+    }
+
+    //添加虚拟机到服务器,接受其在virtualMachine的下标
+    //如果虚拟机是单核模式，core表示加载到哪一个内核。0表示内核A，1表示内核B
+    //返回是否添加成功
+    bool addVirtualMachine(int rank, int core = 0)
+    {
+        if(!canAddVirtualMachine(rank, core)) return false;
+        VirtualMachine& vm = virtualMachine[rank];
+        VirtualMachineInformation& vmInfor= virtualMachineInformation[vm.type];
+        if(vmInfor.isDoubleNode)
+        {
+            remainCoreNodeA -= vmInfor.coreNumNode, remainCoreNodeB -= vmInfor.coreNumNode;
+            remainMemoryNodeA -= vmInfor.memorySizeNode, remainMemoryNodeB -= vmInfor.memorySizeNode;
+
+            open = true;
+        }
+        else
+        {
+            if(core == 0)
+            {
                 remainCoreNodeA -= vmInfor.coreNumNode;
                 remainMemoryNodeA -= vmInfor.memorySizeNode;
 
@@ -113,11 +139,6 @@ struct Server								//已经购买的、使用中的服务器
             }
             else if(core == 1)
             {
-                if(remainCoreNodeB < vmInfor.coreNumNode)
-                    return false;
-                if(remainMemoryNodeB < vmInfor.memorySizeNode)
-                    return false;
-
                 remainCoreNodeB -= vmInfor.coreNumNode;
                 remainMemoryNodeB -= vmInfor.memorySizeNode;
 
@@ -175,13 +196,14 @@ int serverNum = 0;                           //已有服务器数量
 
 int serverIDVM[1000000 + 10];
 
+//新增服务器
 void addServer(int type)
 {
     ServerInformation& seInfor = serverInformation[type];
     Server& se = server[serverNum];
 
     se.type = type;
-    se.id = serverNum;
+    se.rank = serverNum;
     se.remainMemoryNodeA = se.remainMemoryNodeB = (seInfor.memorySize >> 2);
     se.remainCoreNodeA = se.remainCoreNodeB = (seInfor.coreNum >> 2);
     se.dayCost = seInfor.dayCost;
@@ -190,9 +212,10 @@ void addServer(int type)
     ++ serverNum;
 }
 
+//新增虚拟机
 void addVirtualMachine(int type, int id)
 {
-    VirtualMachine& vm = virtualMachine[virtualMachineInformation];
+    VirtualMachine& vm = virtualMachine[virtualMachineNum];
     VirtualMachineInformation& vmInfor = virtualMachineInformation[vm.type];
 
     vm.id = id;
