@@ -4,4 +4,5 @@
 CMakeFiles/project.dir/main.cpp.obj: ../DataStructure.h
 CMakeFiles/project.dir/main.cpp.obj: ../input.h
 CMakeFiles/project.dir/main.cpp.obj: ../main.cpp
+CMakeFiles/project.dir/main.cpp.obj: ../output.h
 

@@ -53,9 +53,9 @@ void init()
 
 
 int main() {
-    std::ios::sync_with_stdio(false);
+/*    std::ios::sync_with_stdio(false);
     auto p = freopen("training-1.txt", "r", stdin);
-//    std::cout << p << std::endl;
+    std::cout << p << std::endl;
     readData();
 
     cout<<"read data finished"<<endl;
@@ -66,7 +66,7 @@ int main() {
 
     for(int i = 0;i < T;++ i)
     {
-        cout<<i<<" day"<<endl;
+        // cout<<i<<" day"<<endl;
         logger.start_a_brand_new_day();
 
         int maxRank = requireRank[i] + requireNum[i];
@@ -93,7 +93,10 @@ int main() {
             }
             if(!hasServerUse)
             {
-                srand(19260817);
+                srand(19260817);  //5392818172
+                // srand(998244353); 7198371310
+                // srand(996251404); 11533265543
+
                 do
                 {
                     addServer(rand()% N);
@@ -111,10 +114,23 @@ int main() {
             logger.log_a_vm_deployment(vmRank);
         }
 
-        logger.call_an_end_to_this_day();
+         logger.call_an_end_to_this_day();
+
+        for(int j = 0;j < serverNum;++ j) {
+            if(server[j].open)
+                server[j].cost += server[j].dayCost;
+        }
+
+
     }
 
     logger.print();
+
+    long long sumCost = 0;
+    for(int i = 0;i < serverNum;++ i) {
+        sumCost += server[i].cost;
+    }
+    printf("\n=====\n%lld\n=====", sumCost);*/
 
     return 0;
 }

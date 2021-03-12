@@ -44,8 +44,8 @@ struct Require
     int virtualMachineNum;					//请求的虚拟机类型编号
     int id;									//虚拟机ID
 }require[200000];							//用户请求
-int requireNum[2000];						//第i+1天用户请求数目
-int requireRank[2000];						//第i+1天用户请求的起始地址
+int requireNum[1000];						//第i+1天用户请求数目
+int requireRank[1000];						//第i+1天用户请求的起始地址
 
 struct VirtualMachine						//请求使用的虚拟机
 {
@@ -54,7 +54,7 @@ struct VirtualMachine						//请求使用的虚拟机
 
     int nodeNum;                            //如果虚拟机在服务器中存储，nodeNum表示被部署到了哪个节点。双节点部署模式无效。
     int serverNum;                          //如果虚拟机在服务器中存储，serverNum表示该虚拟机被部署到服务器的下标
-}virtualMachine[200000 + 10];
+}virtualMachine[100000 + 1];
 int virtualMachineNum = 0;                  //虚拟机最大下标
 
 map<int, int> vmIdToRank;                    //虚拟机id到下标的映射
@@ -191,10 +191,10 @@ struct Server								//已经购买的、使用中的服务器
 
         return true;
     }
-}server[200000 + 10];						//sever[i] 编号为i的服务器
+}server[100000 + 10];						//sever[i] 编号为i的服务器
 int serverNum = 0;                           //已有服务器数量
 
-int serverIDVM[2000000 + 10];
+int serverIDVM[100000 + 10];
 
 //新增服务器
 void addServer(int type)
