@@ -3,6 +3,8 @@
 #include <cstdlib>
 #include "output.h"
 
+#define DEBUG
+
 void readData()
 {
     scanf("%d", &N);
@@ -55,11 +57,16 @@ void init()
 
 int main() {
     std::ios::sync_with_stdio(false);
-    auto p = freopen("training-1.txt", "r", stdin);
-//    std::cout << p << std::endl;
-    readData();
 
-    cout<<"read data finished"<<endl;
+#ifdef DEBUG
+
+    auto p = freopen("training-1.txt", "r", stdin);
+    freopen("output.txt", "w", stdout);
+//    std::cout << p << std::endl;
+
+#endif
+
+    readData();
 
     init();
 
@@ -67,7 +74,6 @@ int main() {
 
     for(int i = 0;i < T;++ i)
     {
-        cout<<i<<" day"<<endl;
         logger.start_a_brand_new_day();
 
         int maxRank = requireRank[i] + requireNum[i];
@@ -94,10 +100,14 @@ int main() {
             }
             if(!hasServerUse)
             {
+                int server_type;
                 srand(19260817);
                 do
                 {
-                    addServer(rand()% N);
+                    server_type = rand() % N;
+                    addServer(server_type);
+
+                    logger.log_a_server(server_type);
                 }while(!server[serverNum-1].canAddVirtualMachine(vmRank, 0) && !server[serverNum-1].canAddVirtualMachine(vmRank, 1));
                 if(server[serverNum-1].canAddVirtualMachine(vmRank, 0))
                 {
