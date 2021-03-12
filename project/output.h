@@ -19,9 +19,9 @@ struct PurchaseInfo {
     vector<pair<string, unsigned> > serverNumPerType; // type name, quantity
 
     friend ostream &operator << (ostream &output, PurchaseInfo& purchaseInfo) {
-        output << "(purchase," << purchaseInfo.serverNumPerType.size() << ")" << endl;
+        output << "(purchase, " << purchaseInfo.serverNumPerType.size() << ")" << endl;
         for(auto x : purchaseInfo.serverNumPerType) {
-            output << '(' << x.first << ',' << x.second << ')' << endl;
+            output << '(' << x.first << ", " << x.second << ')' << endl;
         }
         return output;
     }
@@ -31,13 +31,13 @@ struct Migration {
     vector<pair<pair<unsigned, unsigned>, char> > migrationInfo; // vm_id, server_id,  (node : 'N', 'A', 'B');
 
     friend ostream &operator << (ostream &output, Migration& migration) {
-        output << "(migration," << migration.migrationInfo.size() << ")" << endl;
+        output << "(migration, " << migration.migrationInfo.size() << ")" << endl;
         for(auto x : migration.migrationInfo) {
             auto basicInfo = x.first;
             if (x.second == 'N') {
-                output << '(' << basicInfo.first << ',' << basicInfo.second << ')' << endl;
+                output << '(' << basicInfo.first << ", " << basicInfo.second << ')' << endl;
             } else {
-                output << '(' << basicInfo.first << ',' << basicInfo.second << ',' << x.second << ')' << endl;
+                output << '(' << basicInfo.first << ", " << basicInfo.second << ", " << x.second << ')' << endl;
             }
         }
         return output;
@@ -52,7 +52,7 @@ struct DeployRequest {
             if (x.second == 'N') {
                 output << '(' << x.first << ')' << endl;
             } else {
-                output << '(' << x.first << ',' << x.second << ')' << endl;
+                output << '(' << x.first << ", " << x.second << ')' << endl;
             }
         }
         return output;
@@ -88,7 +88,9 @@ private:
     bool stored = false;
 
     void check() {
+#ifdef DEBUG
         if (!fresh) cerr << "oops! You haven't initialise the logger.";
+#endif
     }
     void log_a_deploy(int target_server_id) {
         dailyAction.insertDeployment(make_pair(target_server_id, 'N'));

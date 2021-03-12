@@ -9,6 +9,7 @@
 #include <map>
 #include <string>
 #include <list>
+#include <iostream>
 using namespace std;
 
 int N;										//可以采购服务器的数量,[1,100]
@@ -54,7 +55,7 @@ struct VirtualMachine						//请求使用的虚拟机
 
     int nodeNum;                            //如果虚拟机在服务器中存储，nodeNum表示被部署到了哪个节点。双节点部署模式无效。
     int serverNum;                          //如果虚拟机在服务器中存储，serverNum表示该虚拟机被部署到服务器的下标
-}virtualMachine[100000 + 1];
+}virtualMachine[200000 + 1];
 int virtualMachineNum = 0;                  //虚拟机最大下标
 
 map<int, int> vmIdToRank;                    //虚拟机id到下标的映射
@@ -215,6 +216,9 @@ void addServer(int type)
 //新增虚拟机
 void addVirtualMachine(int type, int id)
 {
+    if (type == 115) {
+//        std::cout<<"hello"<<std::endl;
+    }
     VirtualMachine& vm = virtualMachine[virtualMachineNum];
     VirtualMachineInformation& vmInfor = virtualMachineInformation[vm.type];
 

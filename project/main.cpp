@@ -59,9 +59,8 @@ int main() {
 
 #ifdef DEBUG
 
-    auto p = freopen("training-1.txt", "r", stdin);
+    freopen("training-1.txt", "r", stdin);
     freopen("output.txt", "w", stdout);
-//    std::cout << p << std::endl;
 
 #endif
 
@@ -71,8 +70,19 @@ int main() {
 
     Actions logger;
 
+#ifdef DEBUG
+    int tmp = 0;
+#endif
     for(int i = 0;i < T;++ i)
     {
+#ifdef DEBUG
+        printf("\n%d\n", tmp);
+#endif
+#ifdef DEBUG
+        if (i >= 587) {
+//            cout<<"hello\n";
+        }
+#endif
         logger.start_a_brand_new_day();
 
         int maxRank = requireRank[i] + requireNum[i];
@@ -82,6 +92,9 @@ int main() {
             int vmType = mpVirtualMachine[string(req.virtualMachineName)];
             int vmRank = virtualMachineNum;
             addVirtualMachine(vmType, req.id);
+#ifdef DEBUG
+            ++ tmp;
+#endif
 
             bool hasServerUse = false;
             for(int k = 0;k < serverNum;++ k)
