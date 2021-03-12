@@ -1,11 +1,7 @@
 #include "input.h"
 #include "DataStructure.h"
-
-void addSever(int type)
-{
-
-}
-
+#include <cstdlib>
+#include "output.h"
 
 void readData()
 {
@@ -50,9 +46,75 @@ void readData()
 //    }
 }
 
+void init()
+{
+    for(int i = 0;i < 100000 + 10;++ i) server[i].rank = i;
+}
+
+
 int main() {
+    std::ios::sync_with_stdio(false);
     auto p = freopen("training-1.txt", "r", stdin);
 //    std::cout << p << std::endl;
     readData();
+
+    cout<<"read data finished"<<endl;
+
+    init();
+
+    Actions logger;
+
+    for(int i = 0;i < T;++ i)
+    {
+        cout<<i<<" day"<<endl;
+        logger.start_a_brand_new_day();
+
+        int maxRank = requireRank[i] + requireNum[i];
+        for(int j = requireRank[i];j < maxRank; ++ j)
+        {
+            const Require& req = require[j];
+            int vmType = mpVirtualMachine[string(req.virtualMachineName)];
+            int vmRank = virtualMachineNum;
+            addVirtualMachine(vmType, req.id);
+
+            bool hasServerUse = false;
+            for(int k = 0;k < serverNum;++ k)
+            {
+                if(server[k].canAddVirtualMachine(vmRank, 0))
+                {
+                    server[k].addVirtualMachine(vmRank, 0);
+                    hasServerUse = true;
+                }
+                else if(server[k].canAddVirtualMachine(vmRank, 1))
+                {
+                    server[k].addVirtualMachine(vmRank, 1);
+                    hasServerUse = true;
+                }
+            }
+            if(!hasServerUse)
+            {
+                srand(19260817);
+                do
+                {
+                    addServer(rand()% N);
+                }while(!server[serverNum-1].canAddVirtualMachine(vmRank, 0) && !server[serverNum-1].canAddVirtualMachine(vmRank, 1));
+                if(server[serverNum-1].canAddVirtualMachine(vmRank, 0))
+                {
+                    server[serverNum-1].addVirtualMachine(vmRank, 0);
+                }
+                else
+                {
+                    server[serverNum-1].addVirtualMachine(vmRank, 1);
+                }
+            }
+
+            logger.log_a_vm_deployment(vmRank);
+        }
+
+        logger.call_an_end_to_this_day();
+    }
+
+    logger.print();
+
     return 0;
 }
