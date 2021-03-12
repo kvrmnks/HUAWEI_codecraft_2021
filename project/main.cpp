@@ -3,7 +3,19 @@
 #include <cstdlib>
 #include "output.h"
 
-#define DEBUG
+//#define DEBUG
+
+
+
+#ifdef DEBUG
+
+#define IO_DEBUG
+//#define LOGIC_DEBUG
+//#define BREAKPOINT_DEBUG
+//#define GRAMMAR_DEBUG
+
+#endif
+
 
 void readData()
 {
@@ -57,7 +69,7 @@ void init()
 int main() {
     std::ios::sync_with_stdio(false);
 
-#ifdef DEBUG
+#ifdef IO_DEBUG
 
     freopen("training-1.txt", "r", stdin);
     freopen("output.txt", "w", stdout);
@@ -70,19 +82,18 @@ int main() {
 
     Actions logger;
 
-#ifdef DEBUG
+
+    srand(19260817);
+
+#ifdef LOGIC_DEBUG
     int tmp = 0;
 #endif
     for(int i = 0;i < T;++ i)
     {
-#ifdef DEBUG
-        printf("\n%d\n", tmp);
+#ifdef LOGIC_DEBUG
+//        printf("\n%d\n", tmp);
 #endif
-#ifdef DEBUG
-        if (i >= 587) {
-//            cout<<"hello\n";
-        }
-#endif
+
         logger.start_a_brand_new_day();
 
         int maxRank = requireRank[i] + requireNum[i];
@@ -92,7 +103,7 @@ int main() {
             int vmType = mpVirtualMachine[string(req.virtualMachineName)];
             int vmRank = virtualMachineNum;
             addVirtualMachine(vmType, req.id);
-#ifdef DEBUG
+#ifdef LOGIC_DEBUG
             ++ tmp;
 #endif
 
@@ -113,10 +124,14 @@ int main() {
             if(!hasServerUse)
             {
                 int server_type;
-                srand(19260817);
                 do
                 {
                     server_type = rand() % N;
+
+#ifdef GRAMMAR_DEBUG
+                    cout<<server_type<<endl;
+#endif
+
                     addServer(server_type);
 
                     logger.log_a_server(server_type);

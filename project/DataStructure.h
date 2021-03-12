@@ -216,9 +216,6 @@ void addServer(int type)
 //新增虚拟机
 void addVirtualMachine(int type, int id)
 {
-    if (type == 115) {
-//        std::cout<<"hello"<<std::endl;
-    }
     VirtualMachine& vm = virtualMachine[virtualMachineNum];
     VirtualMachineInformation& vmInfor = virtualMachineInformation[vm.type];
 
