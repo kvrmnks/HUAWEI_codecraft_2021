@@ -32,7 +32,6 @@ void readData()
             require[cnt ++] = readOneRequire();
         }
     }
-
 //     对于输入的测试
 //    for(int i = 1; i <= N; i++){
 //        auto p = serverInformation[i];
