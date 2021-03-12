@@ -204,8 +204,8 @@ void addServer(int type)
 
     se.type = type;
     se.rank = serverNum;
-    se.remainMemoryNodeA = se.remainMemoryNodeB = (seInfor.memorySize >> 2);
-    se.remainCoreNodeA = se.remainCoreNodeB = (seInfor.coreNum >> 2);
+    se.remainMemoryNodeA = se.remainMemoryNodeB = (seInfor.memorySize >> 1);
+    se.remainCoreNodeA = se.remainCoreNodeB = (seInfor.coreNum >> 1);
     se.dayCost = seInfor.dayCost;
     se.cost += seInfor.hardwareCost;
 

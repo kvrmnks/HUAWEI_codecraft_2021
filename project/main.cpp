@@ -1,6 +1,7 @@
 #include "input.h"
 #include "DataStructure.h"
 #include <cstdlib>
+#include "output.h"
 
 void readData()
 {
@@ -29,21 +30,21 @@ void readData()
     }
 
 //     对于输入的测试
-//    for(int i = 1; i <= N; i++){
-//        auto p = serverInformation[i];
-//        std::cout << p.typeName << " " << p.memorySize << " "
-//        << p.dayCost << " " << p.hardwareCost << " " << p.coreNum << std::endl;
-//    }
-//    for(int i = 1; i <= M; i ++){
-//        auto p = virtualMachineInformation[i];
-//        std::cout << p.typeName << " " << p.coreNum << " " << p.memorySize << " " << p.isDoubleNode << "\n";
-//    }
-//    for(int i = 0; i < T; i ++){
-//        for(int j = 0; j < requireNum[i]; j ++){
-//            auto p = require[requireRank[i] + j];
-//            std::cout << p.virtualMachineNum << " " << p.virtualMachineName << " " << p.id << " " << p.type << std::endl;
-//        }
-//    }
+    for(int i = 1; i <= N; i++){
+        auto p = serverInformation[i];
+        std::cout << p.typeName << " " << p.memorySize << " "
+        << p.dayCost << " " << p.hardwareCost << " " << p.coreNum << std::endl;
+    }
+    for(int i = 1; i <= M; i ++){
+        auto p = virtualMachineInformation[i];
+        std::cout << p.typeName << " " << p.coreNum << " " << p.memorySize << " " << p.isDoubleNode << "\n";
+    }
+    for(int i = 0; i < T; i ++){
+        for(int j = 0; j < requireNum[i]; j ++){
+            auto p = require[requireRank[i] + j];
+            std::cout << p.virtualMachineNum << " " << p.virtualMachineName << " " << p.id << " " << p.type << std::endl;
+        }
+    }
 }
 
 void init()
@@ -56,10 +57,18 @@ int main() {
     auto p = freopen("training-1.txt", "r", stdin);
 //    std::cout << p << std::endl;
     readData();
+
+    cout<<"read data finished"<<endl;
+
     init();
+
+    Actions logger;
 
     for(int i = 0;i < T;++ i)
     {
+        cout<<i<<" day"<<endl;
+        logger.start_a_brand_new_day();
+
         int maxRank = requireRank[i] + requireNum[i];
         for(int j = requireRank[i];j < maxRank; ++ i)
         {
@@ -78,16 +87,16 @@ int main() {
                 }
                 else if(server[k].canAddVirtualMachine(vmRank, 1))
                 {
-                    erver[k].addVirtualMachine(vmRank, 1);
+                    server[k].addVirtualMachine(vmRank, 1);
                     hasServerUse = true;
                 }
             }
-            if(!hasSeverUse)
+            if(!hasServerUse)
             {
                 srand(19260817);
                 do
                 {
-                    addServer(rand()%serverNum);
+                    addServer(rand()% N);
                 }while(!server[serverNum-1].canAddVirtualMachine(vmRank, 0) && !server[serverNum-1].canAddVirtualMachine(vmRank, 1));
                 if(server[serverNum-1].canAddVirtualMachine(vmRank, 0))
                 {
@@ -98,9 +107,14 @@ int main() {
                     server[serverNum-1].addVirtualMachine(vmRank, 1);
                 }
             }
+
+            logger.log_a_vm_deployment(vmRank);
         }
+
+        logger.call_an_end_to_this_day();
     }
 
+    logger.print();
 
     return 0;
 }
