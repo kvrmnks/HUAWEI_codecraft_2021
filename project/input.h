@@ -89,6 +89,14 @@ VirtualMachineInformation readOneVirtualMachine()
     while(ch != ')'){number = number * 10 + ch - '0'; ch = getchar();}
     vm.isDoubleNode = number;
 
+    if (vm.isDoubleNode) {
+        vm.coreNumNode = vm.coreNum >> 1;
+        vm.memorySizeNode = vm.memorySize >> 1;
+    } else {
+        vm.coreNumNode = vm.coreNum;
+        vm.memorySizeNode = vm.memorySize;
+    }
+
     return vm;
 }
 

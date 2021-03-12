@@ -74,7 +74,7 @@ struct DailyAction {
         deployment.deployments.push_back(d);
     }
     friend ostream &operator << (ostream &output, DailyAction dailyAction) {
-        output << dailyAction.purchase << dailyAction.migration << dailyAction.deployment << endl;
+        output << dailyAction.purchase << dailyAction.migration << dailyAction.deployment;
         return output;
     }
 };
@@ -147,7 +147,7 @@ public:
 
     void print() {
         for (auto x : actions) {
-            cout << x <<endl;
+            cout << x;
         }
     }
 };
