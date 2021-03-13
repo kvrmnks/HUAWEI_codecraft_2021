@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-F:/competition/2021Huawei software star challenge/space/HUAWEI_abaaba_2021/project/DataStructure.h
+F:/projectSet/HUAWEI_abaaba_2021/project/DataStructure.h
 map
 -
 string
@@ -14,9 +14,9 @@ string
 list
 -
 
-F:/competition/2021Huawei software star challenge/space/HUAWEI_abaaba_2021/project/input.h
+F:/projectSet/HUAWEI_abaaba_2021/project/input.h
 DataStructure.h
-F:/competition/2021Huawei software star challenge/space/HUAWEI_abaaba_2021/project/DataStructure.h
+F:/projectSet/HUAWEI_abaaba_2021/project/DataStructure.h
 iostream
 -
 cstdio
@@ -24,9 +24,27 @@ cstdio
 cstdlib
 -
 
-F:/competition/2021Huawei software star challenge/space/HUAWEI_abaaba_2021/project/main.cpp
+F:/projectSet/HUAWEI_abaaba_2021/project/main.cpp
 input.h
-F:/competition/2021Huawei software star challenge/space/HUAWEI_abaaba_2021/project/input.h
+F:/projectSet/HUAWEI_abaaba_2021/project/input.h
 DataStructure.h
-F:/competition/2021Huawei software star challenge/space/HUAWEI_abaaba_2021/project/DataStructure.h
+F:/projectSet/HUAWEI_abaaba_2021/project/DataStructure.h
+cstdlib
+-
+output.h
+F:/projectSet/HUAWEI_abaaba_2021/project/output.h
+
+F:/projectSet/HUAWEI_abaaba_2021/project/output.h
+cstdio
+-
+string
+-
+iostream
+-
+vector
+-
+cstring
+-
+DataStructure.h
+F:/projectSet/HUAWEI_abaaba_2021/project/DataStructure.h
 

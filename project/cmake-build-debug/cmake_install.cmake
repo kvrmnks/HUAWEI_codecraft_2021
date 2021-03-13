@@ -1,4 +1,4 @@
-# Install script for directory: F:/competition/2021Huawei software star challenge/space/HUAWEI_abaaba_2021/project
+# Install script for directory: F:/projectSet/HUAWEI_abaaba_2021/project
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -40,5 +40,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "F:/competition/2021Huawei software star challenge/space/HUAWEI_abaaba_2021/project/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "F:/projectSet/HUAWEI_abaaba_2021/project/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

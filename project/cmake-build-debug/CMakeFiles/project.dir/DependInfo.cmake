@@ -4,7 +4,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "F:/competition/2021Huawei software star challenge/space/HUAWEI_abaaba_2021/project/main.cpp" "F:/competition/2021Huawei software star challenge/space/HUAWEI_abaaba_2021/project/cmake-build-debug/CMakeFiles/project.dir/main.cpp.obj"
+  "F:/projectSet/HUAWEI_abaaba_2021/project/main.cpp" "F:/projectSet/HUAWEI_abaaba_2021/project/cmake-build-debug/CMakeFiles/project.dir/main.cpp.obj"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 

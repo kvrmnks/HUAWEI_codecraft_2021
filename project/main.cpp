@@ -7,7 +7,7 @@ void readData()
 {
     scanf("%d", &N);
     for(int i = 0; i < N; i ++)
-    {
+    {1
         serverInformation[i] = readOneServer();
         mpSevere[string(serverInformation[i].typeName)] = i;
     }
@@ -54,7 +54,7 @@ void init()
 
 int main() {
     std::ios::sync_with_stdio(false);
-    auto p = freopen("training-1.txt", "r", stdin);
+    auto p = freopen("training-2.txt", "r", stdin);
 //    std::cout << p << std::endl;
     readData();
 
