@@ -3,19 +3,16 @@
 #include <cstdlib>
 #include "output.h"
 
-//#define DEBUG
-//#define IO_DEBUG
-//#define BREAKPOINT_DEBUG
-//#define GRAMMAR_DEBUG
-#define COST_DEBUG
+#define DEBUG
 
 #ifdef DEBUG
 
 #define IO_DEBUG
-#define LOGIC_DEBUG
-#define BREAKPOINT_DEBUG
-#define GRAMMAR_DEBUG
+//#define LOGIC_DEBUG
+//#define BREAKPOINT_DEBUG
+//#define GRAMMAR_DEBUG
 #define COST_DEBUG
+//#define TMP_DEBUUG
 
 #endif
 
@@ -122,11 +119,13 @@ int main() {
                     {
                         server[k].addVirtualMachine(vmRank, 0);
                         hasServerUse = true;
+                        break;
                     }
                     else if(server[k].canAddVirtualMachine(vmRank, 1))
                     {
                         server[k].addVirtualMachine(vmRank, 1);
                         hasServerUse = true;
+                        break;
                     }
                 }
                 if(!hasServerUse)
@@ -162,6 +161,7 @@ int main() {
                 VirtualMachine vm = virtualMachine[vmRank];
                 server[vm.serverNum].delVirtualMachine(req.id);
             }
+
         }
         for(int j = 0;j < serverNum;++ j)
         {
