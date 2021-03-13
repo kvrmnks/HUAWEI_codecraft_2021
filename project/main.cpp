@@ -3,7 +3,7 @@
 #include <cstdlib>
 #include "output.h"
 
-//#define DEBUG
+#define DEBUG
 
 #ifdef DEBUG
 
@@ -12,7 +12,7 @@
 //#define BREAKPOINT_DEBUG
 //#define GRAMMAR_DEBUG
 #define COST_DEBUG
-#define SEVERERROR_DEBUUG
+//#define SEVERERROR_DEBUUG
 
 #endif
 
@@ -71,8 +71,8 @@ int main() {
 
 #ifdef IO_DEBUG
 
-    freopen("training-1.txt", "r", stdin);
-    freopen("output.txt", "w", stdout);
+    freopen("training-small-2.txt", "r", stdin);
+    freopen("training-small-2-output.txt", "w", stdout);
 
 #endif
 
@@ -139,9 +139,9 @@ int main() {
                         cout<<server_type<<endl;
 #endif
 
-                        logger.log_a_server(server_type);
                     }while(!serverInformation[server_type].canAddVirtualMachine(vmRank, 0) && !serverInformation[server_type].canAddVirtualMachine(vmRank, 1));
                     addServer(server_type);
+                    logger.log_a_server(server_type);
                     if(server[serverNum-1].canAddVirtualMachine(vmRank, 0))
                     {
                         server[serverNum-1].addVirtualMachine(vmRank, 0);
