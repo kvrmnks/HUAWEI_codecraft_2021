@@ -12,17 +12,6 @@
 #include <iostream>
 using namespace std;
 
-int N;										//可以采购服务器的数量,[1,100]
-struct ServerInformation					//服务器信息
-{
-    char typeName[21];						//服务器型号
-    int coreNum;							//CPU核数，不超过1024
-    int memorySize;							//内存大小,单位G，不超过1024G
-    int hardwareCost;						//硬件成本，不超过5e5
-    int dayCost;							//每日耗能成本，不超过5000
-}serverInformation[100];					//可以采购的服务器类型信息
-map<string, int> mpSevere;                  //服务器型号名到编号（下标）的映射
-
 int M;										//售买虚拟机的数量,[1,1000]
 struct VirtualMachineInformation
 {
@@ -59,6 +48,55 @@ struct VirtualMachine						//请求使用的虚拟机
 int virtualMachineNum = 0;                  //虚拟机最大下标
 
 map<int, int> vmIdToRank;                    //虚拟机id到下标的映射
+
+int N;										//可以采购服务器的数量,[1,100]
+struct ServerInformation					//服务器信息
+{
+    char typeName[21];						//服务器型号
+    int coreNum;							//CPU核数，不超过1024
+    int memorySize;							//内存大小,单位G，不超过1024G
+    int hardwareCost;						//硬件成本，不超过5e5
+    int dayCost;							//每日耗能成本，不超过5000
+
+    //检查是否能把下标为rank的虚拟机添加到该服务器
+    //如果虚拟机是单核模式，core表示加载到哪一个内核。0表示内核A，1表示内核B
+    bool canAddVirtualMachine(int rank, int core = 0)
+    {
+        VirtualMachine& vm = virtualMachine[rank];
+        VirtualMachineInformation& vmInfor= virtualMachineInformation[vm.type];
+        int remainCoreNodeA, remainCoreNodeB, remainMemoryNodeA, remainMemoryNodeB;
+        remainCoreNodeA = remainCoreNodeB = (this->coreNum << 1);
+        remainMemoryNodeA = remainMemoryNodeB = (this->memorySize << 1);
+        if(vmInfor.isDoubleNode)
+        {
+            if(remainCoreNodeA < vmInfor.coreNumNode || remainCoreNodeB < vmInfor.coreNumNode)
+                return false;
+            if(remainMemoryNodeA < vmInfor.memorySizeNode || remainMemoryNodeB < vmInfor.memorySizeNode)
+                return false;
+        }
+        else
+        {
+            if(core == 0)
+            {
+                if(remainCoreNodeA < vmInfor.coreNumNode)
+                    return false;
+                if(remainMemoryNodeA < vmInfor.memorySizeNode)
+                    return false;
+            }
+            else if(core == 1)
+            {
+                if(remainCoreNodeB < vmInfor.coreNumNode)
+                    return false;
+                if(remainMemoryNodeB < vmInfor.memorySizeNode)
+                    return false;
+            }
+            else return false;
+        }
+
+        return true;
+    }
+}serverInformation[100];					//可以采购的服务器类型信息
+map<string, int> mpSevere;                  //服务器型号名到编号（下标）的映射
 
 struct Server								//已经购买的、使用中的服务器
 {
@@ -123,8 +161,10 @@ struct Server								//已经购买的、使用中的服务器
         VirtualMachineInformation& vmInfor= virtualMachineInformation[vm.type];
         if(vmInfor.isDoubleNode)
         {
-            remainCoreNodeA -= vmInfor.coreNumNode, remainCoreNodeB -= vmInfor.coreNumNode;
-            remainMemoryNodeA -= vmInfor.memorySizeNode, remainMemoryNodeB -= vmInfor.memorySizeNode;
+            remainCoreNodeA -= vmInfor.coreNumNode;
+            remainCoreNodeB -= vmInfor.coreNumNode;
+            remainMemoryNodeA -= vmInfor.memorySizeNode;
+            remainMemoryNodeB -= vmInfor.memorySizeNode;
 
             open = true;
         }

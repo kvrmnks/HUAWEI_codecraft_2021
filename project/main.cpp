@@ -3,7 +3,7 @@
 #include <cstdlib>
 #include "output.h"
 
-#define DEBUG
+//#define DEBUG
 
 #ifdef DEBUG
 
@@ -139,10 +139,9 @@ int main() {
                         cout<<server_type<<endl;
 #endif
 
-                        addServer(server_type);
-
                         logger.log_a_server(server_type);
-                    }while(!server[serverNum-1].canAddVirtualMachine(vmRank, 0) && !server[serverNum-1].canAddVirtualMachine(vmRank, 1));
+                    }while(!serverInformation[server_type].canAddVirtualMachine(vmRank, 0) && !serverInformation[server_type].canAddVirtualMachine(vmRank, 1));
+                    addServer(server_type);
                     if(server[serverNum-1].canAddVirtualMachine(vmRank, 0))
                     {
                         server[serverNum-1].addVirtualMachine(vmRank, 0);
