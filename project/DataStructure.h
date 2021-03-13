@@ -65,8 +65,8 @@ struct ServerInformation					//服务器信息
         VirtualMachine& vm = virtualMachine[rank];
         VirtualMachineInformation& vmInfor= virtualMachineInformation[vm.type];
         int remainCoreNodeA, remainCoreNodeB, remainMemoryNodeA, remainMemoryNodeB;
-        remainCoreNodeA = remainCoreNodeB = (this->coreNum << 1);
-        remainMemoryNodeA = remainMemoryNodeB = (this->memorySize << 1);
+        remainCoreNodeA = remainCoreNodeB = (this->coreNum >> 1);
+        remainMemoryNodeA = remainMemoryNodeB = (this->memorySize >> 1);
         if(vmInfor.isDoubleNode)
         {
             if(remainCoreNodeA < vmInfor.coreNumNode || remainCoreNodeB < vmInfor.coreNumNode)

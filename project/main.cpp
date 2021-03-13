@@ -3,7 +3,7 @@
 #include <cstdlib>
 #include "output.h"
 
-//#define DEBUG
+#define DEBUG
 
 #ifdef DEBUG
 
@@ -12,7 +12,7 @@
 //#define BREAKPOINT_DEBUG
 //#define GRAMMAR_DEBUG
 #define COST_DEBUG
-//#define TMP_DEBUUG
+#define SEVERERROR_DEBUUG
 
 #endif
 
@@ -161,6 +161,17 @@ int main() {
                 server[vm.serverNum].delVirtualMachine(req.id);
             }
 
+
+#ifdef SEVERERROR_DEBUUG
+            int tmp = 0;
+            for(int k = 0;k < serverNum;++ k)
+            {
+                if (server[k].remainMemoryNodeA < 0 || server[k].remainMemoryNodeB < 0 || server[k].remainCoreNodeA < 0 || server[k].remainMemoryNodeB < 0)
+                {
+                    tmp = 1;
+                }
+            }
+#endif
         }
         for(int j = 0;j < serverNum;++ j)
         {
