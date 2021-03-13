@@ -5,8 +5,14 @@
 
 #define DEBUG
 
+//#define ONLINE_JUDGE
+#ifdef ONLINE_JUDGE
+#undef DEBUG
+#endif
+
 #ifdef DEBUG
 
+//#define INOUT_DEBUG
 #define IO_DEBUG
 //#define LOGIC_DEBUG
 //#define BREAKPOINT_DEBUG
@@ -43,21 +49,23 @@ void readData()
         }
     }
 //     对于输入的测试
-//    for(int i = 1; i <= N; i++){
-//        auto p = serverInformation[i];
-//        std::cout << p.typeName << " " << p.memorySize << " "
-//        << p.dayCost << " " << p.hardwareCost << " " << p.coreNum << std::endl;
-//    }
-//    for(int i = 1; i <= M; i ++){
-//        auto p = virtualMachineInformation[i];
-//        std::cout << p.typeName << " " << p.coreNum << " " << p.memorySize << " " << p.isDoubleNode << "\n";
-//    }
-//    for(int i = 0; i < T; i ++){
-//        for(int j = 0; j < requireNum[i]; j ++){
-//            auto p = require[requireRank[i] + j];
-//            std::cout << p.virtualMachineNum << " " << p.virtualMachineName << " " << p.id << " " << p.type << std::endl;
-//        }
-//    }
+#ifdef INOUT_DEBUG
+    for(int i = 1; i <= N; i++){
+        auto p = serverInformation[i];
+        std::cout << p.typeName << " " << p.memorySize << " "
+        << p.dayCost << " " << p.hardwareCost << " " << p.coreNum << std::endl;
+    }
+    for(int i = 1; i <= M; i ++){
+        auto p = virtualMachineInformation[i];
+        std::cout << p.typeName << " " << p.coreNum << " " << p.memorySize << " " << p.isDoubleNode << "\n";
+    }
+    for(int i = 0; i < T; i ++){
+        for(int j = 0; j < requireNum[i]; j ++){
+            auto p = require[requireRank[i] + j];
+            std::cout << p.virtualMachineNum << " " << p.virtualMachineName << " " << p.id << " " << p.type << std::endl;
+        }
+    }
+#endif
 }
 
 void init()
@@ -68,8 +76,7 @@ void init()
 
 int main() {
     std::ios::sync_with_stdio(false);
-    auto p = freopen("training-2.txt", "r", stdin);
-//    std::cout << p << std::endl;
+//    auto p = freopen("training-2.txt", "r", stdin);
     readData();
 
 #ifdef IO_DEBUG
