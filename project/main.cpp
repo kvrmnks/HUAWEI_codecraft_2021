@@ -3,7 +3,7 @@
 #include <cstdlib>
 #include "output.h"
 
-#define DEBUG
+//#define DEBUG
 
 #ifdef DEBUG
 
