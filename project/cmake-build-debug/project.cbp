@@ -91,6 +91,9 @@
 		<Unit filename="F:/competition/2021Huawei software star challenge/space/HUAWEI_abaaba_2021/project/main.cpp">
 			<Option target="project"/>
 		</Unit>
+		<Unit filename="F:/competition/2021Huawei software star challenge/space/HUAWEI_abaaba_2021/project/output.h">
+			<Option target="project"/>
+		</Unit>
 		<Unit filename="F:/competition/2021Huawei software star challenge/space/HUAWEI_abaaba_2021/project/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>
 		</Unit>

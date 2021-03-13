@@ -4,15 +4,18 @@
 #include "output.h"
 
 //#define DEBUG
-
-
+//#define IO_DEBUG
+//#define BREAKPOINT_DEBUG
+//#define GRAMMAR_DEBUG
+#define COST_DEBUG
 
 #ifdef DEBUG
 
 #define IO_DEBUG
-//#define LOGIC_DEBUG
-//#define BREAKPOINT_DEBUG
-//#define GRAMMAR_DEBUG
+#define LOGIC_DEBUG
+#define BREAKPOINT_DEBUG
+#define GRAMMAR_DEBUG
+#define COST_DEBUG
 
 #endif
 
@@ -99,60 +102,87 @@ int main() {
         int maxRank = requireRank[i] + requireNum[i];
         for(int j = requireRank[i];j < maxRank; ++ j)
         {
+
             const Require& req = require[j];
             int vmType = mpVirtualMachine[string(req.virtualMachineName)];
-            int vmRank = virtualMachineNum;
-            addVirtualMachine(vmType, req.id);
+
+
+            if(req.type == 0)
+            {
+                int vmRank = virtualMachineNum;
+                addVirtualMachine(vmType, req.id);
 #ifdef LOGIC_DEBUG
-            ++ tmp;
+                ++ tmp;
 #endif
 
-            bool hasServerUse = false;
-            for(int k = 0;k < serverNum;++ k)
-            {
-                if(server[k].canAddVirtualMachine(vmRank, 0))
+                bool hasServerUse = false;
+                for(int k = 0;k < serverNum;++ k)
                 {
-                    server[k].addVirtualMachine(vmRank, 0);
-                    hasServerUse = true;
+                    if(server[k].canAddVirtualMachine(vmRank, 0))
+                    {
+                        server[k].addVirtualMachine(vmRank, 0);
+                        hasServerUse = true;
+                    }
+                    else if(server[k].canAddVirtualMachine(vmRank, 1))
+                    {
+                        server[k].addVirtualMachine(vmRank, 1);
+                        hasServerUse = true;
+                    }
                 }
-                else if(server[k].canAddVirtualMachine(vmRank, 1))
+                if(!hasServerUse)
                 {
-                    server[k].addVirtualMachine(vmRank, 1);
-                    hasServerUse = true;
-                }
-            }
-            if(!hasServerUse)
-            {
-                int server_type;
-                do
-                {
-                    server_type = rand() % N;
+                    int server_type;
+                    do
+                    {
+                        server_type = rand() % N;
 
 #ifdef GRAMMAR_DEBUG
-                    cout<<server_type<<endl;
+                        cout<<server_type<<endl;
 #endif
 
-                    addServer(server_type);
+                        addServer(server_type);
 
-                    logger.log_a_server(server_type);
-                }while(!server[serverNum-1].canAddVirtualMachine(vmRank, 0) && !server[serverNum-1].canAddVirtualMachine(vmRank, 1));
-                if(server[serverNum-1].canAddVirtualMachine(vmRank, 0))
-                {
-                    server[serverNum-1].addVirtualMachine(vmRank, 0);
+                        logger.log_a_server(server_type);
+                    }while(!server[serverNum-1].canAddVirtualMachine(vmRank, 0) && !server[serverNum-1].canAddVirtualMachine(vmRank, 1));
+                    if(server[serverNum-1].canAddVirtualMachine(vmRank, 0))
+                    {
+                        server[serverNum-1].addVirtualMachine(vmRank, 0);
+                    }
+                    else
+                    {
+                        server[serverNum-1].addVirtualMachine(vmRank, 1);
+                    }
                 }
-                else
-                {
-                    server[serverNum-1].addVirtualMachine(vmRank, 1);
-                }
+
+                logger.log_a_vm_deployment(vmRank);
             }
-
-            logger.log_a_vm_deployment(vmRank);
+            else if(req.type == 1)
+            {
+                int vmRank = vmIdToRank[req.id];
+                VirtualMachine vm = virtualMachine[vmRank];
+                server[vm.serverNum].delVirtualMachine(req.id);
+            }
         }
-
+        for(int j = 0;j < serverNum;++ j)
+        {
+            if(server[j].open)
+            {
+                server[j].cost += server[j].dayCost;
+            }
+        }
         logger.call_an_end_to_this_day();
     }
 
     logger.print();
+
+#ifdef COST_DEBUG
+    long long sumCost = 0;
+    for(int i = 0;i < serverNum;++ i)
+    {
+        sumCost += server[i].cost;
+    }
+    printf("\n%lld\n", sumCost);
+#endif
 
     return 0;
 }
