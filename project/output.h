@@ -96,8 +96,10 @@ private:
     bool stored = false;
     map<int, int> server_rank_id_map;
     void check() {
-        if (!fresh) cerr << "oops! You haven't initialise the logger.";
-        exit(250);
+        if (!fresh) {
+            cerr << "oops! You haven't initialise the logger.";
+            exit(250);
+        }
     }
     void log_a_deploy(int target_server_id) {
         dailyAction.insertDeployment(make_pair(target_server_id, 'N'));
