@@ -90,7 +90,8 @@ const int MAX_TYPE = 100;
 struct Actions {
 private:
     vector<DailyAction> actions;
-    int bucket_for_server[200];
+    int bucket_for_server[200]; // 树状数组，算当前小于等于type的已购服务器数
+    int daily_bucket[MAX_TYPE]; // 桶，记录当天每个类型服务器各自购买的数量
     DailyAction dailyAction;
     bool fresh = false;
     bool stored = false;
@@ -108,10 +109,10 @@ private:
         dailyAction.insertDeployment(make_pair(target_server_id, node == 0 ? 'A' : 'B'));
     }
 
-
+    //树状数组
     void increase_bucket(int type) {
         type ++;
-        while (type <= MAX_TYPE) {
+        while (type <= N) {
             bucket_for_server[type] ++;
             type += lowbit(type);
         }
@@ -136,6 +137,9 @@ public:
 
     // 初始化今天的信息
     void start_a_brand_new_day() {
+        for (int i = 0; i < MAX_TYPE; i++) {
+            daily_bucket[i] = 0;
+        }
         dailyAction = DailyAction();
         fresh = true;
         stored = false;
@@ -144,14 +148,9 @@ public:
 //    买了下标为 rank, 类型为type的服务器
     void log_a_server(int rank, int type) {
         check();
+        daily_bucket[type] ++;
         server_rank_id_map[rank] = get_server_id(type);
         increase_bucket(type);
-    }
-
-//    买了一个名字为 name 的服务器
-    void log_a_server(string name) {
-        check();
-        bucket_for_server[mpSevere[name]] ++;
     }
 
 //    做了一次双节点的迁移，将id为 vm_id 的虚拟机迁移到 下标为 rank 的服务器
@@ -196,8 +195,8 @@ public:
         stored = true;
 
         for (int i = 0; i < N; i++) {
-            if (bucket_for_server[i] != 0) {
-                dailyAction.insertPurchase(make_pair(string(serverInformation[i].typeName), bucket_for_server[i]));
+            if (daily_bucket[i] != 0) {
+                dailyAction.insertPurchase(make_pair(string(serverInformation[i].typeName), daily_bucket[i]));
             }
         }
 
