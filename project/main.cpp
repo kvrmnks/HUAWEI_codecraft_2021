@@ -3,7 +3,7 @@
 #include <cstdlib>
 #include "output.h"
 
-//#define DEBUG
+#define DEBUG
 
 //#define ONLINE_JUDGE
 #ifdef ONLINE_JUDGE
@@ -80,8 +80,8 @@ int main() {
 
 #ifdef IO_DEBUG
 
-    freopen("training-small.txt", "r", stdin);
-    freopen("training-small_out.txt", "w", stdout);
+    freopen("training-1.txt", "r", stdin);
+    freopen("training-1-out.txt", "w", stdout);
 
 #endif
 
@@ -114,6 +114,7 @@ int main() {
 
             if(req.type == 1)
             {
+                if(vmIdToRank.count(req.id) == 0) continue;
                 int vmRank = vmIdToRank[req.id];
                 VirtualMachine vm = virtualMachine[vmRank];
                 server[vm.serverNum].delVirtualMachine(req.id);
@@ -141,6 +142,7 @@ int main() {
             if(req.type == 0)
             {
                 int vmRank = virtualMachineNum;
+                vmIdToRank[req.id] = vmRank;
                 addVirtualMachine(vmType, req.id);
 #ifdef LOGIC_DEBUG
                 ++ tmp;
@@ -195,6 +197,32 @@ int main() {
             for(int k = 0;k < serverNum;++ k)
             {
                 if (server[k].remainMemoryNodeA < 0 || server[k].remainMemoryNodeB < 0 || server[k].remainCoreNodeA < 0 || server[k].remainCoreNodeB < 0)
+                {
+                    tmp = 1;
+                }
+            }
+#endif
+        }
+        for(int j = requireRank[i];j < maxRank; ++ j)
+        {
+
+            const Require& req = require[j];
+            int vmType = mpVirtualMachine[string(req.virtualMachineName)];
+
+            if(req.type == 1)
+            {
+                if(vmIdToRank.count(req.id) == 0) continue;
+                int vmRank = vmIdToRank[req.id];
+                VirtualMachine vm = virtualMachine[vmRank];
+                server[vm.serverNum].delVirtualMachine(req.id);
+            }
+
+
+#ifdef SEVERERROR_DEBUUG
+            int tmp = 0;
+            for(int k = 0;k < serverNum;++ k)
+            {
+                if (server[k].remainMemoryNodeA < 0 || server[k].remainMemoryNodeB < 0 || server[k].remainCoreNodeA < 0 || server[k].remainMemoryNodeB < 0)
                 {
                     tmp = 1;
                 }
