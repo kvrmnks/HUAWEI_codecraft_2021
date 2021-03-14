@@ -208,8 +208,10 @@ struct Server								//已经购买的、使用中的服务器
             VirtualMachineInformation& vmInfor = virtualMachineInformation[vm.type];
             if(vmInfor.isDoubleNode)
             {
-                remainCoreNodeA += vmInfor.coreNumNode, remainCoreNodeB += vmInfor.coreNumNode;
-                remainMemoryNodeA += vmInfor.memorySizeNode, remainMemoryNodeB += vmInfor.memorySizeNode;
+                remainCoreNodeA += vmInfor.coreNumNode;
+                remainCoreNodeB += vmInfor.coreNumNode;
+                remainMemoryNodeA += vmInfor.memorySizeNode;
+                remainMemoryNodeB += vmInfor.memorySizeNode;
             }
             else
             {
@@ -229,6 +231,7 @@ struct Server								//已经购买的、使用中的服务器
                 open = false;
             return true;
         }
+        else return false;
 
         return true;
     }

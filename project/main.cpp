@@ -3,7 +3,7 @@
 #include <cstdlib>
 #include "output.h"
 
-#define DEBUG
+//#define DEBUG
 
 //#define ONLINE_JUDGE
 #ifdef ONLINE_JUDGE
@@ -77,12 +77,11 @@ void init()
 int main() {
     std::ios::sync_with_stdio(false);
 //    auto p = freopen("training-2.txt", "r", stdin);
-    readData();
 
 #ifdef IO_DEBUG
 
-    freopen("training-small-2.txt", "r", stdin);
-    freopen("training-small-2-output.txt", "w", stdout);
+    freopen("training-2.txt", "r", stdin);
+    freopen("training-2-output.txt", "w", stdout);
 
 #endif
 
@@ -107,6 +106,31 @@ int main() {
         logger.start_a_brand_new_day();
 
         int maxRank = requireRank[i] + requireNum[i];
+        for(int j = requireRank[i];j < maxRank; ++ j)
+        {
+
+            const Require& req = require[j];
+            int vmType = mpVirtualMachine[string(req.virtualMachineName)];
+
+            if(req.type == 1)
+            {
+                int vmRank = vmIdToRank[req.id];
+                VirtualMachine vm = virtualMachine[vmRank];
+                server[vm.serverNum].delVirtualMachine(req.id);
+            }
+
+
+#ifdef SEVERERROR_DEBUUG
+            int tmp = 0;
+            for(int k = 0;k < serverNum;++ k)
+            {
+                if (server[k].remainMemoryNodeA < 0 || server[k].remainMemoryNodeB < 0 || server[k].remainCoreNodeA < 0 || server[k].remainMemoryNodeB < 0)
+                {
+                    tmp = 1;
+                }
+            }
+#endif
+        }
         for(int j = requireRank[i];j < maxRank; ++ j)
         {
 
@@ -164,12 +188,7 @@ int main() {
 
                 logger.log_a_vm_deployment(vmRank);
             }
-            else if(req.type == 1)
-            {
-                int vmRank = vmIdToRank[req.id];
-                VirtualMachine vm = virtualMachine[vmRank];
-                server[vm.serverNum].delVirtualMachine(req.id);
-            }
+
 
 
 #ifdef SEVERERROR_DEBUUG
