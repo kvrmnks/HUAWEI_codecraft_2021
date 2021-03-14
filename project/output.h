@@ -10,6 +10,7 @@
 #include <iostream>
 #include <vector>
 #include <cstring>
+#define lowbit(x) ((x)&(-(x)))
 
 #include "DataStructure.h"
 
@@ -83,19 +84,20 @@ struct DailyAction {
     }
 };
 
+const int MAX_TYPE = 100;
+
 // 记录所有天的决策信息
 struct Actions {
 private:
     vector<DailyAction> actions;
-    int bucket_for_server[100 + 1];
+    int bucket_for_server[200];
     DailyAction dailyAction;
     bool fresh = false;
     bool stored = false;
-
+    map<int, int> server_rank_id_map;
     void check() {
-#ifdef DEBUG
         if (!fresh) cerr << "oops! You haven't initialise the logger.";
-#endif
+        exit(250);
     }
     void log_a_deploy(int target_server_id) {
         dailyAction.insertDeployment(make_pair(target_server_id, 'N'));
@@ -103,19 +105,45 @@ private:
     void log_a_deploy(int target_server_id, int node) {
         dailyAction.insertDeployment(make_pair(target_server_id, node == 0 ? 'A' : 'B'));
     }
+
+
+    void increase_bucket(int type) {
+        type ++;
+        while (type <= MAX_TYPE) {
+            bucket_for_server[type] ++;
+            type += lowbit(type);
+        }
+    }
+
+    int get_server_id(int type) {
+        type ++;
+        int res = 0;
+
+        while(type > 0) {
+            res += bucket_for_server[type];
+            type -= lowbit(type);
+        }
+        return res;
+    }
 public:
+    void init() {
+        for (int i = 0; i <= MAX_TYPE; i++) {
+            bucket_for_server[i] = 0;
+        }
+    }
+
     // 初始化今天的信息
     void start_a_brand_new_day() {
-        memset(bucket_for_server, 0, sizeof bucket_for_server);
         dailyAction = DailyAction();
         fresh = true;
         stored = false;
     }
 
-//    买了一个类型为 type 的服务器
-    void log_a_server(int type) {
+//    买了下标为 rank, 类型为type的服务器
+    void log_a_server(int rank, int type) {
         check();
-        bucket_for_server[type] ++;
+        server_rank_id_map[rank] = get_server_id(type);
+        increase_bucket(type);
     }
 
 //    买了一个名字为 name 的服务器
@@ -124,25 +152,39 @@ public:
         bucket_for_server[mpSevere[name]] ++;
     }
 
-//    做了一次双节点的迁移，将id为 vm_id 的虚拟机迁移到 id 为 target_server_id 的服务器
-    void log_a_migration(int vm_id, int target_server_id) {
-        dailyAction.insertMigration(make_pair(make_pair(vm_id, target_server_id), 'N'));
+//    做了一次双节点的迁移，将id为 vm_id 的虚拟机迁移到 下标为 rank 的服务器
+//    必须在所有log_a_server之后执行
+    void log_a_migration(int vm_id, int rank) {
+        if (server_rank_id_map.count(rank) == 0) {
+            cerr<<"vm_id"<<vm_id<<endl;
+            exit(234);
+        }
+        dailyAction.insertMigration(make_pair(make_pair(vm_id, server_rank_id_map[rank]), 'N'));
     }
 
-//    做了一次单节点的迁移，将id为 vm_id 的虚拟机迁移到 id 为 target_server_id 的服务器，节点为 node (0 \ 1)
-    void log_a_migration(int vm_id, int target_server_id, int node) {
-        dailyAction.insertMigration(make_pair(make_pair(vm_id, target_server_id), node == 0 ? 'A' : 'B'));
+//    做了一次单节点的迁移，将id为 vm_id 的虚拟机迁移到 下标为 rank 的服务器，节点为 node (0 \ 1)
+    void log_a_migration(int vm_id, int rank, int node) {
+        if (server_rank_id_map.count(rank) == 0) {
+            cerr<<"vm_id"<<vm_id<<endl;
+            exit(235);
+        }
+        dailyAction.insertMigration(make_pair(make_pair(vm_id, server_rank_id_map[rank]), node == 0 ? 'A' : 'B'));
     }
 
 //    给下标为vm_rank的虚拟机做了一次调度
+//    必须在所有log_a_server之后执行
     void log_a_vm_deployment(int vm_rank) {
         VirtualMachine& vm = virtualMachine[vm_rank];
         VirtualMachineInformation& vmInfor= virtualMachineInformation[vm.type];
 
+        if (server_rank_id_map.count(vm.serverNum) == 0) {
+            exit(233);
+        }
+
         if (vmInfor.isDoubleNode) {
-            log_a_deploy(vm.serverNum);
+            log_a_deploy(server_rank_id_map[vm.serverNum]);
         } else {
-            log_a_deploy(vm.serverNum, vm.nodeNum);
+            log_a_deploy(server_rank_id_map[vm.serverNum], vm.nodeNum);
         }
     }
 

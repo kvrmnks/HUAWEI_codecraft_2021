@@ -90,6 +90,7 @@ int main() {
     init();
 
     Actions logger;
+    logger.init();
 
 
     srand(19260817);
@@ -174,8 +175,10 @@ int main() {
 #endif
 
                     }while(!serverInformation[server_type].canAddVirtualMachine(vmRank, 0) && !serverInformation[server_type].canAddVirtualMachine(vmRank, 1));
+
                     addServer(server_type);
-                    logger.log_a_server(server_type);
+                    logger.log_a_server(serverNum - 1, server_type);
+
                     if(server[serverNum-1].canAddVirtualMachine(vmRank, 0))
                     {
                         server[serverNum-1].addVirtualMachine(vmRank, 0);
@@ -195,7 +198,7 @@ int main() {
             int tmp = 0;
             for(int k = 0;k < serverNum;++ k)
             {
-                if (server[k].remainMemoryNodeA < 0 || server[k].remainMemoryNodeB < 0 || server[k].remainCoreNodeA < 0 || server[k].remainMemoryNodeB < 0)
+                if (server[k].remainMemoryNodeA < 0 || server[k].remainMemoryNodeB < 0 || server[k].remainCoreNodeA < 0 || server[k].remainCoreNodeB < 0)
                 {
                     tmp = 1;
                 }
