@@ -191,9 +191,6 @@ int main() {
 
                 logger.log_a_vm_deployment(vmRank);
             }
-
-
-
 #ifdef SEVERERROR_DEBUUG
             int tmp = 0;
             for(int k = 0;k < serverNum;++ k)

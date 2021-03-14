@@ -45,7 +45,7 @@ struct VirtualMachine						//请求使用的虚拟机
     int nodeNum;                            //如果虚拟机在服务器中存储，nodeNum表示被部署到了哪个节点。双节点部署模式无效。
     int serverNum;                          //如果虚拟机在服务器中存储，serverNum表示该虚拟机被部署到服务器的下标
 }virtualMachine[200000 + 1];
-int virtualMachineNum = 0;                  //虚拟机最大下标
+int virtualMachineNum = 0;                  //虚拟机数量
 
 map<int, int> vmIdToRank;                    //虚拟机id到下标的映射
 
