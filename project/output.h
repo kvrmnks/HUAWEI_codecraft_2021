@@ -91,10 +91,13 @@ struct Actions {
 private:
     vector<DailyAction> actions;
     int bucket_for_server[200]; // 树状数组，算当前小于等于type的已购服务器数
-    int daily_bucket[MAX_TYPE]; // 桶，记录当天每个类型服务器各自购买的数量
+    int daily_bucket[MAX_TYPE + 1]; // 桶，记录当天每个类型服务器各自购买的数量
     DailyAction dailyAction;
     bool fresh = false;
     bool stored = false;
+
+    int total_server = 0;
+
     map<int, int> server_rank_id_map;
     void check() {
         if (!fresh) {
@@ -111,34 +114,39 @@ private:
 
     //树状数组
     void increase_bucket(int type) {
-        type ++;
-        while (type <= N) {
-            bucket_for_server[type] ++;
-            type += lowbit(type);
-        }
+//        type ++;
+//        while (type <= N) {
+//            bucket_for_server[type] ++;
+//            type += lowbit(type);
+//        }
+
+        bucket_for_server[type] ++;
     }
 
     int get_server_id(int type) {
-        type ++;
-        int res = 0;
+//        type ++;
+//        int res = 0;
+//
+//        while(type > 0) {
+//            res += bucket_for_server[type];
+//            type -= lowbit(type);
+//        }
+//        return res + total_server;
 
-        while(type > 0) {
-            res += bucket_for_server[type];
-            type -= lowbit(type);
+        int id = total_server;
+
+        for (int i = 0; i <= type; i++) {
+            id += bucket_for_server[i];
         }
-        return res;
+
+        return id;
     }
 public:
-    void init() {
-        for (int i = 0; i <= MAX_TYPE; i++) {
-            bucket_for_server[i] = 0;
-        }
-    }
-
     // 初始化今天的信息
     void start_a_brand_new_day() {
-        for (int i = 0; i < MAX_TYPE; i++) {
+        for (int i = 0; i <= MAX_TYPE; i++) {
             daily_bucket[i] = 0;
+            bucket_for_server[i] = 0;
         }
         dailyAction = DailyAction();
         fresh = true;
@@ -197,6 +205,7 @@ public:
         for (int i = 0; i < N; i++) {
             if (daily_bucket[i] != 0) {
                 dailyAction.insertPurchase(make_pair(string(serverInformation[i].typeName), daily_bucket[i]));
+                total_server += daily_bucket[i];
             }
         }
 
