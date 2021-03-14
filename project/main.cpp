@@ -2,6 +2,7 @@
 #include "DataStructure.h"
 #include <cstdlib>
 #include "output.h"
+#include <algorithm>
 
 #define DEBUG
 
@@ -70,7 +71,15 @@ void readData()
 
 void init()
 {
-    for(int i = 0;i < 100000 + 10;++ i) server[i].rank = i;
+    for(int i = 0;i < 100000;++ i)
+        server[i].rank = i;
+    for(int i = 0;i < 100;++ i)
+        cntSeverInformation[i] = i;
+
+    std::sort(cntSeverInformation, cntSeverInformation + N, [](int x, int y){
+        return (serverInformation[x].coreNum + serverInformation[x].memorySize)/serverInformation[x].hardwareCost > (serverInformation[y].coreNum + serverInformation[y].memorySize)/serverInformation[y].hardwareCost;
+    });
+
 }
 
 
@@ -80,8 +89,8 @@ int main() {
 
 #ifdef IO_DEBUG
 
-    freopen("training-1.txt", "r", stdin);
-    freopen("training-1-out.txt", "w", stdout);
+    freopen("training-2.txt", "r", stdin);
+    freopen("training-2-out.txt", "w", stdout);
 
 #endif
 
@@ -92,7 +101,10 @@ int main() {
     Actions logger;
 
 
-    srand(19260817);
+    //srand(19260817);  //683,830,557 + 702,452,646 = 1,386,283,203
+    //srand(996251404); //687,231,808 + 705,445,429
+    //srand(2019051301);//679, 094, 368+702,452,646
+
 
 #ifdef LOGIC_DEBUG
     int tmp = 0;
@@ -140,15 +152,17 @@ int main() {
                 if(!hasServerUse)
                 {
                     int server_type;
-                    do
+                    server_type = cntSeverInformation[0];
+                    while(!serverInformation[server_type].canAddVirtualMachine(vmRank, 0) && !serverInformation[server_type].canAddVirtualMachine(vmRank, 1))
                     {
-                        server_type = rand() % N;
+                        server_type += 1;
+                        server_type %= N;
 
 #ifdef GRAMMAR_DEBUG
                         cout<<server_type<<endl;
 #endif
 
-                    }while(!serverInformation[server_type].canAddVirtualMachine(vmRank, 0) && !serverInformation[server_type].canAddVirtualMachine(vmRank, 1));
+                    }
 
                     addServer(server_type);
                     logger.log_a_server(serverNum - 1, server_type);
