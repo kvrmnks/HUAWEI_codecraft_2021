@@ -97,6 +97,7 @@ struct ServerInformation					//服务器信息
     }
 }serverInformation[100];					//可以采购的服务器类型信息
 map<string, int> mpSevere;                  //服务器型号名到编号（下标）的映射
+int cntSeverInformation[100];
 
 struct Server								//已经购买的、使用中的服务器
 {
