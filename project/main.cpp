@@ -112,33 +112,6 @@ int main() {
             const Require& req = require[j];
             int vmType = mpVirtualMachine[string(req.virtualMachineName)];
 
-            if(req.type == 1)
-            {
-                if(vmIdToRank.count(req.id) == 0) continue;
-                int vmRank = vmIdToRank[req.id];
-                VirtualMachine vm = virtualMachine[vmRank];
-                server[vm.serverNum].delVirtualMachine(req.id);
-            }
-
-
-#ifdef SEVERERROR_DEBUUG
-            int tmp = 0;
-            for(int k = 0;k < serverNum;++ k)
-            {
-                if (server[k].remainMemoryNodeA < 0 || server[k].remainMemoryNodeB < 0 || server[k].remainCoreNodeA < 0 || server[k].remainMemoryNodeB < 0)
-                {
-                    tmp = 1;
-                }
-            }
-#endif
-        }
-        for(int j = requireRank[i];j < maxRank; ++ j)
-        {
-
-            const Require& req = require[j];
-            int vmType = mpVirtualMachine[string(req.virtualMachineName)];
-
-
             if(req.type == 0)
             {
                 int vmRank = virtualMachineNum;
@@ -192,37 +165,18 @@ int main() {
 
                 logger.log_a_vm_deployment(vmRank);
             }
-#ifdef SEVERERROR_DEBUUG
-            int tmp = 0;
-            for(int k = 0;k < serverNum;++ k)
-            {
-                if (server[k].remainMemoryNodeA < 0 || server[k].remainMemoryNodeB < 0 || server[k].remainCoreNodeA < 0 || server[k].remainCoreNodeB < 0)
-                {
-                    tmp = 1;
-                }
-            }
-#endif
-        }
-        for(int j = requireRank[i];j < maxRank; ++ j)
-        {
-
-            const Require& req = require[j];
-            int vmType = mpVirtualMachine[string(req.virtualMachineName)];
-
-            if(req.type == 1)
+            else if(req.type == 1)
             {
                 if(vmIdToRank.count(req.id) == 0) continue;
                 int vmRank = vmIdToRank[req.id];
                 VirtualMachine vm = virtualMachine[vmRank];
                 server[vm.serverNum].delVirtualMachine(req.id);
             }
-
-
 #ifdef SEVERERROR_DEBUUG
             int tmp = 0;
             for(int k = 0;k < serverNum;++ k)
             {
-                if (server[k].remainMemoryNodeA < 0 || server[k].remainMemoryNodeB < 0 || server[k].remainCoreNodeA < 0 || server[k].remainMemoryNodeB < 0)
+                if (server[k].remainMemoryNodeA < 0 || server[k].remainMemoryNodeB < 0 || server[k].remainCoreNodeA < 0 || server[k].remainCoreNodeB < 0)
                 {
                     tmp = 1;
                 }
