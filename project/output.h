@@ -90,123 +90,92 @@ const int MAX_TYPE = 100;
 struct Actions {
 private:
     vector<DailyAction> actions;
-    int bucket_for_server[200]; // 树状数组，算当前小于等于type的已购服务器数
-    int daily_bucket[MAX_TYPE + 1]; // 桶，记录当天每个类型服务器各自购买的数量
     DailyAction dailyAction;
-    bool fresh = false;
-    bool stored = false;
 
     int total_server = 0;
 
+    int bucket_server[MAX_TYPE];
+    int prefix_sum[MAX_TYPE];
+
+    vector<pair<int, int> > server_rank_type_vec;
+    vector<pair<int, char> > server_rank_for_deployment;
+    vector<pair<pair<int, int>, char> > vm_id_server_rank_for_migration;
+
     map<int, int> server_rank_id_map;
-    void check() {
-        if (!fresh) {
-            cerr << "oops! You haven't initialise the logger.";
-            exit(250);
-        }
-    }
-    void log_a_deploy(int target_server_id) {
-        dailyAction.insertDeployment(make_pair(target_server_id, 'N'));
-    }
-    void log_a_deploy(int target_server_id, int node) {
-        dailyAction.insertDeployment(make_pair(target_server_id, node == 0 ? 'A' : 'B'));
-    }
-
-    //树状数组
-    void increase_bucket(int type) {
-//        type ++;
-//        while (type <= N) {
-//            bucket_for_server[type] ++;
-//            type += lowbit(type);
-//        }
-
-        bucket_for_server[type] ++;
-    }
-
-    int get_server_id(int type) {
-//        type ++;
-//        int res = 0;
-//
-//        while(type > 0) {
-//            res += bucket_for_server[type];
-//            type -= lowbit(type);
-//        }
-//        return res + total_server;
-
-        int id = total_server;
-
-        for (int i = 0; i <= type; i++) {
-            id += bucket_for_server[i];
-        }
-
-        return id;
-    }
 public:
-    // 初始化今天的信息
+
     void start_a_brand_new_day() {
-        for (int i = 0; i <= MAX_TYPE; i++) {
-            daily_bucket[i] = 0;
-            bucket_for_server[i] = 0;
-        }
         dailyAction = DailyAction();
-        fresh = true;
-        stored = false;
-    }
-
-//    买了下标为 rank, 类型为type的服务器
-    void log_a_server(int rank, int type) {
-        check();
-        daily_bucket[type] ++;
-        server_rank_id_map[rank] = get_server_id(type);
-        increase_bucket(type);
-    }
-
-//    做了一次双节点的迁移，将id为 vm_id 的虚拟机迁移到 下标为 rank 的服务器
-//    必须在所有log_a_server之后执行
-    void log_a_migration(int vm_id, int rank) {
-        if (server_rank_id_map.count(rank) == 0) {
-            cerr<<"vm_id"<<vm_id<<endl;
-            exit(234);
-        }
-        dailyAction.insertMigration(make_pair(make_pair(vm_id, server_rank_id_map[rank]), 'N'));
-    }
-
-//    做了一次单节点的迁移，将id为 vm_id 的虚拟机迁移到 下标为 rank 的服务器，节点为 node (0 \ 1)
-    void log_a_migration(int vm_id, int rank, int node) {
-        if (server_rank_id_map.count(rank) == 0) {
-            cerr<<"vm_id"<<vm_id<<endl;
-            exit(235);
-        }
-        dailyAction.insertMigration(make_pair(make_pair(vm_id, server_rank_id_map[rank]), node == 0 ? 'A' : 'B'));
-    }
-
-//    给下标为vm_rank的虚拟机做了一次调度
-//    必须在所有log_a_server之后执行
-    void log_a_vm_deployment(int vm_rank) {
-        VirtualMachine& vm = virtualMachine[vm_rank];
-        VirtualMachineInformation& vmInfor= virtualMachineInformation[vm.type];
-
-        if (server_rank_id_map.count(vm.serverNum) == 0) {
-            exit(233);
-        }
-
-        if (vmInfor.isDoubleNode) {
-            log_a_deploy(server_rank_id_map[vm.serverNum]);
-        } else {
-            log_a_deploy(server_rank_id_map[vm.serverNum], vm.nodeNum);
-        }
-    }
-
-//    一天结束，保存购买信息等
-    void call_an_end_to_this_day() {
-        fresh = false;
-        stored = true;
 
         for (int i = 0; i < N; i++) {
-            if (daily_bucket[i] != 0) {
-                dailyAction.insertPurchase(make_pair(string(serverInformation[i].typeName), daily_bucket[i]));
-                total_server += daily_bucket[i];
+            bucket_server[i] = 0;
+            prefix_sum[i] = 0;
+        }
+        server_rank_type_vec.clear();
+        server_rank_for_deployment.clear();
+        vm_id_server_rank_for_migration.clear();
+    }
+
+    // 购买了一台服务器，下标为rank，类型为 type
+    void log_a_server(int rank, int type) {
+        server_rank_type_vec.emplace_back(rank, type);
+        bucket_server[type] ++;
+    }
+
+//  做了一次双节点迁移
+//  虚拟机id为vm_id，目标服务器下标rank
+    void log_a_migration(int vm_id, int server_rank) {
+        vm_id_server_rank_for_migration.emplace_back(make_pair(vm_id, server_rank), 'N');
+    }
+
+//  做了一次单节点迁移
+//  虚拟机id为vm_id，目标服务器下标rank，节点 node
+    void log_a_migration(int vm_id, int server_rank, int node) {
+        vm_id_server_rank_for_migration.emplace_back(make_pair(vm_id, server_rank), node == 0 ? 'A' : 'B');
+    }
+
+//  做了一次调度，虚拟机的下标为vm_rank
+    void log_a_vm_deployment(int vm_rank) {
+        VirtualMachine& vm = virtualMachine[vm_rank];
+        VirtualMachineInformation& vmInfo= virtualMachineInformation[vm.type];
+
+        if (vmInfo.isDoubleNode) {
+            server_rank_for_deployment.emplace_back(vm.serverNum, 'N');
+        } else {
+            server_rank_for_deployment.emplace_back(vm.serverNum, vm.nodeNum == 0 ? 'A' : 'B');
+        }
+    }
+
+    void call_an_end_to_this_day() {
+        // 存入购买信息
+        for (int i = 0; i < N; i++) {
+            if (bucket_server[i] != 0) {
+                dailyAction.insertPurchase(make_pair(string(serverInformation[i].typeName), bucket_server[i]));
             }
+        }
+        // 计算前缀和
+        for (int i = 1; i < N; i++) {
+            prefix_sum[i] = prefix_sum[i - 1] + bucket_server[i];
+        }
+
+//      计算服务器rank到id的映射，同一类型，最先购买的id会更大
+        int tmp_type = 0;
+        for (auto x : server_rank_type_vec) {
+            tmp_type = x.second;
+            server_rank_id_map[x.first] = total_server + (tmp_type == 0 ? 0 : prefix_sum[tmp_type - 1]) + bucket_server[tmp_type] - 1;
+            bucket_server[tmp_type] --;
+        }
+
+        total_server += prefix_sum[N - 1];
+
+//      计算调度信息
+        for (auto deploy : server_rank_for_deployment) {
+            dailyAction.insertDeployment(make_pair(server_rank_id_map[deploy.first], deploy.second));
+        }
+
+//      计算迁移信息
+        for (auto migration : vm_id_server_rank_for_migration) {
+            dailyAction.insertMigration(make_pair(make_pair(migration.first.first, migration.first.second), migration.second));
         }
 
         actions.push_back(dailyAction);
