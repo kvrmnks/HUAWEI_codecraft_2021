@@ -80,8 +80,8 @@ int main() {
 
 #ifdef IO_DEBUG
 
-    freopen("training-2.txt", "r", stdin);
-    freopen("training-2-output.txt", "w", stdout);
+    freopen("training-small.txt", "r", stdin);
+    freopen("training-small_out.txt", "w", stdout);
 
 #endif
 
@@ -90,7 +90,6 @@ int main() {
     init();
 
     Actions logger;
-    logger.init();
 
 
     srand(19260817);
