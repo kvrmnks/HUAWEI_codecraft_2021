@@ -18,7 +18,7 @@
 //#define LOGIC_DEBUG
 //#define BREAKPOINT_DEBUG
 //#define GRAMMAR_DEBUG
-#define COST_DEBUG
+//#define COST_DEBUG
 //#define SEVERERROR_DEBUUG
 
 #endif
@@ -89,8 +89,8 @@ int main() {
 
 #ifdef IO_DEBUG
 
-    freopen("training-2.txt", "r", stdin);
-    freopen("training-2-out.txt", "w", stdout);
+    freopen("training-1.txt", "r", stdin);
+    freopen("training-1-out.txt", "w", stdout);
 
 #endif
 
