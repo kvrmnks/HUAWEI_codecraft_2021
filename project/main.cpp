@@ -18,7 +18,7 @@
 //#define LOGIC_DEBUG
 //#define BREAKPOINT_DEBUG
 //#define GRAMMAR_DEBUG
-//#define COST_DEBUG
+#define COST_DEBUG
 //#define SEVERERROR_DEBUUG
 
 #endif
@@ -223,6 +223,7 @@ int main() {
     for(int i = 0;i < serverNum;++ i)
     {
         sumCost += server[i].cost;
+        printf("\n%d: %d\n", i, server[i].cost);
     }
     printf("\n%lld\n", sumCost);
 #endif

@@ -122,21 +122,25 @@ public class Main {
     TreeMap<Integer, Integer> belong = new TreeMap<>();
     TreeMap<Integer, Integer> config = new TreeMap<>();
     Scanner sc, ans;
-    long totalCost = 0;
+    long totalCost = 0, pre = 0;
+
     private long solveOneDay(){
         long cost = 0;
         String s = ans.nextLine();
         String[] l = s.replace('(', ' ').replace(')', ' ').trim().split(",");
         int Q = Integer.parseInt(l[1].trim());
+//        System.out.println(Q);
         for(int i=0;i<Q;i++){
             s = ans.nextLine();
             l = s.replace('(',' ').replace(')',' ').trim().split(",");
             int t = Integer.parseInt(l[1].trim());
+            pre += t;
             for(int j=0;j<t;j++){
                 realMachines.append(machines.getByName(l[0]).clone());
                 cost += machines.getByName(l[0]).p;
             }
         }
+//        System.out.println(pre + " " + realMachines.size());
         s = ans.nextLine();
 //        int W = Integer.parseInt(s.trim());
 //        if(W != 0){System.exit(-1);}
@@ -145,11 +149,13 @@ public class Main {
         for(int i=0;i<R;i++){
             String _s = sc.nextLine();
 
-            System.out.println(i+" "+_s);
+//            System.out.println(i+" "+_s);
             l = _s.replace('(',' ').replace(')',' ').trim().split(",");
             for(int j=0;j<l.length;j++)l[j] = l[j].trim();
             if(l[0].equals("del")){
                 int id = Integer.parseInt(l[1]);
+//                System.out.println("id = " + id);
+//                System.out.println(belong.keySet());
                 int mid = belong.get(id);
                 if(config.get(id) == 1){
                     realMachines.get(mid).coreB += realVirtualMachines.get(id).core;
@@ -164,16 +170,24 @@ public class Main {
                     realMachines.get(mid).coreA += realVirtualMachines.get(id).core;
                     realMachines.get(mid).mmA += realVirtualMachines.get(id).mm;
                 }
+                belong.remove(id);
                 realVirtualMachines.remove(id);
             }else if(l[0].equals("add")){
                 VirtualMachine vm = virtualMachines.getByName(l[1].trim()).clone(); // 所需要的虚拟机
                 int id = Integer.parseInt(l[2].trim()); //给虚拟机分配的id
-                realVirtualMachines.replace(id, vm); //加入虚拟机
+                if(realVirtualMachines.containsKey(id))
+                    realVirtualMachines.replace(id, vm); //加入虚拟机
+                else
+                    realVirtualMachines.put(id, vm);
                 _s = ans.nextLine();
                 l = _s.replace('(',' ').replace(')',' ').trim().split(",");//分配
-                System.out.println(_s);
+//                System.out.println(_s);
                 int machine_id = Integer.parseInt(l[0].trim()); // 服务器编号
-                belong.replace(id, machine_id);// 分配服务器编号
+                if(belong.containsKey(id))
+                    belong.replace(id, machine_id);// 分配服务器编号
+                else
+                    belong.put(id, machine_id);
+//                System.out.println(id);
                 int flag = 0;
                 if(vm.db){
                     if(l.length == 2){System.exit(-2);}
@@ -182,7 +196,10 @@ public class Main {
                     if(l.length != 2){System.out.print(vm.toString() + l[0]+" "+l[1]);System.exit(-3);}
                     flag = (l[1].trim().equals("A") ? 0 : 1); // 分配AB节点号
                 }
+                if(config.containsKey(id))
                 config.replace(id, flag);
+                else
+                    config.put(id, flag);
                 if(flag == 2){
                     realMachines.get(machine_id).coreA -= vm.core/2;
                     realMachines.get(machine_id).coreB -= vm.core/2;
@@ -205,15 +222,19 @@ public class Main {
                 System.exit(-1);
             }
         }
-        boolean[] vis = new boolean[machines.size()];
+        boolean[] vis = new boolean[realMachines.size()];
+//        System.out.println(realVirtualMachines.keySet());
+//        System.out.println(machines.size() + " " + belong);
         for(Integer vm : realVirtualMachines.keySet()){
+
             vis[belong.get(vm)] = true;
         }
-        for(int i=0;i<machines.size();i++){
+        for(int i=0;i<realMachines.size();i++){
             if(vis[i]){
                 cost += realMachines.get(i).cost;
             }
         }
+//        System.out.println("machine size :" + realMachines.size());
         return cost;
     }
     private void readData(){
@@ -235,10 +256,13 @@ public class Main {
         readData();
         T = sc.nextInt();
         sc.nextLine();
+        long cost_sum = 0;
         for(int i=0;i<T;i++){
             long cost = solveOneDay();
-            System.out.println(cost + " " + i);
+            cost_sum += cost;
+            System.out.println("cost: "+cost + " on day:" + i);
         }
+        System.out.println("totalCost: " + cost_sum);
 
     }
     public static void main(String[] args) throws FileNotFoundException {
