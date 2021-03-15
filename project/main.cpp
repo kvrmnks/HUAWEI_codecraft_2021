@@ -101,7 +101,7 @@ int main() {
     Actions logger;
 
 
-    //srand(19260817);  //683,830,557 + 702,452,646 = 1,386,283,203
+    srand(19260817);  //683,830,557 + 702,452,646 = 1,386,283,203
     //srand(996251404); //687,231,808 + 705,445,429
     //srand(2019051301);//679, 094, 368+702,452,646
 
@@ -152,7 +152,7 @@ int main() {
                 if(!hasServerUse)
                 {
                     int server_type;
-                    server_type = cntSeverInformation[0];
+                    /*server_type = cntSeverInformation[0];
                     while(!serverInformation[server_type].canAddVirtualMachine(vmRank, 0) && !serverInformation[server_type].canAddVirtualMachine(vmRank, 1))
                     {
                         server_type += 1;
@@ -162,7 +162,16 @@ int main() {
                         cout<<server_type<<endl;
 #endif
 
-                    }
+                    }*/
+                    do
+                    {
+                        server_type = rand() % N;
+
+#ifdef GRAMMAR_DEBUG
+                        cout<<server_type<<endl;
+#endif
+
+                    }while(!serverInformation[server_type].canAddVirtualMachine(vmRank, 0) && !serverInformation[server_type].canAddVirtualMachine(vmRank, 1));
 
                     addServer(server_type);
                     logger.log_a_server(serverNum - 1, server_type);
