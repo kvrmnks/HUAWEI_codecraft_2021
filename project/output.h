@@ -148,23 +148,43 @@ public:
 
     void call_an_end_to_this_day() {
         // 存入购买信息
+
+//        cout << "bucket: //////////////////////////////////////" << endl;
+
         for (int i = 0; i < N; i++) {
             if (bucket_server[i] != 0) {
                 dailyAction.insertPurchase(make_pair(string(serverInformation[i].typeName), bucket_server[i]));
             }
-        }
-        // 计算前缀和
-        for (int i = 1; i < N; i++) {
-            prefix_sum[i] = prefix_sum[i - 1] + bucket_server[i];
+
         }
 
+        // 计算前缀和
+//        cout << "type : " << 0 << " , bucket: " << bucket_server[0] << ", sum: " << prefix_sum[0] <<endl;
+
+        prefix_sum[0] = bucket_server[0];
+        for (int i = 1; i < N; i++) {
+            prefix_sum[i] = prefix_sum[i - 1] + bucket_server[i];
+
+//            cout << "type : " << i << " , bucket: " << bucket_server[i] << ", sum: " << prefix_sum[i] <<endl;
+        }
+
+
+//        cout << "bucket: //////////////////////////////////////\n" << endl;
+
 //      计算服务器rank到id的映射，同一类型，最先购买的id会更大
+//        cout << "====================================" << endl;
+
         int tmp_type = 0;
         for (auto x : server_rank_type_vec) {
             tmp_type = x.second;
             server_rank_id_map[x.first] = total_server + (tmp_type == 0 ? 0 : prefix_sum[tmp_type - 1]) + bucket_server[tmp_type] - 1;
             bucket_server[tmp_type] --;
+
+
+//            cout << "rank: " << x.first << ",  type: " << x.second << ", id: " << server_rank_id_map[x.first] << endl;
         }
+
+//        cout << "====================================" << endl;
 
         total_server += prefix_sum[N - 1];
 
