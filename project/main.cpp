@@ -6,7 +6,7 @@
 
 #define DEBUG
 
-//#define ONLINE_JUDGE
+#define ONLINE_JUDGE
 #ifdef ONLINE_JUDGE
 #undef DEBUG
 #endif
@@ -73,12 +73,12 @@ void init()
 {
     for(int i = 0;i < 100000;++ i)
         server[i].rank = i;
-    for(int i = 0;i < 100;++ i)
+    /*for(int i = 0;i < 100;++ i)
         cntSeverInformation[i] = i;
 
     std::sort(cntSeverInformation, cntSeverInformation + N, [](int x, int y){
         return (serverInformation[x].coreNum + serverInformation[x].memorySize)/serverInformation[x].hardwareCost > (serverInformation[y].coreNum + serverInformation[y].memorySize)/serverInformation[y].hardwareCost;
-    });
+    });*/
 
 }
 
