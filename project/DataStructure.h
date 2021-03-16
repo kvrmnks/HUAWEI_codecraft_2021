@@ -10,6 +10,8 @@
 #include <string>
 #include <list>
 #include <iostream>
+#include <algorithm>
+
 using namespace std;
 
 int M;										//售买虚拟机的数量,[1,1000]
@@ -69,25 +71,25 @@ struct ServerInformation					//服务器信息
         remainMemoryNodeA = remainMemoryNodeB = (this->memorySize >> 1);
         if(vmInfor.isDoubleNode)
         {
-            if(remainCoreNodeA < vmInfor.coreNumNode || remainCoreNodeB < vmInfor.coreNumNode)
+            if(remainCoreNodeA <= vmInfor.coreNumNode || remainCoreNodeB <= vmInfor.coreNumNode)
                 return false;
-            if(remainMemoryNodeA < vmInfor.memorySizeNode || remainMemoryNodeB < vmInfor.memorySizeNode)
+            if(remainMemoryNodeA <= vmInfor.memorySizeNode || remainMemoryNodeB <= vmInfor.memorySizeNode)
                 return false;
         }
         else
         {
             if(core == 0)
             {
-                if(remainCoreNodeA < vmInfor.coreNumNode)
+                if(remainCoreNodeA <= vmInfor.coreNumNode)
                     return false;
-                if(remainMemoryNodeA < vmInfor.memorySizeNode)
+                if(remainMemoryNodeA <= vmInfor.memorySizeNode)
                     return false;
             }
             else if(core == 1)
             {
-                if(remainCoreNodeB < vmInfor.coreNumNode)
+                if(remainCoreNodeB <= vmInfor.coreNumNode)
                     return false;
-                if(remainMemoryNodeB < vmInfor.memorySizeNode)
+                if(remainMemoryNodeB <= vmInfor.memorySizeNode)
                     return false;
             }
             else return false;
@@ -125,25 +127,25 @@ struct Server								//已经购买的、使用中的服务器
         VirtualMachineInformation& vmInfor= virtualMachineInformation[vm.type];
         if(vmInfor.isDoubleNode)
         {
-            if(remainCoreNodeA < vmInfor.coreNumNode || remainCoreNodeB < vmInfor.coreNumNode)
+            if(remainCoreNodeA <= vmInfor.coreNumNode || remainCoreNodeB <= vmInfor.coreNumNode)
                 return false;
-            if(remainMemoryNodeA < vmInfor.memorySizeNode || remainMemoryNodeB < vmInfor.memorySizeNode)
+            if(remainMemoryNodeA <= vmInfor.memorySizeNode || remainMemoryNodeB <= vmInfor.memorySizeNode)
                 return false;
         }
         else
         {
             if(core == 0)
             {
-                if(remainCoreNodeA < vmInfor.coreNumNode)
+                if(remainCoreNodeA <= vmInfor.coreNumNode)
                     return false;
-                if(remainMemoryNodeA < vmInfor.memorySizeNode)
+                if(remainMemoryNodeA <= vmInfor.memorySizeNode)
                     return false;
             }
             else if(core == 1)
             {
-                if(remainCoreNodeB < vmInfor.coreNumNode)
+                if(remainCoreNodeB <= vmInfor.coreNumNode)
                     return false;
-                if(remainMemoryNodeB < vmInfor.memorySizeNode)
+                if(remainMemoryNodeB <= vmInfor.memorySizeNode)
                     return false;
             }
             else return false;
@@ -252,7 +254,9 @@ void addServer(int type)
     se.remainMemoryNodeA = se.remainMemoryNodeB = (seInfor.memorySize >> 1);
     se.remainCoreNodeA = se.remainCoreNodeB = (seInfor.coreNum >> 1);
     se.dayCost = seInfor.dayCost;
-    se.cost += seInfor.hardwareCost;
+    se.cost = seInfor.hardwareCost;
+    se.vmList.clear();
+    se.open = false;
 
     ++ serverNum;
 }
@@ -267,6 +271,23 @@ void addVirtualMachine(int type, int id)
     vm.type = type;
 
     ++ virtualMachineNum;
+}
+
+
+void init()
+{
+    virtualMachineNum = 0;
+    serverNum = 0;
+
+    for(int i = 0;i < 100000;++ i)
+        server[i].rank = i;
+    for(int i = 0;i < 100;++ i)
+        cntSeverInformation[i] = i;
+
+    std::sort(cntSeverInformation, cntSeverInformation + N, [](int x, int y){
+        return (serverInformation[x].coreNum + serverInformation[x].memorySize)/serverInformation[x].hardwareCost > (serverInformation[y].coreNum + serverInformation[y].memorySize)/serverInformation[y].hardwareCost;
+    });
+
 }
 
 #endif //PROJECT_DATASTRUCTURE_H
