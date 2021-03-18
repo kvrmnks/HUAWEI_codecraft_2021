@@ -205,6 +205,15 @@ struct Server								//已经购买的、使用中的服务器
         return true;
     }
 
+    bool addVirtualMachineForFirst(int rank, int core = 0)
+    {
+        VirtualMachine& vm = virtualMachine[rank];
+        VirtualMachineInformation& vmInfor= virtualMachineInformation[vm.type];
+        vmList.push_back(rank);
+        vm.serverNum = this->rank;
+        return true;
+    }
+
     //删除虚拟机
     //若不存在ID为id的虚拟机，返回false
     bool delVirtualMachine(int id)

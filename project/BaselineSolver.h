@@ -516,7 +516,7 @@ long long first_solver(int seed, Actions &logger)
             if(req.type == 0)
             {
                 int vmRank = virtualMachineNum;
-                addVirtualMachine(mpVirtualMachine[string(req.virtualMachineName)], req.id, j, T, t, T - 1);
+                addVirtualMachine(mpVirtualMachine[string(req.virtualMachineName)], req.id, j, T, t);
             }
             else if(req.type == 1)
             {
@@ -538,6 +538,11 @@ long long first_solver(int seed, Actions &logger)
 
     for(int p = 0;p < virtualMachineNum;++ p)
     {
+        if(p == 40000)
+        {
+            int cnt;
+            cnt = 1;
+        }
         bool hasSever = false;
         int i = cntVmDuration[p];
         for(int j = 0;j < serverNum;++ j)
@@ -545,17 +550,18 @@ long long first_solver(int seed, Actions &logger)
             std::pair<bool, bool> tmp = canAddVmToServer(virtualMachine[i], server[j], virtualMachine[i].beginTime);
             if(tmp.first)
             {
-                server[j].addVirtualMachine(i, 0);
+                server[j].addVirtualMachineForFirst(i, 0);
                 hasSever = true;
                 break;
             }
             else if(tmp.second)
             {
-                server[j].addVirtualMachine(i, 1);
+                server[j].addVirtualMachineForFirst(i, 1);
                 hasSever = true;
                 break;
             }
         }
+
         if(!hasSever)
         {
             int tmp;
@@ -564,9 +570,9 @@ long long first_solver(int seed, Actions &logger)
             } while(!serverInformation[tmp].canAddVirtualMachine(i, 0) && !serverInformation[tmp].canAddVirtualMachine(i, 1));
             addServer(tmp);
             if(server[serverNum-1].canAddVirtualMachine(i, 0))
-                server[serverNum-1].addVirtualMachine(i, 0);
+                server[serverNum-1].addVirtualMachineForFirst(i, 0);
             else
-                server[serverNum-1].addVirtualMachine(i, 1);
+                server[serverNum-1].addVirtualMachineForFirst(i, 1);
         }
     }
 
@@ -601,6 +607,11 @@ long long first_solver(int seed, Actions &logger)
     {
         sumCost += server[i].cost;
     }
+    int sum = 0;
+    for(int i = 0;i < serverNum;++ i)
+        //printf("%d:%d\n", i, server[i].vmList.size());
+        sum += server[i].vmList.size();
+    printf("201905130196：%d %d\n", sum, virtualMachineNum);
 
     return sumCost;
 }
