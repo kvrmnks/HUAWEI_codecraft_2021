@@ -500,7 +500,8 @@ std::pair<bool, bool> canAddVmToServer(VirtualMachine& vm, Server& server, int n
     return re;
 }
 
-long long first_solver(int seed, Actions &logger) {
+long long first_solver(int seed, Actions &logger)
+{
     init();
 
     srand(seed);
@@ -534,6 +535,60 @@ long long first_solver(int seed, Actions &logger) {
     std::sort(cntVmDuration, cntVmDuration + virtualMachineNum, [](int x, int y) {
         return virtualMachine[x].duration > virtualMachine[y].duration;
     });
+
+    for(int i = 0;i < virtualMachineNum;++ i)
+    {
+        bool hasSever = false;
+        for(int j = 0;j < serverNum;++ j)
+        {
+            std::pair<bool, bool> tmp = canAddVmToServer(virtualMachine[i], server[j], virtualMachine[i].beginTime);
+            if(tmp.first)
+            {
+                server[j].addVirtualMachine(i, 0);
+                hasSever = true;
+                break;
+            }
+            else if(tmp.second)
+            {
+                server[j].addVirtualMachine(i, 1);
+                hasSever = true;
+                break;
+            }
+        }
+        if(!hasSever)
+        {
+            int tmp;
+            do {
+                tmp = rand() % N;
+            } while(serverInformation[tmp].canAddVirtualMachine(i, 0) || serverInformation[tmp].canAddVirtualMachine(i, 1));
+        }
+    }
+
+
+
+    for(int i = 0;i < T;++ i)
+    {
+        logger.start_a_brand_new_day();
+        if(i == 0)
+        {
+            for(int i = 1;i <= serverNum;++ i)
+            {
+                logger.log_a_server(i - 1, server[i].type);
+            }
+        }
+
+        int maxRank = requireNum[i] + requireRank[i];
+        for(int j = requireRank[i];j < maxRank;++ j)
+        {
+            if(require[j].type == 0)
+            {
+                int vmRank = vmIdToRank[require[j].id];
+                logger.log_a_vm_deployment(vmRank);
+            }
+        }
+        logger.call_an_end_to_this_day();
+    }
+
 
     long long sumCost = 0;
     for(int i = 0;i < serverNum;++ i)
