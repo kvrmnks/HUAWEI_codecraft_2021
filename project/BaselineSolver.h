@@ -97,14 +97,14 @@ long long base_solver(int seed, Actions &logger) {
 
     return sumCost;
 }
-
-/*int base_migration(int seed, Actions &logger) {
+/*
+int base_migration(int seed, Actions &logger) {
 
     int maxRemainCore = 0, maxRemainMemory = 0;
     int maxRemainCoreDouble = 0, maxRemainMemoryDouble = 0;
     for(int i = 0;i < serverNum;++ i) {
         maxRemainCore = std::max(maxRemainCore, std::max(server[i].remainCoreNodeA, server[i].remainCoreNodeB));
-        maxRemainMemory = std::max(maxRemainMemory, std::max())
+        maxRemainMemory = std::max(maxRemainMemory, std::max());
 
 
     }
@@ -118,7 +118,7 @@ long long base_solver(int seed, Actions &logger) {
     }
 };*/
 
-long long base_solver_with_migration(int seed, Actions &logger) {
+long long base_solver_with_choice_max_remain(int seed, Actions &logger) {
     init();
 
     srand(seed);
@@ -231,5 +231,214 @@ long long base_solver_with_migration(int seed, Actions &logger) {
 }
 
 
+int canAddServer[100010];
+long long base_solver_with_rand_all(int seed, Actions &logger) {
+    init();
+
+    srand(seed);
+
+    for(int i = 0;i < T;++ i)
+    {
+        logger.start_a_brand_new_day();
+
+        int maxRank = requireRank[i] + requireNum[i];
+        int tot;
+        for(int j = requireRank[i];j < maxRank; ++ j)
+        {
+
+            tot = 0;
+            const Require& req = require[j];
+            int vmType = mpVirtualMachine[string(req.virtualMachineName)];
+
+            if(req.type == 0)
+            {
+                int vmRank = virtualMachineNum;
+                vmIdToRank[req.id] = vmRank;
+                addVirtualMachine(vmType, req.id);
+
+                for(int k = 0;k < serverNum;++ k)
+                {
+                    if(server[k].canAddVirtualMachine(vmRank, 0))
+                    {
+                        canAddServer[tot] = k;
+                        ++ tot;
+                    }
+                    else if(server[k].canAddVirtualMachine(vmRank, 1))
+                    {
+                        canAddServer[tot] = k;
+                        ++ tot;
+                    }
+                }
+                if(tot)
+                {
+                    int tmp = canAddServer[rand() % tot];
+                    if(server[tmp].canAddVirtualMachine(vmRank, 0))
+                    {
+                        server[tmp].addVirtualMachine(vmRank, 0);
+                    }
+                    else if(server[tmp].canAddVirtualMachine(vmRank, 1))
+                    {
+                        server[tmp].addVirtualMachine(vmRank, 1);
+                    }
+                }
+                else
+                {
+                    int server_type;
+
+                    do
+                    {
+                        server_type = rand() % N;
+
+                    }while(!serverInformation[server_type].canAddVirtualMachine(vmRank, 0) && !serverInformation[server_type].canAddVirtualMachine(vmRank, 1));
+
+                    addServer(server_type);
+                    logger.log_a_server(serverNum - 1, server_type);
+
+                    if(server[serverNum-1].canAddVirtualMachine(vmRank, 0))
+                    {
+                        server[serverNum-1].addVirtualMachine(vmRank, 0);
+                    }
+                    else
+                    {
+                        server[serverNum-1].addVirtualMachine(vmRank, 1);
+                    }
+                }
+
+                logger.log_a_vm_deployment(vmRank);
+            }
+            else if(req.type == 1)
+            {
+                if(vmIdToRank.count(req.id) == 0) continue;
+                int vmRank = vmIdToRank[req.id];
+                VirtualMachine vm = virtualMachine[vmRank];
+                server[vm.serverNum].delVirtualMachine(req.id);
+            }
+        }
+        for(int j = 0;j < serverNum;++ j)
+        {
+            if(server[j].open)
+            {
+                server[j].cost += server[j].dayCost;
+            }
+        }
+        logger.call_an_end_to_this_day();
+    }
+
+    long long sumCost = 0;
+    for(int i = 0;i < serverNum;++ i)
+    {
+        sumCost += server[i].cost;
+    }
+
+    return sumCost;
+}
+
+int canAddServerCore[100010];
+long long base_solver_with_select_samll(int seed, Actions &logger) {
+    init();
+
+    srand(seed);
+
+    for(int i = 0;i < T;++ i)
+    {
+        logger.start_a_brand_new_day();
+
+        int maxRank = requireRank[i] + requireNum[i];
+        int tot;
+        for(int j = requireRank[i];j < maxRank; ++ j)
+        {
+
+            tot = 0;
+            const Require& req = require[j];
+            int vmType = mpVirtualMachine[string(req.virtualMachineName)];
+
+            if(req.type == 0)
+            {
+                int vmRank = virtualMachineNum;
+                vmIdToRank[req.id] = vmRank;
+                addVirtualMachine(vmType, req.id);
+
+                for(int k = 0;k < serverNum;++ k)
+                {
+                    if(server[k].canAddVirtualMachine(vmRank, 0))
+                    {
+                        canAddServer[tot] = k;
+                        canAddServerCore[tot] = 0;
+                        ++ tot;
+                    }
+                    else if(server[k].canAddVirtualMachine(vmRank, 1))
+                    {
+                        canAddServer[tot] = k;
+                        canAddServerCore[tot] = 1;
+                        ++ tot;
+                    }
+                }
+                if(tot)
+                {
+                    int miRank = canAddServer[0], miCore = canAddServerCore[0];
+                    for(int k = 1;k < tot;++ k)
+                    {
+                        int tmpRank = canAddServer[k];
+                        int tmpCore = canAddServerCore[k];
+                        int miRemain = miCore == 0 ? server[miRank].remainCoreNodeA + server[miRank].remainMemoryNodeA : server[miRank].remainCoreNodeB + server[miRank].remainMemoryNodeB;
+                        int tmpRemain = tmpCore == 0 ? server[tmpRank].remainMemoryNodeA + server[tmpRank].remainCoreNodeA : server[tmpRank].remainCoreNodeB + server[tmpRank].remainMemoryNodeB;
+
+                        if(miRemain > tmpRemain)
+                            miRemain = tmpRemain;
+                    }
+
+                    server[miRank].addVirtualMachine(vmRank, miCore);
+                }
+                else
+                {
+                    int server_type;
+
+                    do
+                    {
+                        server_type = rand() % N;
+
+                    }while(!serverInformation[server_type].canAddVirtualMachine(vmRank, 0) && !serverInformation[server_type].canAddVirtualMachine(vmRank, 1));
+
+                    addServer(server_type);
+                    logger.log_a_server(serverNum - 1, server_type);
+
+                    if(server[serverNum-1].canAddVirtualMachine(vmRank, 0))
+                    {
+                        server[serverNum-1].addVirtualMachine(vmRank, 0);
+                    }
+                    else
+                    {
+                        server[serverNum-1].addVirtualMachine(vmRank, 1);
+                    }
+                }
+
+                logger.log_a_vm_deployment(vmRank);
+            }
+            else if(req.type == 1)
+            {
+                if(vmIdToRank.count(req.id) == 0) continue;
+                int vmRank = vmIdToRank[req.id];
+                VirtualMachine vm = virtualMachine[vmRank];
+                server[vm.serverNum].delVirtualMachine(req.id);
+            }
+        }
+        for(int j = 0;j < serverNum;++ j)
+        {
+            if(server[j].open)
+            {
+                server[j].cost += server[j].dayCost;
+            }
+        }
+        logger.call_an_end_to_this_day();
+    }
+
+    long long sumCost = 0;
+    for(int i = 0;i < serverNum;++ i)
+    {
+        sumCost += server[i].cost;
+    }
+
+    return sumCost;
+}
 
 #endif //PROJECT_BASELINESOLVER_H

@@ -1,3 +1,11 @@
+/*运行结果记录
+ *  20次循环base_solver:1,385,237,273
+ *  50次循环base_solver:1,382,498,784
+ *  10次循环base_solver_with_rand_all:1,270,989,790
+ *
+ * */
+
+
 #include "input.h"
 #include "DataStructure.h"
 #include <cstdlib>
@@ -6,7 +14,7 @@
 
 #define DEBUG
 
-//#define ONLINE_JUDGE
+#define ONLINE_JUDGE
 #ifdef ONLINE_JUDGE
 #undef DEBUG
 #endif
@@ -92,9 +100,9 @@ int main() {
     //srand(996251404); //687,231,808 + 705,445,429
     //srand(2019051301);//679, 094, 368+702,452,646
 
-    for (int i = 0; i < 50; i++) {
+    for (int i = 0; i < 15; i++) {
         Actions logger_i;
-        long long cost = base_solver_with_migration(rand(), logger_i);
+        long long cost = base_solver_with_select_samll(rand(), logger_i);
 
         if (cost < min_cost) {
             logger = logger_i;
