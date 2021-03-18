@@ -100,7 +100,7 @@ int main() {
     //srand(996251404); //687,231,808 + 705,445,429
     //srand(2019051301);//679, 094, 368+702,452,646
 
-    for (int i = 0; i < 15; i++) {
+    for (int i = 0; i < 30; i++) {
         Actions logger_i;
         long long cost = base_solver_with_select_samll(rand(), logger_i);
 

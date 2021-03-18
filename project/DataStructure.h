@@ -44,6 +44,10 @@ struct VirtualMachine						//请求使用的虚拟机
     int id;									//虚拟机ID
     int type;								//虚拟机型号
 
+    int beginTime;                          //添加时间
+    int endTime;                            //结束时间
+    int duration;                           //持续时间
+
     int nodeNum;                            //如果虚拟机在服务器中存储，nodeNum表示被部署到了哪个节点。双节点部署模式无效。
     int serverNum;                          //如果虚拟机在服务器中存储，serverNum表示该虚拟机被部署到服务器的下标
 }virtualMachine[200000 + 1];
@@ -263,14 +267,18 @@ void addServer(int type)
 }
 
 //新增虚拟机
-void addVirtualMachine(int type, int id)
+void addVirtualMachine(int type, int id, int beginTime = 0, int endTime = 999)
 {
     VirtualMachine& vm = virtualMachine[virtualMachineNum];
     VirtualMachineInformation& vmInfor = virtualMachineInformation[vm.type];
 
     vm.id = id;
     vm.type = type;
+    vm.beginTime = beginTime;
+    vm.endTime = endTime;
+    vm.duration = vm.endTime - vm.beginTime;
 
+    vmIdToRank[id] = virtualMachineNum;
     ++ virtualMachineNum;
 }
 

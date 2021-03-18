@@ -27,7 +27,6 @@ long long base_solver(int seed, Actions &logger) {
             if(req.type == 0)
             {
                 int vmRank = virtualMachineNum;
-                vmIdToRank[req.id] = vmRank;
                 addVirtualMachine(vmType, req.id);
 
                 bool hasServerUse = false;
@@ -137,7 +136,6 @@ long long base_solver_with_choice_max_remain(int seed, Actions &logger) {
             if(req.type == 0)
             {
                 int vmRank = virtualMachineNum;
-                vmIdToRank[req.id] = vmRank;
                 addVirtualMachine(vmType, req.id);
                 VirtualMachine& vm = virtualMachine[vmRank];
                 VirtualMachineInformation& vmInfor = virtualMachineInformation[vmType];
@@ -253,7 +251,6 @@ long long base_solver_with_rand_all(int seed, Actions &logger) {
             if(req.type == 0)
             {
                 int vmRank = virtualMachineNum;
-                vmIdToRank[req.id] = vmRank;
                 addVirtualMachine(vmType, req.id);
 
                 for(int k = 0;k < serverNum;++ k)
@@ -355,7 +352,6 @@ long long base_solver_with_select_samll(int seed, Actions &logger) {
             if(req.type == 0)
             {
                 int vmRank = virtualMachineNum;
-                vmIdToRank[req.id] = vmRank;
                 addVirtualMachine(vmType, req.id);
 
                 for(int k = 0;k < serverNum;++ k)
@@ -381,7 +377,7 @@ long long base_solver_with_select_samll(int seed, Actions &logger) {
                         int tmpRank = canAddServer[k];
                         int tmpCore = canAddServerCore[k];
                         int miRemain = miCore == 0 ? server[miRank].remainCoreNodeA + server[miRank].remainMemoryNodeA : server[miRank].remainCoreNodeB + server[miRank].remainMemoryNodeB;
-                        int tmpRemain = tmpCore == 0 ? server[tmpRank].remainMemoryNodeA + server[tmpRank].remainCoreNodeA : server[tmpRank].remainCoreNodeB + server[tmpRank].remainMemoryNodeB;
+                        int tmpRemain = tmpCore == 0 ? server[tmpRank].remainMemoryNodeA + server[tmpRank].remainMemoryNodeA : server[tmpRank].remainCoreNodeB + server[tmpRank].remainMemoryNodeB;
 
                         if(miRemain > tmpRemain)
                             miRemain = tmpRemain;
@@ -440,5 +436,62 @@ long long base_solver_with_select_samll(int seed, Actions &logger) {
 
     return sumCost;
 }
+
+
+//==========
+//文章中第一个方法
+int cntVmDuration[100010];
+
+bool canAddVmToServer(VirtualMachine& vm, Server& server, int core = 0)
+{
+    int remainCoreA = server.remainCoreNodeA, remainCoreB = server.remainCoreNodeB;
+    int 
+}
+
+long long first_solver(int seed, Actions &logger) {
+    init();
+
+    srand(seed);
+
+    for(int t = 0;t < T;++ t)
+    {
+        for(int j = requireRank[t];j < requireRank[t] + requireNum[t]; ++ j)
+        {
+            Require& req = require[j];
+            if(req.type == 0)
+            {
+                int vmRank = virtualMachineNum;
+                addVirtualMachine(req.type, req.id, t, T - 1);
+            }
+            else if(req.type == 1)
+            {
+                int tmp = vmIdToRank[req.id];
+                virtualMachine[tmp].endTime = t;
+                virtualMachine[tmp].duration = t - virtualMachine[tmp].beginTime;
+            }
+        }
+    }
+
+
+
+    for(int i = 0;i < virtualMachineNum;++ i) {
+        cntVmDuration[i] = i;
+    }
+
+    std::sort(cntVmDuration, cntVmDuration + virtualMachineNum, [](int x, int y) {
+        return virtualMachine[x].duration > virtualMachine[y].duration;
+    });
+
+    long long sumCost = 0;
+    for(int i = 0;i < serverNum;++ i)
+    {
+        sumCost += server[i].cost;
+    }
+
+    return sumCost;
+}
+
+
+
 
 #endif //PROJECT_BASELINESOLVER_H
