@@ -4,7 +4,7 @@
 #include "output.h"
 #include "BaselineSolver.h"
 
-//#define DEBUG
+#define DEBUG
 
 //#define ONLINE_JUDGE
 #ifdef ONLINE_JUDGE
@@ -75,8 +75,8 @@ int main() {
 
 #ifdef IO_DEBUG
 
-    freopen("training-small-2.txt", "r", stdin);
-    freopen("training-small-2-out.txt", "w", stdout);
+    freopen("training-1.txt", "r", stdin);
+    freopen("training-1-out.txt", "w", stdout);
 
 #endif
 
@@ -92,9 +92,9 @@ int main() {
     //srand(996251404); //687,231,808 + 705,445,429
     //srand(2019051301);//679, 094, 368+702,452,646
 
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < 50; i++) {
         Actions logger_i;
-        long long cost = base_solver(rand(), logger_i);
+        long long cost = base_solver_with_migration(rand(), logger_i);
 
         if (cost < min_cost) {
             logger = logger_i;
