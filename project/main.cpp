@@ -14,7 +14,7 @@
 
 #define DEBUG
 
-#define ONLINE_JUDGE
+//#define ONLINE_JUDGE
 #ifdef ONLINE_JUDGE
 #undef DEBUG
 #endif
@@ -100,9 +100,9 @@ int main() {
     //srand(996251404); //687,231,808 + 705,445,429
     //srand(2019051301);//679, 094, 368+702,452,646
 
-    for (int i = 0; i < 30; i++) {
+    for (int i = 0; i < 1; i++) {
         Actions logger_i;
-        long long cost = base_solver_with_select_samll(rand(), logger_i);
+        long long cost = first_solver(rand(), logger_i);
 
         if (cost < min_cost) {
             logger = logger_i;

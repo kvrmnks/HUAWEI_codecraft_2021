@@ -444,19 +444,20 @@ int cntVmDuration[100010];
 
 std::pair<bool, bool> canAddVmToServer(VirtualMachine& vm, Server& server, int nowTime)
 {
-    int remainCoreA = server.remainCoreNodeA, remainCoreB = server.remainCoreNodeB;
-    int remainMemoryA = server.remainMemoryNodeA, remainMemoryB = server.remainCoreNodeB;
+    ServerInformation& serInfor = serverInformation[server.type];
+    int remainCoreA = serInfor.coreNum >> 1, remainCoreB = serInfor.coreNum >> 1;
+    int remainMemoryA = serInfor.memorySize >> 1, remainMemoryB = serInfor.memorySize >> 1;
 
     for(auto i = server.vmList.begin();i != server.vmList.end();++ i)
     {
         VirtualMachine& vmTmp = virtualMachine[(*i)];
-        if(vmTmp.beginTime > nowTime)
+        if(vmTmp.beginTime > vm.endTime)
             continue;
-        if(vmTmp.beginTime == nowTime && vmTmp.inAddReqRank > vm.inAddReqRank)
+        if(vmTmp.beginTime == vm.endTime && vmTmp.inAddReqRank > vm.inDelReqRank)
             continue;
-        if(vmTmp.endTime < nowTime)
+        if(vmTmp.endTime < vm.beginTime)
             continue;
-        if(vmTmp.endTime == nowTime && vmTmp.inDelReqRank < vm.inAddReqRank)
+        if(vmTmp.endTime == vm.beginTime && vmTmp.inDelReqRank < vm.inAddReqRank)
             continue;
         VirtualMachineInformation& vmInfor = virtualMachineInformation[vmTmp.type];
         if(vmInfor.isDoubleNode)
@@ -490,10 +491,10 @@ std::pair<bool, bool> canAddVmToServer(VirtualMachine& vm, Server& server, int n
     }
     else
     {
-        if(remainCoreA >= vmInfor.coreNumNode && remainMemoryA < vmInfor.memorySizeNode)
+        if(remainCoreA >= vmInfor.coreNumNode && remainMemoryA >= vmInfor.memorySizeNode)
             re.first = true;
         else re.first = false;
-        if(remainCoreB >= vmInfor.coreNumNode && remainMemoryB < vmInfor.memorySizeNode)
+        if(remainCoreB >= vmInfor.coreNumNode && remainMemoryB >= vmInfor.memorySizeNode)
             re.second = true;
         else re.second = false;
     }
@@ -508,25 +509,24 @@ long long first_solver(int seed, Actions &logger)
 
     for(int t = 0;t < T;++ t)
     {
-        for(int j = requireRank[t];j < requireRank[t] + requireNum[t]; ++ j)
+        int maxRank = requireRank[t] + requireNum[t];
+        for(int j = requireRank[t];j < maxRank; ++ j)
         {
             Require& req = require[j];
             if(req.type == 0)
             {
                 int vmRank = virtualMachineNum;
-                addVirtualMachine(req.type, req.id, j, 0, t, T - 1);
+                addVirtualMachine(mpVirtualMachine[string(req.virtualMachineName)], req.id, j, T, t, T - 1);
             }
             else if(req.type == 1)
             {
-                int tmp = vmIdToRank[req.id];
-                virtualMachine[tmp].endTime = t;
-                virtualMachine[tmp].duration = t - virtualMachine[tmp].beginTime;
-                virtualMachine[tmp].inDelReqRank = j;
+                int vmRank = vmIdToRank[req.id];
+                virtualMachine[vmRank].endTime = t;
+                virtualMachine[vmRank].duration = t - virtualMachine[vmRank].beginTime;
+                virtualMachine[vmRank].inDelReqRank = j;
             }
         }
     }
-
-
 
     for(int i = 0;i < virtualMachineNum;++ i) {
         cntVmDuration[i] = i;
@@ -536,9 +536,10 @@ long long first_solver(int seed, Actions &logger)
         return virtualMachine[x].duration > virtualMachine[y].duration;
     });
 
-    for(int i = 0;i < virtualMachineNum;++ i)
+    for(int p = 0;p < virtualMachineNum;++ p)
     {
         bool hasSever = false;
+        int i = cntVmDuration[p];
         for(int j = 0;j < serverNum;++ j)
         {
             std::pair<bool, bool> tmp = canAddVmToServer(virtualMachine[i], server[j], virtualMachine[i].beginTime);
@@ -560,7 +561,12 @@ long long first_solver(int seed, Actions &logger)
             int tmp;
             do {
                 tmp = rand() % N;
-            } while(serverInformation[tmp].canAddVirtualMachine(i, 0) || serverInformation[tmp].canAddVirtualMachine(i, 1));
+            } while(!serverInformation[tmp].canAddVirtualMachine(i, 0) && !serverInformation[tmp].canAddVirtualMachine(i, 1));
+            addServer(tmp);
+            if(server[serverNum-1].canAddVirtualMachine(i, 0))
+                server[serverNum-1].addVirtualMachine(i, 0);
+            else
+                server[serverNum-1].addVirtualMachine(i, 1);
         }
     }
 
