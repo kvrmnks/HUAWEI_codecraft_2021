@@ -442,10 +442,62 @@ long long base_solver_with_select_samll(int seed, Actions &logger) {
 //文章中第一个方法
 int cntVmDuration[100010];
 
-bool canAddVmToServer(VirtualMachine& vm, Server& server, int core = 0)
+std::pair<bool, bool> canAddVmToServer(VirtualMachine& vm, Server& server, int nowTime)
 {
     int remainCoreA = server.remainCoreNodeA, remainCoreB = server.remainCoreNodeB;
-    int 
+    int remainMemoryA = server.remainMemoryNodeA, remainMemoryB = server.remainCoreNodeB;
+
+    for(auto i = server.vmList.begin();i != server.vmList.end();++ i)
+    {
+        VirtualMachine& vmTmp = virtualMachine[(*i)];
+        if(vmTmp.beginTime > nowTime)
+            continue;
+        if(vmTmp.beginTime == nowTime && vmTmp.inAddReqRank > vm.inAddReqRank)
+            continue;
+        if(vmTmp.endTime < nowTime)
+            continue;
+        if(vmTmp.endTime == nowTime && vmTmp.inDelReqRank < vm.inAddReqRank)
+            continue;
+        VirtualMachineInformation& vmInfor = virtualMachineInformation[vmTmp.type];
+        if(vmInfor.isDoubleNode)
+        {
+            remainCoreA -= vmInfor.coreNumNode;
+            remainMemoryA -= vmInfor.memorySizeNode;
+            remainCoreB -= vmInfor.coreNumNode;
+            remainMemoryB -= vmInfor.memorySizeNode;
+        }
+        else if(vmTmp.nodeNum == 0)
+        {
+            remainCoreA -= vmInfor.coreNumNode;
+            remainMemoryA -= vmInfor.memorySizeNode;
+        }
+        else if(vmTmp.nodeNum == 1)
+        {
+            remainCoreB -= vmInfor.coreNumNode;
+            remainMemoryB -= vmInfor.memorySizeNode;
+        }
+    }
+
+    VirtualMachineInformation& vmInfor = virtualMachineInformation[vm.type];
+    std::pair<bool, bool> re;
+    if(vmInfor.isDoubleNode)
+    {
+        if(remainCoreA < vmInfor.coreNumNode || remainCoreB < vmInfor.coreNumNode ||
+            remainMemoryA < vmInfor.memorySizeNode || remainMemoryB < vmInfor.memorySizeNode)
+            re.first = re.second = false;
+        else
+            re.first = re.second = true;
+    }
+    else
+    {
+        if(remainCoreA >= vmInfor.coreNumNode && remainMemoryA < vmInfor.memorySizeNode)
+            re.first = true;
+        else re.first = false;
+        if(remainCoreB >= vmInfor.coreNumNode && remainMemoryB < vmInfor.memorySizeNode)
+            re.second = true;
+        else re.second = false;
+    }
+    return re;
 }
 
 long long first_solver(int seed, Actions &logger) {
@@ -461,13 +513,14 @@ long long first_solver(int seed, Actions &logger) {
             if(req.type == 0)
             {
                 int vmRank = virtualMachineNum;
-                addVirtualMachine(req.type, req.id, t, T - 1);
+                addVirtualMachine(req.type, req.id, j, 0, t, T - 1);
             }
             else if(req.type == 1)
             {
                 int tmp = vmIdToRank[req.id];
                 virtualMachine[tmp].endTime = t;
                 virtualMachine[tmp].duration = t - virtualMachine[tmp].beginTime;
+                virtualMachine[tmp].inDelReqRank = j;
             }
         }
     }
