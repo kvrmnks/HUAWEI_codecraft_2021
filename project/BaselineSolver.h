@@ -442,11 +442,12 @@ long long base_solver_with_select_samll(int seed, Actions &logger) {
 //文章中第一个方法
 int cntVmDuration[100010];
 
+
 std::pair<bool, bool> canAddVmToServer(VirtualMachine& vm, Server& server, int nowTime)
 {
     ServerInformation& serInfor = serverInformation[server.type];
-    int remainCoreA = serInfor.coreNum >> 1, remainCoreB = serInfor.coreNum >> 1;
-    int remainMemoryA = serInfor.memorySize >> 1, remainMemoryB = serInfor.memorySize >> 1;
+    int remainCoreA = (serInfor.coreNum >> 1), remainCoreB = (serInfor.coreNum >> 1);
+    int remainMemoryA = (serInfor.memorySize >> 1), remainMemoryB = (serInfor.memorySize >> 1);
 
     for(auto i = server.vmList.begin();i != server.vmList.end();++ i)
     {
@@ -487,15 +488,22 @@ std::pair<bool, bool> canAddVmToServer(VirtualMachine& vm, Server& server, int n
             remainMemoryA < vmInfor.memorySizeNode || remainMemoryB < vmInfor.memorySizeNode)
             re.first = re.second = false;
         else
+        {
             re.first = re.second = true;
+        }
     }
     else
     {
         if(remainCoreA >= vmInfor.coreNumNode && remainMemoryA >= vmInfor.memorySizeNode)
+        {
             re.first = true;
+        }
         else re.first = false;
         if(remainCoreB >= vmInfor.coreNumNode && remainMemoryB >= vmInfor.memorySizeNode)
+        {
+
             re.second = true;
+        }
         else re.second = false;
     }
     return re;
@@ -607,11 +615,6 @@ long long first_solver(int seed, Actions &logger)
     {
         sumCost += server[i].cost;
     }
-    int sum = 0;
-    for(int i = 0;i < serverNum;++ i)
-        //printf("%d:%d\n", i, server[i].vmList.size());
-        sum += server[i].vmList.size();
-    printf("201905130196：%d %d\n", sum, virtualMachineNum);
 
     return sumCost;
 }
