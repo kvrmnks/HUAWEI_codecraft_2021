@@ -11,7 +11,7 @@
 #include <cstdlib>
 #include "output.h"
 #include "BaselineSolver.h"
-
+#include "SegmentTree.cpp"
 #define DEBUG
 
 //#define ONLINE_JUDGE

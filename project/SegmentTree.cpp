@@ -1,6 +1,8 @@
 //
 // Created by kvrmnks on 2021/3/19.
 //
+#ifndef __SEG__
+#define __SEG__
 #include "SegmentTree.h"
 #include <algorithm>
 #include <iostream>
@@ -8,7 +10,7 @@ using namespace std;
 #define REP(i,j,k) for(int i=j;i<=k;i++)
 
 SegmentTree::SegmentTree() {
-    this->root = nullptr;
+    this->root = this->newNode();
 }
 
 Node* SegmentTree::newNode() {
@@ -40,20 +42,20 @@ void SegmentTree::pushup(Node *x) {
 }
 
 void SegmentTree::pushdown(Node *x) {
-    Node *l = x->ch[0];
-    Node *r = x->ch[0];
+    Node *&l = x->ch[0];
+    Node *&r = x->ch[1];
     if(l == nullptr){
         l = this->newNode();
         REP(i,0,1){
-            l->mm[i] = x->mm[i];
-            l->cu[i] = x->cu[i];
+            l->mm[i] = x->mm[i] - x->mmtag[i];
+            l->cu[i] = x->cu[i] - x->cutag[i];
         }
     }
     if(r == nullptr){
         r = this->newNode();
         REP(i,0,1){
-            r->mm[i] = x->mm[i];
-            r->cu[i] = x->cu[i];
+            r->mm[i] = x->mm[i] - x->mmtag[i];
+            r->cu[i] = x->cu[i] - x->cutag[i];
         }
     }
     REP(i,0,1){
@@ -126,4 +128,7 @@ void SegmentTree::_modify(Node *x, int L, int R, int l, int r, int *delta) {
 void SegmentTree::modify(int L, int R, int l, int r, int *delta) {
     _modify(root, L, R, l, r, delta);
 }
+
+
 #undef REP
+#endif

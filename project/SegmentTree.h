@@ -6,7 +6,8 @@
 #define PROJECT_SEGMENTTREE_H
 #define NODEA 0
 #define NODEB 1
-
+#include <iostream>
+using namespace std;
 // 节点的数据结构
 struct Node{
     int mm[2], cu[2];
@@ -17,6 +18,10 @@ struct Node{
 // 用来返回查询结果
 struct DataPackage{
     int mm[2], cu[2];
+    friend ostream& operator<<(ostream& o, DataPackage &b){
+        o << b.mm[0] << " " << b.mm[1] << " " << b.cu[0] << " " << b.cu[1] << endl;
+        return o;
+    }
 };
 
 //线段树
@@ -38,3 +43,14 @@ public:
 };
 
 #endif //PROJECT_SEGMENTTREE_H
+
+/*
+    使用教程
+    定义
+        SegmentTree tree;
+    修改
+        int delta[4] = {0, 1, 23 ,4};
+        tree.modify(L, R, l, r, delta);
+    查询
+        DataPackage dp = tree.query(L, R, l, r);
+ */
