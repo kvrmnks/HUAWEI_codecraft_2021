@@ -49,14 +49,28 @@ struct Migration {
 
 // 记录虚拟机调度的信息
 struct DeployRequest {
-    vector<pair<unsigned, char> > deployments; // server_id, (node : 'N', 'A', 'B')
+    bool flag = false;
+    DeployRequest(bool output_rank) {
+        flag = output_rank;
+    }
+    DeployRequest(){}
+
+    vector<pair<unsigned, pair<unsigned, char> > > deployments; // server_id, (node : 'N', 'A', 'B')
 
     friend ostream &operator << (ostream &output, DeployRequest& deployRequest) {
         for(auto x : deployRequest.deployments) {
-            if (x.second == 'N') {
-                output << '(' << x.first << ')' << endl;
+            if (deployRequest.flag) {
+                if (x.second.second == 'N') {
+                    output << "(vm_rank: " << x.first << ", server: " << x.second.first << ')' << endl;
+                } else {
+                    output << "(vm_rank: " << x.first << ", server: " << x.second.first << ", node: " << x.second.second << ')' << endl;
+                }
             } else {
-                output << '(' << x.first << ", " << x.second << ')' << endl;
+                if (x.second.second == 'N') {
+                    output << '(' << x.second.first << ')' << endl;
+                } else {
+                    output << '(' << x.second.first << ", " << x.second.second << ')' << endl;
+                }
             }
         }
         return output;
@@ -69,13 +83,20 @@ struct DailyAction {
     Migration migration;
     DeployRequest deployment;
 
+    DailyAction (bool isDebugging) {
+        purchase = PurchaseInfo();
+        migration = Migration();
+        deployment = DeployRequest(isDebugging);
+    }
+    DailyAction(){}
+
     void insertPurchase (pair<string, unsigned> p) {
         purchase.serverNumPerType.push_back(p);
     }
     void insertMigration (pair<pair<unsigned, unsigned>, char> m) {
         migration.migrationInfo.push_back(m);
     }
-    void insertDeployment (pair<unsigned, char> d) {
+    void insertDeployment (pair<unsigned ,pair<unsigned, char> > d) {
         deployment.deployments.push_back(d);
     }
     friend ostream &operator << (ostream &output, DailyAction dailyAction) {
@@ -89,6 +110,8 @@ const int MAX_TYPE = 100;
 // 记录所有天的决策信息
 struct Actions {
 private:
+    bool flag = false;
+
     vector<DailyAction> actions;
     DailyAction dailyAction;
 
@@ -98,22 +121,26 @@ private:
     int prefix_sum[MAX_TYPE];
 
     vector<pair<int, int> > server_rank_type_vec;
-    vector<pair<int, char> > server_rank_for_deployment;
+    vector<pair<int, pair<int, char> > > deployInformation;
     vector<pair<pair<int, int>, char> > vm_id_server_rank_for_migration;
 
     map<int, int> server_rank_id_map;
     map<int, int> server_id_rank_map;
 public:
+    Actions(bool isDebugging) {
+        flag = isDebugging;
+    }
+    Actions(){}
 
     void start_a_brand_new_day() {
-        dailyAction = DailyAction();
+        dailyAction = DailyAction(flag);
 
         for (int i = 0; i < N; i++) {
             bucket_server[i] = 0;
             prefix_sum[i] = 0;
         }
         server_rank_type_vec.clear();
-        server_rank_for_deployment.clear();
+        deployInformation.clear();
         vm_id_server_rank_for_migration.clear();
     }
 
@@ -141,9 +168,9 @@ public:
         VirtualMachineInformation& vmInfo= virtualMachineInformation[vm.type];
 
         if (vmInfo.isDoubleNode) {
-            server_rank_for_deployment.emplace_back(vm.serverNum, 'N');
+            deployInformation.emplace_back(vm_rank, make_pair(vm.serverNum, 'N'));
         } else {
-            server_rank_for_deployment.emplace_back(vm.serverNum, vm.nodeNum == 0 ? 'A' : 'B');
+            deployInformation.emplace_back(vm_rank, make_pair(vm.serverNum, vm.nodeNum == 0 ? 'A' : 'B'));
         }
     }
 
@@ -191,13 +218,13 @@ public:
         total_server += prefix_sum[N - 1];
 
 //      计算调度信息
-        for (auto deploy : server_rank_for_deployment) {
-            dailyAction.insertDeployment(make_pair(server_rank_id_map[deploy.first], deploy.second));
+        for (auto deploy : deployInformation) {
+            dailyAction.insertDeployment(make_pair(deploy.first, make_pair(server_rank_id_map[deploy.second.second], deploy.second.second)));
         }
 
 //      计算迁移信息
         for (auto migration : vm_id_server_rank_for_migration) {
-            dailyAction.insertMigration(make_pair(make_pair(migration.first.first, migration.first.second), migration.second));
+            dailyAction.insertMigration(migration);
         }
 
         actions.push_back(dailyAction);
