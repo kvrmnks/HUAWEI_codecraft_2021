@@ -48,7 +48,7 @@ struct VirtualMachine						//请求使用的虚拟机
     int beginTime;                          //添加时间
     int endTime;                            //结束时间
     int duration;                           //持续时间
-    int inAddReqRank;                       //标记其加入删除命令在同一时间请求序列中的位置
+    int inAddReqRank;                       //标记其加入删除命令在请求序列中的位置
     int inDelReqRank;
 
     int nodeNum;                            //如果虚拟机在服务器中存储，nodeNum表示被部署到了哪个节点。双节点部署模式无效。

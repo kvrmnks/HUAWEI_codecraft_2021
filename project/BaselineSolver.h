@@ -443,7 +443,7 @@ long long base_solver_with_select_samll(int seed, Actions &logger) {
 int cntVmDuration[100010];
 
 
-std::pair<bool, bool> canAddVmToServer(VirtualMachine& vm, Server& server, int nowTime)
+std::pair<bool, bool> canAddVmToServer(VirtualMachine &vm, Server &server)
 {
     ServerInformation& serInfor = serverInformation[server.type];
     int remainCoreA = (serInfor.coreNum >> 1), remainCoreB = (serInfor.coreNum >> 1);
@@ -501,10 +501,10 @@ std::pair<bool, bool> canAddVmToServer(VirtualMachine& vm, Server& server, int n
     else
     {
         int r1 = remainCoreA - vmInfor.coreNumNode;
-        int r2 = remainMemoryA -= vmInfor.memorySizeNode;
+        int r2 = remainMemoryA - vmInfor.memorySizeNode;
 
         int p1 = remainCoreB - vmInfor.coreNumNode;
-        int p2 = remainMemoryB -= vmInfor.memorySizeNode;
+        int p2 = remainMemoryB - vmInfor.memorySizeNode;
 
         if(r1 >= 0 && r2 >= 0)
         {
@@ -527,11 +527,11 @@ std::pair<bool, bool> canAddVmToServer(VirtualMachine& vm, Server& server, int n
 
     return re;
 }
-
+/*
 std::map<int, int> vmToServer;              //记录下标为i的虚拟机加入到了服务器vmToServerpi[中
 
 ///=======
-void tmpAdd(int num/*, int& sumCoreA, int& sumCoreB, int& sumMA, int& sumMB*/)
+void tmpAdd(int num, int& sumCoreA, int& sumCoreB, int& sumMA, int& sumMB)
 {
     VirtualMachineInformation& vmInfor = virtualMachineInformation[virtualMachine[num].type];
     printf("vm%d:Type %d, Core %d, M %d, Double %d\n", num, virtualMachine[num].type, vmInfor.coreNumNode, vmInfor.memorySizeNode, vmInfor.isDoubleNode ? 1 : 0);
@@ -539,7 +539,7 @@ void tmpAdd(int num/*, int& sumCoreA, int& sumCoreB, int& sumMA, int& sumMB*/)
 }
 
 //=======
-
+*/
 long long first_solver(int seed, Actions &logger)
 {
 
@@ -558,7 +558,7 @@ long long first_solver(int seed, Actions &logger)
             Require& req = require[j];
             if(req.type == 0)
             {
-                addVirtualMachine(mpVirtualMachine[string(req.virtualMachineName)], req.id, j, 100000, t, T);
+                addVirtualMachine(mpVirtualMachine[string(req.virtualMachineName)], req.id, j, 200000-1, t, T);
             }
             else if(req.type == 1)
             {
@@ -570,7 +570,7 @@ long long first_solver(int seed, Actions &logger)
         }
     }
 
-
+/*
     //===========
     int sumCoreA = 0, sumCoreB = 0;
     int sumMA = 0, sumMB = 0;
@@ -591,7 +591,7 @@ long long first_solver(int seed, Actions &logger)
     tmpAdd(224);
 
     //====
-
+*/
 
     for(int i = 0;i < virtualMachineNum;++ i) {
         cntVmDuration[i] = i;
@@ -607,23 +607,23 @@ long long first_solver(int seed, Actions &logger)
         int i = cntVmDuration[p];
         for(int j = 0;j < serverNum;++ j)
         {
-            if(i == 127)
+            /*if(i == 127)
             {
                 ++ tt;
             }
             if(i == 224 && j == 2)
             {
                 ++ tt;
-            }
-            std::pair<bool, bool> tmp = canAddVmToServer(virtualMachine[i], server[j], virtualMachine[i].beginTime);
+            }*/
+            std::pair<bool, bool> tmp = canAddVmToServer(virtualMachine[i], server[j]);
             if(tmp.first)
             {
-                if(i == 127)
+               /* if(i == 127)
                 {
                     ++ tt;
-                }
+                }*/
                 server[j].addVirtualMachineForFirst(i, 0);
-                vmToServer[i] = j;
+                //vmToServer[i] = j;
                 hasSever = true;
                 break;
             }
@@ -634,7 +634,7 @@ long long first_solver(int seed, Actions &logger)
                     ++ tt;
                 }
                 server[j].addVirtualMachineForFirst(i, 1);
-                vmToServer[i] = j;
+                //vmToServer[i] = j;
                 hasSever = true;
                 break;
             }
@@ -646,16 +646,16 @@ long long first_solver(int seed, Actions &logger)
             do {
                 tmp = rand() % N;
             } while(!serverInformation[tmp].canAddVirtualMachine(i, 0) && !serverInformation[tmp].canAddVirtualMachine(i, 1));
-            addServer(tmp);
-            std::pair<bool, bool> canTmp = canAddVmToServer(virtualMachine[i], server[serverNum - 1], virtualMachine[i].beginTime);
+            addServer(tmp);// ghj
+            std::pair<bool, bool> canTmp = canAddVmToServer(virtualMachine[i], server[serverNum - 1]);
             if(canTmp.first)
                 server[serverNum-1].addVirtualMachineForFirst(i, 0);
             else if(canTmp.second)
                 server[serverNum-1].addVirtualMachineForFirst(i, 1);
-            vmToServer[i] = serverNum-1;
+            //vmToServer[i] = serverNum-1;
         }
     }
-
+/*
 //======check
     for(int i = 0;i < serverNum;++ i)
         server[i].vmList.clear();
@@ -692,16 +692,16 @@ long long first_solver(int seed, Actions &logger)
 
 
 //==========
-
+*/
 
     for(int i = 0;i < T;++ i)
     {
         logger.start_a_brand_new_day();
         if(i == 0)
         {
-            for(int i = 1;i <= serverNum;++ i)
+            for(int j = 1;j <= serverNum;++ j)
             {
-                logger.log_a_server(i - 1, server[i].type);
+                logger.log_a_server(j - 1, server[j].type);
             }
         }
 

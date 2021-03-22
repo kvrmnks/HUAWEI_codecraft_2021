@@ -84,7 +84,7 @@ int main() {
 #ifdef IO_DEBUG
 
     freopen("training-1.txt", "r", stdin);
- //  freopen("training-1-out.txt", "w", stdout);
+    freopen("training-1-out.txt", "w", stdout);
 
 #endif
 
@@ -111,6 +111,16 @@ int main() {
     }
 
 //    long long cost = base_solver(19260817, logger);
+
+/*
+//========
+    for(int i = 0;i < serverNum;++ i)
+    {
+        if()
+    }
+
+//=======
+*/
 
     logger.print();
 
