@@ -84,7 +84,7 @@ int main() {
 #ifdef IO_DEBUG
 
     freopen("training-1.txt", "r", stdin);
-   freopen("training-1-out.txt", "w", stdout);
+    freopen("training-1-out.txt", "w", stdout);
 
 #endif
 
@@ -115,6 +115,7 @@ int main() {
 
     logger.print();
 
+    cout << logger.get_rank_of_server_with_id(1257) << endl;
 #ifdef COST_DEBUG
     cout << min_cost << endl;
 #endif
