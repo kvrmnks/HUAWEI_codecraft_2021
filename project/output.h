@@ -244,6 +244,7 @@ public:
         }
         return server_id_rank_map[id];
     }
+    
 };
 
 #endif //PROJECT_OUTPUT_H
