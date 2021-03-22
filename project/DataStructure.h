@@ -78,25 +78,25 @@ struct ServerInformation					//服务器信息
         remainMemoryNodeA = remainMemoryNodeB = (this->memorySize >> 1);
         if(vmInfor.isDoubleNode)
         {
-            if(remainCoreNodeA <= vmInfor.coreNumNode || remainCoreNodeB <= vmInfor.coreNumNode)
+            if(remainCoreNodeA < vmInfor.coreNumNode || remainCoreNodeB < vmInfor.coreNumNode)
                 return false;
-            if(remainMemoryNodeA <= vmInfor.memorySizeNode || remainMemoryNodeB <= vmInfor.memorySizeNode)
+            if(remainMemoryNodeA < vmInfor.memorySizeNode || remainMemoryNodeB < vmInfor.memorySizeNode)
                 return false;
         }
         else
         {
             if(core == 0)
             {
-                if(remainCoreNodeA <= vmInfor.coreNumNode)
+                if(remainCoreNodeA < vmInfor.coreNumNode)
                     return false;
-                if(remainMemoryNodeA <= vmInfor.memorySizeNode)
+                if(remainMemoryNodeA < vmInfor.memorySizeNode)
                     return false;
             }
             else if(core == 1)
             {
-                if(remainCoreNodeB <= vmInfor.coreNumNode)
+                if(remainCoreNodeB < vmInfor.coreNumNode)
                     return false;
-                if(remainMemoryNodeB <= vmInfor.memorySizeNode)
+                if(remainMemoryNodeB < vmInfor.memorySizeNode)
                     return false;
             }
             else return false;
@@ -135,25 +135,25 @@ struct Server								//已经购买的、使用中的服务器
         VirtualMachineInformation& vmInfor= virtualMachineInformation[vm.type];
         if(vmInfor.isDoubleNode)
         {
-            if(remainCoreNodeA <= vmInfor.coreNumNode || remainCoreNodeB <= vmInfor.coreNumNode)
+            if(remainCoreNodeA < vmInfor.coreNumNode || remainCoreNodeB < vmInfor.coreNumNode)
                 return false;
-            if(remainMemoryNodeA <= vmInfor.memorySizeNode || remainMemoryNodeB <= vmInfor.memorySizeNode)
+            if(remainMemoryNodeA < vmInfor.memorySizeNode || remainMemoryNodeB < vmInfor.memorySizeNode)
                 return false;
         }
         else
         {
             if(core == 0)
             {
-                if(remainCoreNodeA <= vmInfor.coreNumNode)
+                if(remainCoreNodeA < vmInfor.coreNumNode)
                     return false;
-                if(remainMemoryNodeA <= vmInfor.memorySizeNode)
+                if(remainMemoryNodeA < vmInfor.memorySizeNode)
                     return false;
             }
             else if(core == 1)
             {
-                if(remainCoreNodeB <= vmInfor.coreNumNode)
+                if(remainCoreNodeB < vmInfor.coreNumNode)
                     return false;
-                if(remainMemoryNodeB <= vmInfor.memorySizeNode)
+                if(remainMemoryNodeB < vmInfor.memorySizeNode)
                     return false;
             }
             else return false;
@@ -208,7 +208,7 @@ struct Server								//已经购买的、使用中的服务器
     bool addVirtualMachineForFirst(int rank, int core = 0)
     {
         VirtualMachine& vm = virtualMachine[rank];
-        VirtualMachineInformation& vmInfor= virtualMachineInformation[vm.type];
+        VirtualMachineInformation& vmInfor = virtualMachineInformation[vm.type];
         vm.nodeNum = core;
         vmList.push_back(rank);
         vm.serverNum = this->rank;
@@ -280,7 +280,7 @@ void addServer(int type)
 }
 
 //新增虚拟机
-void addVirtualMachine(int type, int id, int inAddReqRank = 0, int inDelReqRank = 0, int beginTime = 0, int endTime = 999)
+void addVirtualMachine(int type, int id, int inAddReqRank = 0, int inDelReqRank = 100000, int beginTime = 0, int endTime = 100000)
 {
     VirtualMachine& vm = virtualMachine[virtualMachineNum];
     VirtualMachineInformation& vmInfor = virtualMachineInformation[vm.type];
