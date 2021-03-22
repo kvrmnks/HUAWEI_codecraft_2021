@@ -102,6 +102,7 @@ private:
     vector<pair<pair<int, int>, char> > vm_id_server_rank_for_migration;
 
     map<int, int> server_rank_id_map;
+    map<int, int> server_id_rank_map;
 public:
 
     void start_a_brand_new_day() {
@@ -179,6 +180,7 @@ public:
             tmp_type = x.second;
             server_rank_id_map[x.first] = total_server + (tmp_type == 0 ? 0 : prefix_sum[tmp_type - 1]) + bucket_server[tmp_type] - 1;
             bucket_server[tmp_type] --;
+            server_id_rank_map[server_rank_id_map[x.first]] = x.first;
 
 
 //            cout << "rank: " << x.first << ",  type: " << x.second << ", id: " << server_rank_id_map[x.first] << endl;
@@ -206,6 +208,14 @@ public:
         for (auto x : actions) {
             cout << x;
         }
+    }
+
+    int get_rank_of_server_with_id(int id) {
+        if (server_id_rank_map.count(id) == 0) {
+            cerr << "No such id yet" << endl;
+            exit(-999);
+        }
+        return server_id_rank_map[id];
     }
 };
 

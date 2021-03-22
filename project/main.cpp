@@ -78,7 +78,7 @@ void readData()
 }
 
 int main() {
-    std::ios::sync_with_stdio(false);
+//    std::ios::sync_with_stdio(false);
 //    auto p = freopen("training-2.txt", "r", stdin);
 
 #ifdef IO_DEBUG
@@ -101,6 +101,7 @@ int main() {
     //srand(2019051301);//679, 094, 368+702,452,646
 
     for (int i = 0; i < 1; i++) {
+//        cerr << i << endl;
         Actions logger_i;
         long long cost = first_solver(rand(), logger_i);
 
@@ -124,6 +125,7 @@ int main() {
 
     logger.print();
 
+    cout << logger.get_rank_of_server_with_id(1257) << endl;
 #ifdef COST_DEBUG
     cout << min_cost << endl;
 #endif

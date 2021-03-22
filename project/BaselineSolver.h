@@ -552,6 +552,7 @@ long long first_solver(int seed, Actions &logger)
 
     for(int t = 0;t < T;++ t)
     {
+        cerr << t << endl;
         int maxRank = requireRank[t] + requireNum[t];
         for(int j = requireRank[t];j < maxRank; ++ j)
         {
