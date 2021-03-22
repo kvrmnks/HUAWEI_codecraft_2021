@@ -214,7 +214,7 @@ public class Main {
                 }
                 Machine tmp = realMachines.get(machine_id);
                 if(tmp.coreA<0 || tmp.coreB<0 || tmp.mmA<0 || tmp.mmB<0) {
-                    System.out.println(tmp);
+                    System.out.println(machine_id + "\n" + tmp);
                     System.exit(-5);
 
                 }
