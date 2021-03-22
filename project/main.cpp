@@ -80,7 +80,7 @@ void readData()
 typedef long long int (*FUNCTYPE)(int, Actions&);
 Actions logger;
 
-Actions& winner_solver(vector<FUNCTYPE>& solvers, int T) {
+Actions& winner_solver(vector<FUNCTYPE>& solvers, int T, bool isDebugging) {
     long long min_cost = INT64_MAX;
 
     srand(0);
@@ -90,7 +90,8 @@ Actions& winner_solver(vector<FUNCTYPE>& solvers, int T) {
 
     for(int i = 0; i < T; i++)
         for(auto solver: solvers) {
-            Actions logger_i;
+            Actions logger_i(isDebugging);
+
             long long cost = solver(rand(), logger_i);
 
             if (cost < min_cost) {
@@ -98,7 +99,6 @@ Actions& winner_solver(vector<FUNCTYPE>& solvers, int T) {
                 min_cost = cost;
             }
         }
-
 #ifdef COST_DEBUG
     cout << "total cost: " << min_cost << endl;
 #endif
@@ -132,11 +132,11 @@ int main() {
 
 //    winner_solver(solvers).print();
 
-    Actions& final_answer = winner_solver(solvers, 1); // T 指rand几次
+    Actions& final_answer = winner_solver(solvers, 1, true); // T 指rand几次
 
     final_answer.print();
 
-    cout << final_answer.get_rank_of_server_with_id(1257) << endl;
+//    cout << final_answer.get_rank_of_server_with_id(1257) << endl;
 
     return 0;
 }
