@@ -129,6 +129,28 @@ void SegmentTree::modify(int L, int R, int l, int r, int *delta) {
     _modify(root, L, R, l, r, delta);
 }
 
+void SegmentTree::clear() {
+    this->_clear(this->root);
+}
+
+void SegmentTree::_clear(Node *x) {
+    if(x == nullptr){return;}
+    Node *l = x->ch[0];
+    Node *r = x->ch[1];
+    if(l != nullptr){
+        _clear(l);
+        delete l;
+    }
+    if(r != nullptr){
+        _clear(r);
+        delete(r);
+    }
+}
+
+SegmentTree::~SegmentTree() {
+    this->clear();
+}
+
 
 #undef REP
 #endif

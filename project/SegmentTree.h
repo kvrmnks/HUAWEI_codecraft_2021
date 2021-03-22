@@ -31,6 +31,7 @@ private:
     void pushup(Node *x);
     void pushdown(Node *x);
     Node *newNode();
+    void _clear(Node *x);
     DataPackage _query(Node *x, int L, int R, int l, int r);
     void _modify(Node *x, int L,int R,int l,int r, int delta[4]);
 public:
@@ -39,7 +40,8 @@ public:
     // delta mm[0] mm[1] cu[0] cu[1]
     void modify(int L,int R, int l,int r, int delta[4]);
     DataPackage query(int L,int R,int l,int r);
-
+    void clear();
+    ~SegmentTree();
 };
 
 #endif //PROJECT_SEGMENTTREE_H
