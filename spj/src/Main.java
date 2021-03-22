@@ -190,10 +190,10 @@ public class Main {
 //                System.out.println(id);
                 int flag = 0;
                 if(vm.db){
-                    if(l.length == 2){System.exit(-2);}
+                    if(l.length == 2){System.out.println("将一个双部署的虚拟机单部署");System.exit(-2);}
                     flag = 2;
                 }else{
-                    if(l.length != 2){System.out.print(vm.toString() + l[0]+" "+l[1]);System.exit(-3);}
+                    if(l.length != 2){System.out.print("将一个单部署的虚拟机双部署 " + vm.toString() + l[0]+" "+l[1]);System.exit(-3);}
                     flag = (l[1].trim().equals("A") ? 0 : 1); // 分配AB节点号
                 }
                 if(config.containsKey(id))
@@ -214,11 +214,12 @@ public class Main {
                 }
                 Machine tmp = realMachines.get(machine_id);
                 if(tmp.coreA<0 || tmp.coreB<0 || tmp.mmA<0 || tmp.mmB<0) {
-                    System.out.println(machine_id + "\n" + tmp);
+                    System.out.println("服务器的资源溢出\n" + machine_id + "\n" + tmp);
                     System.exit(-5);
 
                 }
             }else{
+                System.out.println("参数解析错误");
                 System.exit(-1);
             }
         }
