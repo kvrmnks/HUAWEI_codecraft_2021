@@ -77,9 +77,37 @@ void readData()
 #endif
 }
 
+typedef long long int (*FUNCTYPE)(int, Actions&);
+Actions logger;
+
+Actions& winner_solver(vector<FUNCTYPE>& solvers, int T) {
+    long long min_cost = INT64_MAX;
+
+    srand(0);
+//    srand(19260817);  //683,830,557 + 702,452,646 = 1,386,283,203
+    //srand(996251404); //687,231,808 + 705,445,429
+    //srand(2019051301);//679, 094, 368+702,452,646
+
+    for(int i = 0; i < T; i++)
+        for(auto solver: solvers) {
+            Actions logger_i;
+            long long cost = solver(rand(), logger_i);
+
+            if (cost < min_cost) {
+                logger = logger_i;
+                min_cost = cost;
+            }
+        }
+
+#ifdef COST_DEBUG
+    cout << "total cost: " << min_cost << endl;
+#endif
+
+    return logger;
+}
+
 int main() {
-//    std::ios::sync_with_stdio(false);
-//    auto p = freopen("training-2.txt", "r", stdin);
+    std::ios::sync_with_stdio(false);
 
 #ifdef IO_DEBUG
 
@@ -90,35 +118,26 @@ int main() {
 
     readData();
 
-    Actions logger;
+    vector<FUNCTYPE> solvers; // 存放所有备用解法
 
-    long long min_cost = INT64_MAX;
+//  push your lovely solver into the solvers vector :)
 
-    srand(0);
+    solvers.push_back(&first_solver);
+//    solvers.push_back(&base_solver);
+//    solvers.push_back(&base_solver_with_rand_all);
 
-//    srand(19260817);  //683,830,557 + 702,452,646 = 1,386,283,203
-    //srand(996251404); //687,231,808 + 705,445,429
-    //srand(2019051301);//679, 094, 368+702,452,646
 
-    for (int i = 0; i < 1; i++) {
-//        cerr << i << endl;
-        Actions logger_i;
-        long long cost = first_solver(rand(), logger_i);
 
-        if (cost < min_cost) {
-            logger = logger_i;
-            min_cost = cost;
-        }
-    }
+//    simpler way to print
 
-//    long long cost = base_solver(19260817, logger);
+//    winner_solver(solvers).print();
 
-    logger.print();
+    Actions& final_answer = winner_solver(solvers, 1); // T 指rand几次
 
-    cout << logger.get_rank_of_server_with_id(1257) << endl;
-#ifdef COST_DEBUG
-    cout << min_cost << endl;
-#endif
+    final_answer.print();
+
+    cout << final_answer.get_rank_of_server_with_id(1257) << endl;
 
     return 0;
 }
+
