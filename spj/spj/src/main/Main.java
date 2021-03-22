@@ -1,6 +1,4 @@
-package main;
-
-import java.io.File;
+package main;import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.lang.reflect.Array;
@@ -175,28 +173,28 @@ public class Main {
                 belong.remove(id);
                 realVirtualMachines.remove(id);
             }else if(l[0].equals("add")){
-                VirtualMachine vm = virtualMachines.getByName(l[1].trim()).clone(); // 鎵�闇�瑕佺殑铏氭嫙鏈�
-                int id = Integer.parseInt(l[2].trim()); //缁欒櫄鎷熸満鍒嗛厤鐨刬d
+                VirtualMachine vm = virtualMachines.getByName(l[1].trim()).clone(); // 所需要的虚拟机
+                int id = Integer.parseInt(l[2].trim()); //给虚拟机分配的id
                 if(realVirtualMachines.containsKey(id))
-                    realVirtualMachines.replace(id, vm); //鍔犲叆铏氭嫙鏈�
+                    realVirtualMachines.replace(id, vm); //加入虚拟机
                 else
                     realVirtualMachines.put(id, vm);
                 _s = ans.nextLine();
-                l = _s.replace('(',' ').replace(')',' ').trim().split(",");//鍒嗛厤
+                l = _s.replace('(',' ').replace(')',' ').trim().split(",");//分配
 //                System.out.println(_s);
-                int machine_id = Integer.parseInt(l[0].trim()); // 鏈嶅姟鍣ㄧ紪鍙�
+                int machine_id = Integer.parseInt(l[0].trim()); // 服务器编号
                 if(belong.containsKey(id))
-                    belong.replace(id, machine_id);// 鍒嗛厤鏈嶅姟鍣ㄧ紪鍙�
+                    belong.replace(id, machine_id);// 分配服务器编号
                 else
                     belong.put(id, machine_id);
 //                System.out.println(id);
                 int flag = 0;
                 if(vm.db){
-                    if(l.length == 2){System.exit(-2);}
+                    if(l.length == 2){System.out.println("将一个双部署的虚拟机单部署");System.exit(-2);}
                     flag = 2;
                 }else{
-                    if(l.length != 2){System.out.print(vm.toString() + l[0]+" "+l[1]);System.exit(-3);}
-                    flag = (l[1].trim().equals("A") ? 0 : 1); // 鍒嗛厤AB鑺傜偣鍙�
+                    if(l.length != 2){System.out.print("将一个单部署的虚拟机双部署 " + vm.toString() + l[0]+" "+l[1]);System.exit(-3);}
+                    flag = (l[1].trim().equals("A") ? 0 : 1); // 分配AB节点号
                 }
                 if(config.containsKey(id))
                 config.replace(id, flag);
@@ -216,11 +214,12 @@ public class Main {
                 }
                 Machine tmp = realMachines.get(machine_id);
                 if(tmp.coreA<0 || tmp.coreB<0 || tmp.mmA<0 || tmp.mmB<0) {
-                    System.out.println(tmp);
+                    System.out.println("服务器的资源溢出\n" + machine_id + "\n" + tmp);
                     System.exit(-5);
 
                 }
             }else{
+                System.out.println("参数解析错误");
                 System.exit(-1);
             }
         }
@@ -251,10 +250,10 @@ public class Main {
     }
 
     Main() throws FileNotFoundException {
-        FileInputStream fileIn = new FileInputStream("./training-2.txt");
+        FileInputStream fileIn = new FileInputStream("./training-1.txt");
         System.setIn(fileIn);
         sc = new Scanner(System.in);
-        ans = new Scanner(new FileInputStream("./training-2-out.txt"));
+        ans = new Scanner(new FileInputStream("./training-1-out.txt"));
         readData();
         T = sc.nextInt();
         sc.nextLine();
