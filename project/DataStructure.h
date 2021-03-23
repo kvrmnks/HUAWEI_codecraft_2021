@@ -27,6 +27,16 @@ struct VirtualMachineInformation
 }virtualMachineInformation[1000];			//虚拟机型号信息
 map<string, int> mpVirtualMachine;          //虚拟机型号名到编号（下标）的映射
 
+ostream& operator << (ostream &x, const VirtualMachineInformation &b){
+    x << "typeName: " << string(b.typeName) << endl
+    << "coreNum: " << b.coreNum << endl
+    << "memorySize: " << b.memorySize << endl
+    << "isDoubleNode: " << b.isDoubleNode << endl
+    << "coreNumNode: " << b.coreNumNode << endl
+    << "memorySizeNode: " << b.memorySizeNode << endl;
+    return x;
+}
+
 
 int T;										//T天用户请求序列数据,[1,1000]
 struct Require
@@ -58,14 +68,28 @@ int virtualMachineNum = 0;                  //虚拟机数量
 
 map<int, int> vmIdToRank;                    //虚拟机id到下标的映射
 
+ostream& operator << (ostream &x, const VirtualMachine &b){
+    x   << "id: " << b.id << "\n"
+        << "type: " << b.type << "\n"
+        << "rank: " << b.rank <<"\n"
+        << "beginTime:" << b.beginTime << "\n"
+        << "endTime: " << b.endTime << "\n"
+        << "duration: " << b.duration << "\n"
+        << "inAddReqRank: " << b.inAddReqRank << "\n"
+        << "inDelReqRank: " << b.inDelReqRank << "\n"
+        << "nodeNum: " << b.nodeNum << "\n"
+        << "serverNum: " << b.serverNum << "\n";
+    return x;
+}
+
 int N;										//可以采购服务器的数量,[1,100]
 struct ServerInformation					//服务器信息
 {
     char typeName[21];						//服务器型号
     int coreNum;							//CPU核数，不超过1024
-    int memorySize;							//内存大小,单位G，不超过1024G
+    int memorySize;							//内存大小,单位G，不超过1024G 不分两核
     int hardwareCost;						//硬件成本，不超过5e5
-    int dayCost;							//每日耗能成本，不超过5000
+    int dayCost;							//每日耗能成本，不超过5000 不分两核
 
     //检查是否能把下标为rank的虚拟机添加到该服务器
     //如果虚拟机是单核模式，core表示加载到哪一个内核。0表示内核A，1表示内核B
