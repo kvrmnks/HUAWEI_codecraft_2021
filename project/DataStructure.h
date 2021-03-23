@@ -218,7 +218,7 @@ struct Server								//已经购买的、使用中的服务器
             delta[0]=delta[1]=vmInfor.memorySizeNode;
             delta[2]=delta[3]=vmInfor.coreNumNode;
         }else{
-            int d = (vm.nodeNum == 0 ? 0 : 1);
+            int d = (core == 0 ? 0 : 1);
             delta[d] = vmInfor.memorySizeNode;
             delta[d+2] = vmInfor.coreNumNode;
         }
