@@ -481,6 +481,9 @@ std::pair<bool, bool> canAddVmToServer(VirtualMachine &vm, Server &server)
         }
     }
 
+
+
+
     VirtualMachineInformation& vmInfor = virtualMachineInformation[vm.type];
     std::pair<bool, bool> re;
 
@@ -694,6 +697,8 @@ long long first_solver(int seed, Actions &logger)
 
 //==========
 */
+
+    printf("%d\n", serverNum);
 
     for(int i = 0;i < T;++ i)
     {
