@@ -219,7 +219,7 @@ public:
 
 //      计算调度信息
         for (auto deploy : deployInformation) {
-            dailyAction.insertDeployment(make_pair(deploy.first, make_pair(server_rank_id_map[deploy.second.second], deploy.second.second)));
+            dailyAction.insertDeployment(make_pair(deploy.first, make_pair(server_rank_id_map[deploy.second.first], deploy.second.second)));
         }
 
 //      计算迁移信息
@@ -243,6 +243,12 @@ public:
             exit(-999);
         }
         return server_id_rank_map[id];
+    }
+
+    void output_server_rank_id_map() {
+        for (auto iter = server_rank_id_map.rbegin(); iter != server_rank_id_map.rend(); iter++) {
+            cout << "server rank: " << iter->first << " , server id: " << iter->second << endl;
+        }
     }
 
 };

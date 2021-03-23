@@ -136,6 +136,7 @@ int main() {
 
     final_answer.print();
 
+    final_answer.output_server_rank_id_map();
 //    cout << final_answer.get_rank_of_server_with_id(1257) << endl;
 
 
