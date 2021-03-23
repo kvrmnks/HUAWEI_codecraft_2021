@@ -446,7 +446,7 @@ int cntVmDuration[100010];
 
 std::pair<bool, bool> canAddVmToServer(VirtualMachine &vm, Server &server)
 {
-    ServerInformation& serInfor = serverInformation[server.type];
+    /*ServerInformation& serInfor = serverInformation[server.type];
     int remainCoreA = (serInfor.coreNum >> 1), remainCoreB = (serInfor.coreNum >> 1);
     int remainMemoryA = (serInfor.memorySize >> 1), remainMemoryB = (serInfor.memorySize >> 1);
 
@@ -528,8 +528,8 @@ std::pair<bool, bool> canAddVmToServer(VirtualMachine &vm, Server &server)
     }
 
 
-    return re;
-/*    ServerInformation& serInfor = serverInformation[server.type];
+    return re;*/
+    ServerInformation& serInfor = serverInformation[server.type];
     int remainCoreA = (serInfor.coreNum >> 1), remainCoreB = (serInfor.coreNum >> 1);
     int remainMemoryA = (serInfor.memorySize >> 1), remainMemoryB = (serInfor.memorySize >> 1);
 
@@ -612,7 +612,7 @@ std::pair<bool, bool> canAddVmToServer(VirtualMachine &vm, Server &server)
     }
 
 
-    return re;*/
+    return re;
 }
 /*
 std::map<int, int> vmToServer;              //记录下标为i的虚拟机加入到了服务器vmToServerpi[中
