@@ -219,7 +219,7 @@ public:
 
 //      计算调度信息
         for (auto deploy : deployInformation) {
-            dailyAction.insertDeployment(make_pair(deploy.first, make_pair(server_rank_id_map[deploy.second.second], deploy.second.second)));
+            dailyAction.insertDeployment(make_pair(deploy.first, make_pair(server_rank_id_map[deploy.second.first], deploy.second.second)));
         }
 
 //      计算迁移信息

@@ -7,6 +7,7 @@
 
 #include "output.h"
 #include "DataStructure.h"
+#include "SegmentTree.h"
 
 long long base_solver(int seed, Actions &logger) {
     init();
@@ -449,6 +450,89 @@ std::pair<bool, bool> canAddVmToServer(VirtualMachine &vm, Server &server)
     int remainCoreA = (serInfor.coreNum >> 1), remainCoreB = (serInfor.coreNum >> 1);
     int remainMemoryA = (serInfor.memorySize >> 1), remainMemoryB = (serInfor.memorySize >> 1);
 
+    SegmentTree* segTree = new SegmentTree();
+    int addData[4] = {0, 0, 0, 0};
+
+    for(auto i = server.vmList.begin();i != server.vmList.end();++ i)
+    {
+        VirtualMachine& vmTmp = virtualMachine[(*i)];
+
+        VirtualMachineInformation& vmInfor = virtualMachineInformation[vmTmp.type];
+        if(vmInfor.isDoubleNode)
+        {
+            addData[0] = addData[1] = vmInfor.memorySizeNode;
+            addData[2] = addData[3] = vmInfor.coreNumNode;
+        }
+        else if(vmTmp.nodeNum == 0)
+        {
+            addData[0] = vmInfor.memorySizeNode;
+            addData[2] = vmInfor.coreNumNode;
+            addData[1] = addData[3] = 0;
+        }
+        else if(vmTmp.nodeNum == 1)
+        {
+            addData[1] = vmInfor.memorySizeNode;
+            addData[3] = vmInfor.coreNumNode;
+            addData[0] = addData[2] = 0;
+        }
+        segTree->modify(0, requireSum, vmTmp.inAddReqRank, vmTmp.inDelReqRank, addData);
+    }
+
+    DataPackage ans = segTree->query(0, requireSum, vm.inAddReqRank, vm.inDelReqRank);
+    remainCoreA -= ans.cu[0];
+    remainCoreB -= ans.cu[1];
+    remainMemoryA -= ans.mm[0];
+    remainMemoryB -= ans.mm[1];
+
+    VirtualMachineInformation& vmInfor = virtualMachineInformation[vm.type];
+
+    std::pair<bool, bool> re;
+
+    if(vmInfor.isDoubleNode)
+    {
+        remainCoreA -= vmInfor.coreNumNode;
+        remainMemoryA -= vmInfor.memorySizeNode;
+        remainCoreB -= vmInfor.coreNumNode;
+        remainMemoryB -= vmInfor.memorySizeNode;
+
+        if(remainCoreA < 0 || remainCoreB < 0 ||
+           remainMemoryA < 0 || remainMemoryB < 0)
+            re.first = re.second = false;
+        else
+            re.first = re.second = true;
+    }
+    else
+    {
+        int r1 = remainCoreA - vmInfor.coreNumNode;
+        int r2 = remainMemoryA - vmInfor.memorySizeNode;
+
+        int p1 = remainCoreB - vmInfor.coreNumNode;
+        int p2 = remainMemoryB - vmInfor.memorySizeNode;
+
+        if(r1 >= 0 && r2 >= 0)
+        {
+            re.first = true;
+        }
+        else
+        {
+            re.first = false;
+        }
+        if(p1 >= 0 && p2 >= 0)
+        {
+            re.second = true;
+        }
+        else
+        {
+            re.second = false;
+        }
+    }
+
+
+    return re;
+/*    ServerInformation& serInfor = serverInformation[server.type];
+    int remainCoreA = (serInfor.coreNum >> 1), remainCoreB = (serInfor.coreNum >> 1);
+    int remainMemoryA = (serInfor.memorySize >> 1), remainMemoryB = (serInfor.memorySize >> 1);
+
 
     for(auto i = server.vmList.begin();i != server.vmList.end();++ i)
     {
@@ -528,7 +612,7 @@ std::pair<bool, bool> canAddVmToServer(VirtualMachine &vm, Server &server)
     }
 
 
-    return re;
+    return re;*/
 }
 /*
 std::map<int, int> vmToServer;              //记录下标为i的虚拟机加入到了服务器vmToServerpi[中
@@ -553,6 +637,8 @@ long long first_solver(int seed, Actions &logger)
 
     srand(seed);
 
+
+
     for(int t = 0;t < T;++ t)
     {
         cerr << t << endl;
@@ -562,7 +648,7 @@ long long first_solver(int seed, Actions &logger)
             Require& req = require[j];
             if(req.type == 0)
             {
-                addVirtualMachine(mpVirtualMachine[string(req.virtualMachineName)], req.id, j, 200000-1, t, T);
+                addVirtualMachine(mpVirtualMachine[string(req.virtualMachineName)], req.id, j, requireSum, t, T);
             }
             else if(req.type == 1)
             {

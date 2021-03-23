@@ -136,7 +136,8 @@ int main() {
 
     final_answer.print();
 
-//    cout << final_answer.get_rank_of_server_with_id(1257) << endl;
+    for(int i = 0;i < serverNum;++ i)
+        cout << i << ":" << final_answer.get_rank_of_server_with_id(i) << "   typs:" << server[i].type << endl;
 
 
     return 0;

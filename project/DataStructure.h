@@ -38,6 +38,7 @@ struct Require
 }require[200000];							//用户请求
 int requireNum[1000];						//第i+1天用户请求数目
 int requireRank[1000];						//第i+1天用户请求的起始地址
+int requireSum;
 
 struct VirtualMachine						//请求使用的虚拟机
 {
@@ -312,7 +313,7 @@ void init()
     std::sort(cntSeverInformation, cntSeverInformation + N, [](int x, int y){
         return (serverInformation[x].coreNum + serverInformation[x].memorySize)/serverInformation[x].hardwareCost > (serverInformation[y].coreNum + serverInformation[y].memorySize)/serverInformation[y].hardwareCost;
     });
-
+    requireSum = requireRank[T - 1] + requireNum[T - 1];
 }
 
 #endif //PROJECT_DATASTRUCTURE_H
