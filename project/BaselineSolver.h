@@ -641,7 +641,7 @@ long long first_solver(int seed, Actions &logger)
 
     for(int t = 0;t < T;++ t)
     {
-        cerr << t << endl;
+        //cerr << t << endl;
         int maxRank = requireRank[t] + requireNum[t];
         for(int j = requireRank[t];j < maxRank; ++ j)
         {
@@ -784,16 +784,16 @@ long long first_solver(int seed, Actions &logger)
 //==========
 */
 
-    printf("%d\n", serverNum);
+    //printf("%d\n", serverNum);
 
     for(int i = 0;i < T;++ i)
     {
         logger.start_a_brand_new_day();
         if(i == 0)
         {
-            for(int j = 1;j <= serverNum;++ j)
+            for(int j = 0;j < serverNum;++ j)
             {
-                logger.log_a_server(j - 1, server[j].type);
+                logger.log_a_server(j, server[j].type);
             }
         }
 

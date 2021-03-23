@@ -250,10 +250,10 @@ public class Main {
     }
 
     Main() throws FileNotFoundException {
-        FileInputStream fileIn = new FileInputStream("./training-1.txt");
+        FileInputStream fileIn = new FileInputStream("./training-2.txt");
         System.setIn(fileIn);
         sc = new Scanner(System.in);
-        ans = new Scanner(new FileInputStream("./training-1-out.txt"));
+        ans = new Scanner(new FileInputStream("./training-2-out.txt"));
         readData();
         T = sc.nextInt();
         sc.nextLine();

@@ -221,6 +221,6 @@ void runJudger(std::string inputFile,std::string outputFile) {
 }
 
 int main(){
-    runJudger("training-1.txt","training-1-out.txt");
+    runJudger("training-2.txt","training-2-out.txt");
     return 0;
 }

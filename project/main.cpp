@@ -111,8 +111,8 @@ int main() {
 
 #ifdef IO_DEBUG
 
-    freopen("training-1.txt", "r", stdin);
-    freopen("training-1-out.txt", "w", stdout);
+    freopen("training-2.txt", "r", stdin);
+    freopen("training-2-out.txt", "w", stdout);
 
 #endif
 
@@ -132,19 +132,19 @@ int main() {
 
 //    winner_solver(solvers).print();
 
-    Actions& final_answer = winner_solver(solvers, 1, true); // T 指rand几次
+    Actions& final_answer = winner_solver(solvers, 1, false); // T 指rand几次
 
     final_answer.print();
 
-    final_answer.output_server_rank_id_map();
+   // final_answer.output_server_rank_id_map();
 
-    cout<<"=========================="<<endl;
+    /*cout<<"=========================="<<endl;
     for(int i = 0;i < serverNum;++ i)
     {
         int tmp = final_answer.get_rank_of_server_with_id(i);
         cout << i << " " << tmp << "  type:"  << server[tmp].type << endl;
     }
-    cout<<"=========================="<<endl;
+    cout<<"=========================="<<endl;*/
 
     return 0;
 }
