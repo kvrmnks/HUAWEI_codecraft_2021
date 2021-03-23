@@ -17,7 +17,7 @@ struct Node{
 
 // 用来返回查询结果
 struct DataPackage{
-    int mm[2], cu[2];
+    short mm[2], cu[2];
     DataPackage(){
         mm[0] = mm[1] = cu[0] = cu[1] = 0;
     }
@@ -27,11 +27,11 @@ struct DataPackage{
         cu[0] = data[2];
         cu[1] = data[3];
     }
-    friend ostream& operator<<(ostream& o, DataPackage &b){
+    friend ostream& operator<<(ostream& o, DataPackage b){
         o << b.mm[0] << " " << b.mm[1] << " " << b.cu[0] << " " << b.cu[1] << endl;
         return o;
     }
-    DataPackage operator + (DataPackage &b){
+    DataPackage operator + (DataPackage b){
         DataPackage t;
         t.mm[0] = this->mm[0] + b.mm[0];
         t.mm[1] = this->mm[1] + b.mm[1];

@@ -481,6 +481,11 @@ std::pair<bool, bool> canAddVmToServer(VirtualMachine &vm, Server &server)
 */
 
     DataPackage ans = server.blo.query(vm.inAddReqRank, vm.inDelReqRank);
+    ans.cu[0] = serInfor.coreNum/2 - ans.cu[0];
+    ans.cu[1] = serInfor.coreNum/2 - ans.cu[1];
+    ans.mm[0] = serInfor.memorySize/2 - ans.mm[0];
+    ans.mm[1] = serInfor.memorySize/2 - ans.mm[1];
+
 //    remainCoreA -= ans.cu[0];
 //    remainCoreB -= ans.cu[1];
 //    remainMemoryA -= ans.mm[0];
@@ -632,61 +637,25 @@ void tmpAdd(int num, int& sumCoreA, int& sumCoreB, int& sumMA, int& sumMB)
 
 //=======
 */
-long long first_solver(int seed, Actions &logger)
-{
-
-
-    int tt;
-
+long long first_solver(int seed, Actions &logger){
     init();
-
     srand(seed);
-
-
-
-    for(int t = 0;t < T;++ t)
-    {
+    int cur_sum = 0;
+    for(int t = 0;t < T;++ t){
         int maxRank = requireRank[t] + requireNum[t];
-        for(int j = requireRank[t];j < maxRank; ++ j)
-        {
+        for(int j = requireRank[t];j < maxRank; ++ j){
             Require& req = require[j];
-            if(req.type == 0)
-            {
-                addVirtualMachine(mpVirtualMachine[string(req.virtualMachineName)], req.id, j, requireSum, t, T);
-            }
-            else if(req.type == 1)
-            {
+            if(req.type == 0){
+                addVirtualMachine(mpVirtualMachine[string(req.virtualMachineName)], req.id, cur_sum, requireSum, t, T);
+                cur_sum ++;
+            }else if(req.type == 1){
                 int vmRank = vmIdToRank[req.id];
                 virtualMachine[vmRank].endTime = t;
                 virtualMachine[vmRank].duration = t - virtualMachine[vmRank].beginTime;
-                virtualMachine[vmRank].inDelReqRank = j;
+                virtualMachine[vmRank].inDelReqRank = cur_sum - 1;
             }
         }
     }
-
-/*
-    //===========
-    int sumCoreA = 0, sumCoreB = 0;
-    int sumMA = 0, sumMB = 0;
-
-    tmpAdd(65);
-    tmpAdd(58);
-    tmpAdd(54);
-    tmpAdd(104);
-    tmpAdd(124);
-    tmpAdd(101);
-    tmpAdd(100);
-    tmpAdd(99);
-    tmpAdd(127);
-    tmpAdd(133);
-    tmpAdd(122);
-    tmpAdd(118);
-    tmpAdd(94);
-    tmpAdd(224);
-
-    //====
-*/
-
     for(int i = 0;i < virtualMachineNum;++ i) {
         cntVmDuration[i] = i;
     }
@@ -697,36 +666,21 @@ long long first_solver(int seed, Actions &logger)
 
     for(int p = 0;p < virtualMachineNum;++ p)
     {
+        if(p % 10000 == 0)
+            cerr << p << " " << serverNum << " " << virtualMachineNum <<  endl;
         bool hasSever = false;
         int i = cntVmDuration[p];
         for(int j = 0;j < serverNum;++ j)
         {
-            /*if(i == 127)
-            {
-                ++ tt;
-            }
-            if(i == 224 && j == 2)
-            {
-                ++ tt;
-            }*/
             std::pair<bool, bool> tmp = canAddVmToServer(virtualMachine[i], server[j]);
             if(tmp.first)
             {
-               /* if(i == 127)
-                {
-                    ++ tt;
-                }*/
                 server[j].addVirtualMachineForFirst(i, 0);
-                //vmToServer[i] = j;
                 hasSever = true;
                 break;
             }
             else if(tmp.second)
             {
-                if(i == 127)
-                {
-                    ++ tt;
-                }
                 server[j].addVirtualMachineForFirst(i, 1);
                 //vmToServer[i] = j;
                 hasSever = true;

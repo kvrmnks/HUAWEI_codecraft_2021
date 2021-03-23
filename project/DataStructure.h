@@ -270,7 +270,9 @@ struct Server								//已经购买的、使用中的服务器
 
         return true;
     }
-}server[100000 + 10];						//sever[i] 编号为i的服务器
+};
+//server[100000 + 10];//sever[i] 编号为i的服务器
+vector<Server> server;
 int serverNum = 0;                           //已有服务器数量
 
 int serverIDVM[100000 + 10];
@@ -279,8 +281,10 @@ int serverIDVM[100000 + 10];
 void addServer(int type)
 {
     ServerInformation& seInfor = serverInformation[type];
-    Server& se = server[serverNum];
 
+
+    //Server& se = server[serverNum];
+    Server se;
     se.type = type;
     se.rank = serverNum;
     se.remainMemoryNodeA = se.remainMemoryNodeB = (seInfor.memorySize >> 1);
@@ -289,7 +293,7 @@ void addServer(int type)
     se.cost = seInfor.hardwareCost;
     se.vmList.clear();
     se.open = false;
-
+    server.push_back(se);
     ++ serverNum;
 }
 
@@ -318,15 +322,16 @@ void init()
     virtualMachineNum = 0;
     serverNum = 0;
 
-    for(int i = 0;i < 100000;++ i)
-        server[i].rank = i;
+//    for(int i = 0;i < 100000;++ i)
+//        server[i].rank = i;
     for(int i = 0;i < 100;++ i)
         cntSeverInformation[i] = i;
 
     std::sort(cntSeverInformation, cntSeverInformation + N, [](int x, int y){
         return (serverInformation[x].coreNum + serverInformation[x].memorySize)/serverInformation[x].hardwareCost > (serverInformation[y].coreNum + serverInformation[y].memorySize)/serverInformation[y].hardwareCost;
     });
-    requireSum = requireRank[T - 1] + requireNum[T - 1];
+    requireSum = 100000;
+//    cerr << "rs" << requireSum << endl;
 }
 
 #endif //PROJECT_DATASTRUCTURE_H

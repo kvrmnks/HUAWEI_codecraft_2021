@@ -8,13 +8,12 @@
 #include <vector>
 #include "SegmentTree.h"
 using namespace std;
-
+const int SIZE_PER_BLOCK = 320;
 class BlockList{
 private:
-    const int SIZE_PER_BLOCK = 320;
-    vector<DataPackage> data[320];
-    DataPackage delta[320];
-    DataPackage maxV[320];
+    vector<DataPackage> data[SIZE_PER_BLOCK];
+    DataPackage delta[SIZE_PER_BLOCK];
+    DataPackage maxV[SIZE_PER_BLOCK];
 public:
     BlockList();
     void modify(int L, int R, DataPackage ds);
@@ -25,15 +24,15 @@ public:
 BlockList::BlockList() {
     // a ba a ba
     for(auto & i : data){
-        i = vector<DataPackage>(320);
+        i = vector<DataPackage>(SIZE_PER_BLOCK);
     }
 }
 
 void BlockList::modify(int L, int R, DataPackage ds) {
-    int loc1 = L / 320;
-    int loc2 = R / 320;
-    int real_l = L - loc1 * 320;
-    int real_r = R - loc2 * 320;
+    int loc1 = L / SIZE_PER_BLOCK;
+    int loc2 = R / SIZE_PER_BLOCK;
+    int real_l = L - loc1 * SIZE_PER_BLOCK;
+    int real_r = R - loc2 * SIZE_PER_BLOCK;
     if(loc1 == loc2){
         for(int i=real_l; i<=real_r;i++){
             data[loc1][i] =  data[loc1][i] + ds;
@@ -44,7 +43,7 @@ void BlockList::modify(int L, int R, DataPackage ds) {
             delta[i] = delta[i] + ds;
             maxV[i] = maxV[i] + ds;
         }
-        for(int i=real_l;i<320;i++){
+        for(int i=real_l;i<SIZE_PER_BLOCK;i++){
             data[loc1][i] = data[loc1][i] + ds;
             maxV[loc1] = bigger(maxV[loc1], data[loc1][i] + delta[loc1]);
         }
@@ -57,16 +56,16 @@ void BlockList::modify(int L, int R, DataPackage ds) {
 
 DataPackage BlockList::query(int L, int R) {
     DataPackage t;
-    int loc1 = L / 320;
-    int loc2 = R / 320;
-    int real_l = L - loc1 * 320;
-    int real_r = R - loc2 * 320;
+    int loc1 = L / SIZE_PER_BLOCK;
+    int loc2 = R / SIZE_PER_BLOCK;
+    int real_l = L - loc1 * SIZE_PER_BLOCK;
+    int real_r = R - loc2 * SIZE_PER_BLOCK;
     if(loc1 == loc2){
         for(int i=real_l;i<=real_r;i++){
             t = bigger(t, delta[loc1] + data[loc1][i]);
         }
     }else{
-        for(int i=real_l;i<320;i++){
+        for(int i=real_l;i<SIZE_PER_BLOCK;i++){
             t = bigger(t, delta[loc1] + data[loc1][i]);
         }
         for(int i=0;i<=real_r;i++){
