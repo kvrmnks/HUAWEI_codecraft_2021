@@ -191,8 +191,13 @@ public:
         total_server += prefix_sum[N - 1];
 
 //      计算调度信息
+<<<<<<< Updated upstream
         for (auto deploy : server_rank_for_deployment) {
             dailyAction.insertDeployment(make_pair(server_rank_id_map[deploy.first], deploy.second));
+=======
+        for (auto deploy : deployInformation) {
+            dailyAction.insertDeployment(make_pair(deploy.first, make_pair(server_rank_id_map[deploy.second.first], deploy.second.second)));
+>>>>>>> Stashed changes
         }
 
 //      计算迁移信息

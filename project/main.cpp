@@ -124,7 +124,11 @@ int main() {
 //=======
 */
 
+<<<<<<< Updated upstream
     logger.print();
+=======
+    cout << final_answer.get_rank_of_server_with_id(1257) << endl;
+>>>>>>> Stashed changes
 
     cout << "id: " << logger.get_rank_of_server_with_id(7905) << endl;
 #ifdef COST_DEBUG

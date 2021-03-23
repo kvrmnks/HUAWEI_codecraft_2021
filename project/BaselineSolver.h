@@ -558,19 +558,16 @@ std::pair<bool, bool> canAddVmToServerById(const int vmId, const int serverId){
     }
     return re;
 }
-/*
-std::map<int, int> vmToServer;              //记录下标为i的虚拟机加入到了服务器vmToServerpi[中
-
 ///=======
-void tmpAdd(int num, int& sumCoreA, int& sumCoreB, int& sumMA, int& sumMB)
+void printVM(int num)
 {
-    VirtualMachineInformation& vmInfor = virtualMachineInformation[virtualMachine[num].type];
-    printf("vm%d:Type %d, Core %d, M %d, Double %d\n", num, virtualMachine[num].type, vmInfor.coreNumNode, vmInfor.memorySizeNode, vmInfor.isDoubleNode ? 1 : 0);
-
+    VirtualMachine& vm =virtualMachine[num];
+    VirtualMachineInformation& vmInfor = virtualMachineInformation[vm.type];
+    printf("vm%7.d:Type %7.d, Core %7.d, M %7.d, Double %7.d, S: %7.d %7.d, E: %7.d %7.d\n", num, vm.type, vmInfor.coreNumNode, vmInfor.memorySizeNode, vmInfor.isDoubleNode ? 1 : 0, vm.beginTime, vm.inAddReqRank, vm.endTime, vm.inDelReqRank);
 }
 
 //=======
-*/
+
 long long first_solver(int seed, Actions &logger)
 {
 
@@ -580,6 +577,10 @@ long long first_solver(int seed, Actions &logger)
 
     for(int t = 0;t < T;++ t)
     {
+<<<<<<< Updated upstream
+=======
+        //cerr << t << endl;
+>>>>>>> Stashed changes
         int maxRank = requireRank[t] + requireNum[t];
         for(int j = requireRank[t];j < maxRank; ++ j) // 枚举一天中的事情
         {
@@ -640,6 +641,18 @@ long long first_solver(int seed, Actions &logger)
             }
         }
     }
+<<<<<<< Updated upstream
+=======
+
+
+//==========
+*/
+    auto tmpEnd = server[49].vmList.end();
+    for(auto i = server[49].vmList.begin();i != tmpEnd;++ i)
+        printVM(*i);
+    printf("Core:%d, M:%d\n", serverInformation[server[49].type].coreNum, serverInformation[server[49].type].memorySize);
+
+>>>>>>> Stashed changes
     for(int i = 0;i < T;++ i)
     {
         logger.start_a_brand_new_day();
