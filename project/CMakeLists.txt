@@ -3,4 +3,4 @@ project(project)
 
 set(CMAKE_CXX_STANDARD 11)
 
-add_executable(project main.cpp input.h DataStructure.h output.h BaselineSolver.h SegmentTree.h)
+add_executable(project main.cpp input.h DataStructure.h output.h BaselineSolver.h SegmentTree.h BlockList.h)

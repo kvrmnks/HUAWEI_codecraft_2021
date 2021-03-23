@@ -18,11 +18,37 @@ struct Node{
 // 用来返回查询结果
 struct DataPackage{
     int mm[2], cu[2];
+    DataPackage(){
+        mm[0] = mm[1] = cu[0] = cu[1] = 0;
+    }
+    DataPackage(int *data){
+        mm[0] = data[0];
+        mm[1] = data[1];
+        cu[0] = data[2];
+        cu[1] = data[3];
+    }
     friend ostream& operator<<(ostream& o, DataPackage &b){
         o << b.mm[0] << " " << b.mm[1] << " " << b.cu[0] << " " << b.cu[1] << endl;
         return o;
     }
+    DataPackage operator + (DataPackage &b){
+        DataPackage t;
+        t.mm[0] = this->mm[0] + b.mm[0];
+        t.mm[1] = this->mm[1] + b.mm[1];
+        t.cu[0] = this->cu[0] + b.cu[0];
+        t.cu[1] = this->cu[1] + b.cu[1];
+        return t;
+    }
 };
+DataPackage bigger(DataPackage a, DataPackage b){
+    DataPackage t;
+    t.mm[0] = max(a.mm[0], b.mm[0]);
+    t.mm[1] = max(a.mm[1], b.mm[1]);
+    t.cu[0] = max(a.cu[0], b.cu[0]);
+    t.cu[1] = max(a.cu[1], b.cu[1]);
+    return t;
+}
+
 
 //线段树
 class SegmentTree{

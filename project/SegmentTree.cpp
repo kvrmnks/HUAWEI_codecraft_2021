@@ -77,9 +77,11 @@ void SegmentTree::pushdown(Node *x) {
 }
 
 DataPackage SegmentTree::_query(Node *x, int L, int R, int l, int r) {
+//    cerr << L << " " << R << endl;
     pushdown(x);
     if(l==L && r==R){
-        return DataPackage{x->mm[0], x->mm[1], x->cu[0], x->cu[1]};
+        int ddd[4] = {x->mm[0], x->mm[1], x->cu[0], x->cu[1]};
+        return DataPackage(ddd);
     }
     int mid = (L+R)>>1;
     if(r<=mid){
