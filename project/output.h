@@ -18,7 +18,7 @@ using namespace std;
 
 // 记录购买服务器的信息
 struct PurchaseInfo {
-    vector<pair<string, unsigned> > serverNumPerType; // type name, quantity
+    vector<pair<string, int> > serverNumPerType; // type name, quantity
 
     friend ostream &operator << (ostream &output, PurchaseInfo& purchaseInfo) {
         output << "(purchase, " << purchaseInfo.serverNumPerType.size() << ")" << endl;
@@ -31,7 +31,7 @@ struct PurchaseInfo {
 
 // 记录迁移的信息
 struct Migration {
-    vector<pair<pair<unsigned, unsigned>, char> > migrationInfo; // vm_id, server_id,  (node : 'N', 'A', 'B');
+    vector<pair<pair<int, int>, char> > migrationInfo; // vm_id, server_id,  (node : 'N', 'A', 'B');
 
     friend ostream &operator << (ostream &output, Migration& migration) {
         output << "(migration, " << migration.migrationInfo.size() << ")" << endl;
@@ -55,7 +55,7 @@ struct DeployRequest {
     }
     DeployRequest(){}
 
-    vector<pair<unsigned, pair<unsigned, char> > > deployments; // server_id, (node : 'N', 'A', 'B')
+    vector<pair<int, pair<int, char> > > deployments; // server_id, (node : 'N', 'A', 'B')
 
     friend ostream &operator << (ostream &output, DeployRequest& deployRequest) {
         for(auto x : deployRequest.deployments) {
@@ -90,13 +90,13 @@ struct DailyAction {
     }
     DailyAction(){}
 
-    void insertPurchase (pair<string, unsigned> p) {
+    void insertPurchase (pair<string, int> p) {
         purchase.serverNumPerType.push_back(p);
     }
-    void insertMigration (pair<pair<unsigned, unsigned>, char> m) {
+    void insertMigration (pair<pair<int, int>, char> m) {
         migration.migrationInfo.push_back(m);
     }
-    void insertDeployment (pair<unsigned ,pair<unsigned, char> > d) {
+    void insertDeployment (pair<int ,pair<int, char> > d) {
         deployment.deployments.push_back(d);
     }
     friend ostream &operator << (ostream &output, DailyAction dailyAction) {
@@ -125,7 +125,7 @@ private:
     vector<pair<pair<int, int>, char> > vm_id_server_rank_for_migration;
 
     map<int, int> server_rank_id_map;
-    map<int, int> server_id_rank_map;
+    map<int, pair<int, int> > server_id_rank_map;
 public:
     Actions(bool isDebugging) {
         flag = isDebugging;
@@ -207,7 +207,7 @@ public:
             tmp_type = x.second;
             server_rank_id_map[x.first] = total_server + (tmp_type == 0 ? 0 : prefix_sum[tmp_type - 1]) + bucket_server[tmp_type] - 1;
             bucket_server[tmp_type] --;
-            server_id_rank_map[server_rank_id_map[x.first]] = x.first;
+            server_id_rank_map[server_rank_id_map[x.first]] = make_pair(x.first, tmp_type);
 
 
 //            cout << "rank: " << x.first << ",  type: " << x.second << ", id: " << server_rank_id_map[x.first] << endl;
@@ -242,12 +242,12 @@ public:
             cerr << "No such id yet" << endl;
             exit(-999);
         }
-        return server_id_rank_map[id];
+        return server_id_rank_map[id].first;
     }
 
     void output_server_rank_id_map() {
-        for (auto iter = server_rank_id_map.rbegin(); iter != server_rank_id_map.rend(); iter++) {
-            cout << "server rank: " << iter->first << " , server id: " << iter->second << endl;
+        for (auto iter = server_id_rank_map.rbegin(); iter != server_id_rank_map.rend(); iter++) {
+            cout << "server id: " << iter->first << " , server rank: " << iter->second.first << ", server type: " << iter->second.second << endl;
         }
     }
 
