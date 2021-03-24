@@ -849,7 +849,8 @@ void migration(int maxMigrationTime, Actions &logger)
             for(int k = mid;k < serverNum;++ k)
             {
                 bool t1 = server[k].canAddVirtualMachine(j, 0);
-                bool t2 = vmInfor.isDoubleNode || server[k].canAddVirtualMachine(j, 1);
+                bool t2 = false;
+                if(!vmInfor.isDoubleNode) t2 = server[k].canAddVirtualMachine(j, 1);
                 if(t1 || t2)
                 {
                     int nodeNumi = vm.nodeNum;
