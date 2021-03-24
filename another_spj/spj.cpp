@@ -84,6 +84,7 @@ void runJudger(std::string inputFile,std::string outputFile) {
     int T;
     infile >> T;
     for (int date = 0; date < T; ++date) {
+        std::cerr << date << std::endl;
         auto add_vir_2_ser = [&](const std::string& name, int add_id, int pos, int numa = -1) {
             virs[add_id] = Vir(name, vts[name], pos, numa);
             if (numa == 0) {
@@ -165,8 +166,14 @@ void runJudger(std::string inputFile,std::string outputFile) {
             std::string name = virs[vir_id].name;
             int numa = -1;
             if (virs[vir_id].type == 0) {
-                numa = std::stoi(tmp_str.substr(0, tmp_str.find(',')));
-                tmp_str = tmp_str.substr(tmp_str.find(',') + 2);
+                if(tmp_str == "B"){
+                    numa = 1;
+                }else{
+                    numa = 0;
+                }
+//                std::cerr << tmp_str << " " << numa << "\n";
+//                numa = std::stoi(tmp_str.substr(0, tmp_str.find(',')));
+//                tmp_str = tmp_str.substr(tmp_str.find(',') + 2);
             }
             // migration
             del_vir_from_ser(vir_id);
