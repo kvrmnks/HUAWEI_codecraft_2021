@@ -112,120 +112,85 @@ class VirtualMachineList{
         return data.size();
     }
 }
-public class Main {
-    int N, M, T;
-    MachineList machines = new MachineList();
-    VirtualMachineList virtualMachines = new VirtualMachineList();
-
+class Action{
     MachineList realMachines = new MachineList();
     TreeMap<Integer, VirtualMachine> realVirtualMachines = new TreeMap<>();
     TreeMap<Integer, Integer> belong = new TreeMap<>();
     TreeMap<Integer, Integer> config = new TreeMap<>();
-    Scanner sc, ans;
-    long totalCost = 0, pre = 0;
+    public void addMachine(Machine x){
+        realMachines.append(x);
+    }
+    public void delVirtualMachine(int vm_id){
+        int machine_id = belong.get(vm_id);
+        VirtualMachine vm = realVirtualMachines.get(vm_id);
+        if(config.get(vm_id) == 1){
+            realMachines.get(machine_id).coreB += vm.core;
+            realMachines.get(machine_id).mmB += vm.mm;
+        }else if(config.get(vm_id) == 2){
+            realMachines.get(machine_id).coreA += vm.core/2;
+            realMachines.get(machine_id).mmA += vm.mm/2;
+            realMachines.get(machine_id).coreB += vm.core/2;
+            realMachines.get(machine_id).mmB += vm.mm/2;
 
-    private long solveOneDay(){
+        }else if(config.get(vm_id) == 0){
+            realMachines.get(machine_id).coreA += vm.core;
+            realMachines.get(machine_id).mmA += vm.mm;
+        }
+        belong.remove(vm_id);
+        config.remove(vm_id);
+        realVirtualMachines.remove(vm_id);
+    }
+    public void addVirtualMachine(int vm_id, int machine_id, int cf, VirtualMachine vm){
+//        System.out.println(cf);
+//        for(int x : belong.keySet()){
+//            if(belong.get(x) == 22){
+//                System.out.println(realVirtualMachines.get(x) + " node: " + config.get(x) + " id: " + x);
+//            }
+//        }
+        if(belong.containsKey(vm_id)){
+            belong.replace(vm_id, machine_id);
+        }else{
+            belong.put(vm_id, machine_id);
+        }
+        if(config.containsKey(vm_id)){
+            config.replace(vm_id, cf);
+        }else{
+            config.put(vm_id, cf);
+        }
+        if(realVirtualMachines.containsKey(vm_id)){
+            realVirtualMachines.replace(vm_id, vm);
+        }else{
+            realVirtualMachines.put(vm_id, vm);
+        }
+        if(config.get(vm_id) == 1){
+            realMachines.get(machine_id).coreB -= vm.core;
+            realMachines.get(machine_id).mmB -= vm.mm;
+        }else if(config.get(vm_id) == 2){
+            realMachines.get(machine_id).coreA -= vm.core/2;
+            realMachines.get(machine_id).mmA -= vm.mm/2;
+            realMachines.get(machine_id).coreB -= vm.core/2;
+            realMachines.get(machine_id).mmB -= vm.mm/2;
+
+        }else if(config.get(vm_id) == 0){
+            realMachines.get(machine_id).coreA -= vm.core;
+            realMachines.get(machine_id).mmA -= vm.mm;
+        }
+        Machine tmp = realMachines.get(machine_id);
+        if(tmp.coreA<0 || tmp.coreB<0 || tmp.mmA<0 || tmp.mmB<0) {
+
+                    for(int x : belong.keySet()){
+            if(belong.get(x) == 23){
+                System.out.println(realVirtualMachines.get(x) + " node: " + config.get(x) + " id: " + x);
+            }
+        }
+            System.out.println("服务器的资源溢出\n" + machine_id + "\n" + tmp);
+            System.exit(-5);
+
+        }
+    }
+    public long getCost(){
         long cost = 0;
-        String s = ans.nextLine();
-        String[] l = s.replace('(', ' ').replace(')', ' ').trim().split(",");
-        int Q = Integer.parseInt(l[1].trim());
-//        System.out.println(Q);
-        for(int i=0;i<Q;i++){
-            s = ans.nextLine();
-            l = s.replace('(',' ').replace(')',' ').trim().split(",");
-            int t = Integer.parseInt(l[1].trim());
-            pre += t;
-            for(int j=0;j<t;j++){
-                realMachines.append(machines.getByName(l[0]).clone());
-                cost += machines.getByName(l[0]).p;
-            }
-        }
-//        System.out.println(pre + " " + realMachines.size());
-        s = ans.nextLine();
-//        int W = Integer.parseInt(s.trim());
-//        if(W != 0){System.exit(-1);}
-
-        int R = Integer.parseInt(sc.nextLine().trim());
-        for(int i=0;i<R;i++){
-            String _s = sc.nextLine();
-
-//            System.out.println(i+" "+_s);
-            l = _s.replace('(',' ').replace(')',' ').trim().split(",");
-            for(int j=0;j<l.length;j++)l[j] = l[j].trim();
-            if(l[0].equals("del")){
-                int id = Integer.parseInt(l[1]);
-//                System.out.println("id = " + id);
-//                System.out.println(belong.keySet());
-                int mid = belong.get(id);
-                if(config.get(id) == 1){
-                    realMachines.get(mid).coreB += realVirtualMachines.get(id).core;
-                    realMachines.get(mid).mmB += realVirtualMachines.get(id).mm;
-                }else if(config.get(id) == 2){
-                    realMachines.get(mid).coreA += realVirtualMachines.get(id).core/2;
-                    realMachines.get(mid).mmA += realVirtualMachines.get(id).mm/2;
-                    realMachines.get(mid).coreB += realVirtualMachines.get(id).core/2;
-                    realMachines.get(mid).mmB += realVirtualMachines.get(id).mm/2;
-
-                }else if(config.get(id) == 0){
-                    realMachines.get(mid).coreA += realVirtualMachines.get(id).core;
-                    realMachines.get(mid).mmA += realVirtualMachines.get(id).mm;
-                }
-                belong.remove(id);
-                realVirtualMachines.remove(id);
-            }else if(l[0].equals("add")){
-                VirtualMachine vm = virtualMachines.getByName(l[1].trim()).clone(); // 所需要的虚拟机
-                int id = Integer.parseInt(l[2].trim()); //给虚拟机分配的id
-                if(realVirtualMachines.containsKey(id))
-                    realVirtualMachines.replace(id, vm); //加入虚拟机
-                else
-                    realVirtualMachines.put(id, vm);
-                _s = ans.nextLine();
-                l = _s.replace('(',' ').replace(')',' ').trim().split(",");//分配
-//                System.out.println(_s);
-                int machine_id = Integer.parseInt(l[0].trim()); // 服务器编号
-                if(belong.containsKey(id))
-                    belong.replace(id, machine_id);// 分配服务器编号
-                else
-                    belong.put(id, machine_id);
-//                System.out.println(id);
-                int flag = 0;
-                if(vm.db){
-                    if(l.length == 2){System.out.println("将一个双部署的虚拟机单部署");System.exit(-2);}
-                    flag = 2;
-                }else{
-                    if(l.length != 2){System.out.print("将一个单部署的虚拟机双部署 " + vm.toString() + l[0]+" "+l[1]);System.exit(-3);}
-                    flag = (l[1].trim().equals("A") ? 0 : 1); // 分配AB节点号
-                }
-                if(config.containsKey(id))
-                config.replace(id, flag);
-                else
-                    config.put(id, flag);
-                if(flag == 2){
-                    realMachines.get(machine_id).coreA -= vm.core/2;
-                    realMachines.get(machine_id).coreB -= vm.core/2;
-                    realMachines.get(machine_id).mmA -= vm.mm/2 ;
-                    realMachines.get(machine_id).mmB -= vm.mm/2;
-                }else if(flag == 0){
-                    realMachines.get(machine_id).coreA -= vm.core;
-                    realMachines.get(machine_id).mmA -= vm.mm;
-                }else if(1 == flag){
-                    realMachines.get(machine_id).coreB -= vm.core;
-                    realMachines.get(machine_id).mmB -= vm.mm;
-                }
-                Machine tmp = realMachines.get(machine_id);
-                if(tmp.coreA<0 || tmp.coreB<0 || tmp.mmA<0 || tmp.mmB<0) {
-                    System.out.println("服务器的资源溢出\n" + machine_id + "\n" + tmp);
-                    System.exit(-5);
-
-                }
-            }else{
-                System.out.println("参数解析错误");
-                System.exit(-1);
-            }
-        }
         boolean[] vis = new boolean[realMachines.size()];
-//        System.out.println(realVirtualMachines.keySet());
-//        System.out.println(machines.size() + " " + belong);
         for(Integer vm : realVirtualMachines.keySet()){
 
             vis[belong.get(vm)] = true;
@@ -235,25 +200,107 @@ public class Main {
                 cost += realMachines.get(i).cost;
             }
         }
-//        System.out.println("machine size :" + realMachines.size());
         return cost;
+    }
+    public VirtualMachine getVm(int vm_id){
+        return realVirtualMachines.get(vm_id);
+    }
+}
+public class Main {
+    int N, M, T;
+    MachineList machines = new MachineList();
+    VirtualMachineList virtualMachines = new VirtualMachineList();
+    Action action = new Action();
+    Scanner sc, ans;
+    long totalCost = 0, pre = 0;
+
+    private long solveOneDay(){
+        long cost = 0;
+        String s = ans.nextLine();
+        String[] l = s.replace('(', ' ').replace(')', ' ').trim().split(",");
+        int Q = Integer.parseInt(l[1].trim());
+        for(int i=0;i<Q;i++){
+            s = ans.nextLine();
+            l = s.replace('(',' ').replace(')',' ').trim().split(",");
+            int t = Integer.parseInt(l[1].trim());
+            pre += t;
+            for(int j=0;j<t;j++){
+                action.addMachine(machines.getByName(l[0]).clone());
+                cost += machines.getByName(l[0]).p;
+            }
+        }
+        s = ans.nextLine();
+        l = s.replace('(',' ').replace(')', ' ').trim().split(",");
+        int M = Integer.parseInt(l[1].trim());
+        for(int i=0;i<M;i++){
+            s = ans.nextLine();
+            l = s.replace('(',' ').replace(')', ' ').trim().split(",");
+            int vm_id = Integer.parseInt(l[0].trim());
+            int new_machine_id = Integer.parseInt(l[1].trim());
+            VirtualMachine vm = action.getVm(vm_id);
+            action.delVirtualMachine(vm_id);
+            int nodeId = 2;
+            if(l.length == 3){
+                nodeId = (l[2].trim().equals("A")?0:1);
+                if(vm.db){
+                    System.out.println("错误的迁移方案，将双节点单部署");
+                    System.exit(-6);
+                }
+            }else{
+                if(!vm.db){
+                    System.out.println("错误的迁移方案，将单节点双部署");
+                    System.exit(-6);
+                }
+            }
+
+            action.addVirtualMachine(vm_id, new_machine_id, nodeId, vm);
+        }
+        int R = Integer.parseInt(sc.nextLine().trim());
+        for(int i=0;i<R;i++){
+            String _s = sc.nextLine();
+            l = _s.replace('(',' ').replace(')',' ').trim().split(",");
+            for(int j=0;j<l.length;j++)l[j] = l[j].trim();
+            if(l[0].equals("del")){
+                int id = Integer.parseInt(l[1]);
+                action.delVirtualMachine(id);
+            }else if(l[0].equals("add")){
+                VirtualMachine vm = virtualMachines.getByName(l[1].trim()).clone(); // 所需要的虚拟机
+                int id = Integer.parseInt(l[2].trim()); //给虚拟机分配的id
+                _s = ans.nextLine();
+                l = _s.replace('(',' ').replace(')',' ').trim().split(",");//分配
+                int machine_id = Integer.parseInt(l[0].trim()); // 服务器编号
+                int flag = 0;
+                if(vm.db){
+                    if(l.length == 2){System.out.println("将一个双部署的虚拟机单部署");System.exit(-2);}
+                    flag = 2;
+                }else{
+                    if(l.length != 2){System.out.print("将一个单部署的虚拟机双部署 " + vm.toString() +" "+ l[0]+" "+l[1] + " " + l[2]);System.exit(-3);}
+                    flag = (l[1].trim().equals("A") ? 0 : 1); // 分配AB节点号
+                }
+                action.addVirtualMachine(id, machine_id, flag, vm);
+
+            }else{
+                System.out.println("参数解析错误");
+                System.exit(-1);
+            }
+        }
+
+        return cost + action.getCost();
     }
     private void readData(){
         N = sc.nextInt();
         sc.nextLine();
         for(int i=0;i<N;i++)machines.append(sc.nextLine());
-//        for(int i=0;i<N;i++)System.out.println(machines.get(i));
         M = sc.nextInt();
         sc.nextLine();
         for(int i=0;i<M;i++)virtualMachines.append(sc.nextLine());
-//        for(int i=0;i<M;i++)System.out.println(virtualMachines.get(i));
     }
 
     Main() throws FileNotFoundException {
-        FileInputStream fileIn = new FileInputStream("./training-1.txt");
+        FileInputStream fileIn = new FileInputStream("./training-2.txt");
         System.setIn(fileIn);
         sc = new Scanner(System.in);
-        ans = new Scanner(new FileInputStream("./training-1-out.txt"));
+        ans = new Scanner(new FileInputStream("./training-2-out.txt"));
         readData();
         T = sc.nextInt();
         sc.nextLine();
