@@ -122,7 +122,7 @@ int main() {
 
 //  push your lovely solver into the solvers vector :)
 
-    solvers.push_back(&first_solver);
+    solvers.push_back(&base_solver_with_migration);
 //    solvers.push_back(&base_solver);
 //    solvers.push_back(&base_solver_with_rand_all);
 
