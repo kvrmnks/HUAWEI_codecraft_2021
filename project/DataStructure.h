@@ -133,7 +133,7 @@ struct Server								//已经购买的、使用中的服务器
     BlockList blo;
     //检查是否能把下标为rank的虚拟机添加到该服务器
     //如果虚拟机是单核模式，core表示加载到哪一个内核。0表示内核A，1表示内核B
-    int canAddVirtualMachine(int rank, int core = 0)
+    bool canAddVirtualMachine(int rank, int core = 0)
     {
         VirtualMachine& vm = virtualMachine[rank];
         VirtualMachineInformation& vmInfor= virtualMachineInformation[vm.type];
@@ -174,7 +174,7 @@ struct Server								//已经购买的、使用中的服务器
             else return false;
         }
 
-        return std::min(tmpRemainCoreNodeA, tmpRemainCoreNodeB) + std::min(tmpRemainMemoryNodeA, tmpRemainMemoryNodeB);;
+        return true;
     }
 
     //添加虚拟机到服务器,接受其在virtualMachine的下标
