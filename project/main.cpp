@@ -5,7 +5,6 @@
  *
  * */
 
-
 #include "input.h"
 #include "DataStructure.h"
 #include <cstdlib>
@@ -100,7 +99,7 @@ Actions& winner_solver(vector<FUNCTYPE>& solvers, int T, bool isDebugging) {
             }
         }
 #ifdef COST_DEBUG
-    cout << "total cost: " << min_cost << endl;
+//    cout << "total cost: " << min_cost << endl;
 #endif
 
     return logger;
@@ -136,7 +135,7 @@ int main() {
 
     final_answer.print();
 
-   // final_answer.output_server_rank_id_map();
+//    final_answer.output_server_rank_id_map();
 
     /*cout<<"=========================="<<endl;
     for(int i = 0;i < serverNum;++ i)
