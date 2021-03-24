@@ -151,15 +151,19 @@ public:
     }
 
 //  做了一次双节点迁移
-//  虚拟机id为vm_id，目标服务器下标rank
-    void log_a_migration(int vm_id, int server_rank) {
-        vm_id_server_rank_for_migration.emplace_back(make_pair(vm_id, server_rank), 'N');
+//  虚拟机下标为vm_rank，目标服务器下标server_rank
+    void log_a_migration(int vm_rank, int server_rank) {
+        VirtualMachine& vm = virtualMachine[vm_rank];
+
+        vm_id_server_rank_for_migration.emplace_back(make_pair(vm.id, server_rank), 'N');
     }
 
 //  做了一次单节点迁移
-//  虚拟机id为vm_id，目标服务器下标rank，节点 node
-    void log_a_migration(int vm_id, int server_rank, int node) {
-        vm_id_server_rank_for_migration.emplace_back(make_pair(vm_id, server_rank), node == 0 ? 'A' : 'B');
+//  虚拟机下标为vm_rank，目标服务器下标server_rank，节点 node
+    void log_a_migration(int vm_rank, int server_rank, int node) {
+        VirtualMachine& vm = virtualMachine[vm_rank];
+
+        vm_id_server_rank_for_migration.emplace_back(make_pair(vm.id, server_rank), node == 0 ? 'A' : 'B');
     }
 
 //  做了一次调度，虚拟机的下标为vm_rank
@@ -224,7 +228,7 @@ public:
 
 //      计算迁移信息
         for (auto migration : vm_id_server_rank_for_migration) {
-            dailyAction.insertMigration(migration);
+            dailyAction.insertMigration(make_pair(make_pair(migration.first.first, server_rank_id_map[migration.first.second]), migration.second));
         }
 
         actions.push_back(dailyAction);

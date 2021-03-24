@@ -20,6 +20,8 @@
 
 #ifdef DEBUG
 
+#include <time.h>
+
 //#define INOUT_DEBUG
 #define IO_DEBUG
 //#define LOGIC_DEBUG
@@ -99,7 +101,9 @@ Actions& winner_solver(vector<FUNCTYPE>& solvers, int T, bool isDebugging) {
             }
         }
 #ifdef COST_DEBUG
-//    cout << "total cost: " << min_cost << endl;
+    if(isDebugging) {
+        cout << "total cost: " << min_cost << endl;
+    }
 #endif
 
     return logger;
@@ -110,9 +114,13 @@ int main() {
 
 #ifdef IO_DEBUG
 
-    freopen("training-2.txt", "r", stdin);
+    freopen("training--2.txt", "r", stdin);
     freopen("training-2-out.txt", "w", stdout);
 
+#endif
+
+#ifdef DEBUG
+    clock_t start_time_solver = clock();
 #endif
 
     readData();
@@ -125,25 +133,36 @@ int main() {
 //    solvers.push_back(&base_solver);
 //    solvers.push_back(&base_solver_with_rand_all);
 
-
-
 //    simpler way to print
 
 //    winner_solver(solvers).print();
 
     Actions& final_answer = winner_solver(solvers, 1, false); // T 指rand几次
 
+#ifdef DEBUG
+    clock_t end_time_solver = clock();
+    clock_t start_time_print = clock();
+#endif
+
     final_answer.print();
 
-//    final_answer.output_server_rank_id_map();
+    final_answer.output_server_rank_id_map();
 
-    /*cout<<"=========================="<<endl;
-    for(int i = 0;i < serverNum;++ i)
-    {
-        int tmp = final_answer.get_rank_of_server_with_id(i);
-        cout << i << " " << tmp << "  type:"  << server[tmp].type << endl;
-    }
-    cout<<"=========================="<<endl;*/
+//    cout<<"=========================="<<endl;
+//    for(int i = 0;i < serverNum;++ i)
+//    {
+//        int tmp = final_answer.get_rank_of_server_with_id(i);
+//        cout << i << " " << tmp << "  type:"  << server[tmp].type << endl;
+//    }
+//    cout<<"=========================="<<endl;
+
+
+#ifdef  DEBUG
+    clock_t end_time_print = clock();
+    cerr << "solving time: " << (double)(end_time_solver - start_time_solver) / CLOCKS_PER_SEC << "s" << endl;
+    cerr << "printing time: " << (double)(end_time_print - start_time_print) / CLOCKS_PER_SEC << "s" << endl;
+#endif
+
 
     return 0;
 }

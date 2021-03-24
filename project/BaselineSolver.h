@@ -867,13 +867,13 @@ void migration(int maxMigrationTime, Actions &logger)
                     {
                         if(vmInfor.isDoubleNode)
                         {
-                            logger.log_a_migration(vm.id, k);
+                            logger.log_a_migration(j, k);
                             ++ cnt;
                             if(cnt >= maxMigrationTime) return;
                         }
                         else
                         {
-                            logger.log_a_migration(vm.id, k, vm.nodeNum);
+                            logger.log_a_migration(j, k, vm.nodeNum);
                             ++ cnt;
                             if(cnt >= maxMigrationTime) return;
                         }
