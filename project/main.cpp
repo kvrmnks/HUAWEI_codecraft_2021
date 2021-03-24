@@ -114,7 +114,7 @@ int main() {
 
 #ifdef IO_DEBUG
 
-    freopen("training--2.txt", "r", stdin);
+    freopen("training-2.txt", "r", stdin);
     freopen("training-2-out.txt", "w", stdout);
 
 #endif
@@ -129,8 +129,8 @@ int main() {
 
 //  push your lovely solver into the solvers vector :)
 
-//    solvers.push_back(&base_solver_with_migration);
-    solvers.push_back(&base_solver);
+    solvers.push_back(&base_solver_with_migration);
+//    solvers.push_back(&base_solver);
 //    solvers.push_back(&base_solver_with_rand_all);
 
 //    simpler way to print
@@ -146,7 +146,7 @@ int main() {
 
     final_answer.print();
 
-    final_answer.output_server_rank_id_map();
+//    final_answer.output_server_rank_id_map();
 
 //    cout<<"=========================="<<endl;
 //    for(int i = 0;i < serverNum;++ i)

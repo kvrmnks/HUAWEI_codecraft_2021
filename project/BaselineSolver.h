@@ -829,6 +829,7 @@ int serverRemainValue(Server& server)
 //maxMigrationTime:最大迁移次数
 void migration(int maxMigrationTime, Actions &logger)
 {
+    if(maxMigrationTime == 0) return;
     //===========
     //第一种方案：把前一半服务器中的虚拟机往后一半移动
     //如果两个结点中的空余最小Core+最小Memory变大，则移动
@@ -897,7 +898,7 @@ long long base_solver_with_migration(int seed, Actions &logger) {
 
     for(int i = 0;i < T;++ i)
     {
-        cerr << i << " Day" << endl;
+        // cerr << i << " Day" << endl;
         logger.start_a_brand_new_day();
         migration(5 * virtualMachineNum / 1000, logger);
         int maxRank = requireRank[i] + requireNum[i];
