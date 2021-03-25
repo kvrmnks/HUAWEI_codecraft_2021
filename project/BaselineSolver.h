@@ -9,6 +9,7 @@
 #include "DataStructure.h"
 #include "SegmentTree.h"
 
+
 long long base_solver(int seed, Actions &logger) {
     init();
 
@@ -785,47 +786,6 @@ int serverRemainValue(Server& server)
     return std::min(tmpRemainCoreNodeA, tmpRemainCoreNodeB) + std::min(tmpRemainMemoryNodeA, tmpRemainMemoryNodeB);;
 }
 
-
-/*bool migrat(int vmRank, Server& serverFrom, Server& serverTo, Actions& logger)
-{
-    VirtualMachine& vm = virtualMachine[vmRank];
-    VirtualMachineInformation& vmInfor = virtualMachineInformation[vm.type];
-    bool t1 = serverTo.canAddVirtualMachine(vmRank, 0);
-    bool t2 = vmInfor.isDoubleNode || serverTo.canAddVirtualMachine(vmRank, 1);
-    int v1 = 0, v2 = 0;
-    int cnt = 0;
-    if(t1 || t2)
-    {
-        int nodeNum = vm.nodeNum;
-        v2 = serverRemainValue(serverTo);
-        serverFrom.delVirtualMachine(vm.id);
-        if(t1)  serverTo.addVirtualMachine(vmRank, 0);
-        else if(t2) serverTo.addVirtualMachine(vmRank, 1);
-        v1 = serverRemainValue(serverFrom);
-        if(v1 > v2)
-        {
-            if(vmInfor.isDoubleNode)
-            {
-                logger.log_a_migration(vm.id, serverTo.rank);
-                return true;
-            }
-            else
-            {
-                logger.log_a_migration(vm.id, serverTo.rank, vm.nodeNum);
-                return true;
-            }
-        }
-        else
-        {
-            serverTo.delVirtualMachine(vm.id);
-            serverFrom.addVirtualMachine(vmRank, nodeNum);
-            return false;
-        }
-    }
-    return false;
-}*/
-
-
 //maxMigrationTime:最大迁移次数
 void migration(int maxMigrationTime, Actions &logger)
 {
@@ -835,7 +795,7 @@ void migration(int maxMigrationTime, Actions &logger)
     //如果两个结点中的空余最小Core+最小Memory变大，则移动
     //===========
 
-    int mid = serverNum / 2;
+    int mid = rand() % (serverNum / 2) + 1;
     int cnt = 0;
     for(int i = 0;i < mid;++ i)
     {
@@ -901,7 +861,10 @@ long long base_solver_with_migration(int seed, Actions &logger) {
     {
         // cerr << i << " Day" << endl;
         logger.start_a_brand_new_day();
-        migration(5 * virtualMachineNum / 1000, logger);
+        /*int t = 5 * timeVirtualNum / 1000;
+        if(t == 0) migration(t, logger);
+        else migration(rand() % t, logger);*/
+        migration(5 * timeVirtualNum / 1000, logger);
         int maxRank = requireRank[i] + requireNum[i];
         for(int j = requireRank[i];j < maxRank; ++ j)
         {
@@ -911,6 +874,7 @@ long long base_solver_with_migration(int seed, Actions &logger) {
 
             if(req.type == 0)
             {
+                ++ timeVirtualNum;
                 int vmRank = virtualMachineNum;
                 addVirtualMachine(vmType, req.id);
 
@@ -956,6 +920,7 @@ long long base_solver_with_migration(int seed, Actions &logger) {
             }
             else if(req.type == 1)
             {
+                -- timeVirtualNum;
                 if(vmIdToRank.count(req.id) == 0) continue;
                 int vmRank = vmIdToRank[req.id];
                 VirtualMachine vm = virtualMachine[vmRank];

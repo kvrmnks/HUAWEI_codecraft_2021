@@ -14,7 +14,11 @@
 #include "SegmentTree.h"
 #include "BlockList.h"
 
+
 using namespace std;
+
+int timeVirtualNum = 0;                     //用于base_solver_with_migration
+
 
 int M;										//售买虚拟机的数量,[1,1000]
 struct VirtualMachineInformation
@@ -332,16 +336,20 @@ void init()
 {
     virtualMachineNum = 0;
     serverNum = 0;
+    timeVirtualNum = 0;
+    server.clear();
 
-//    for(int i = 0;i < 100000;++ i)
-//        server[i].rank = i;
+
+
+  /*  for(int i = 0;i < 100000;++ i)
+        server[i].rank = i;
     for(int i = 0;i < 100;++ i)
         cntSeverInformation[i] = i;
 
     std::sort(cntSeverInformation, cntSeverInformation + N, [](int x, int y){
         return (serverInformation[x].coreNum + serverInformation[x].memorySize)/serverInformation[x].hardwareCost > (serverInformation[y].coreNum + serverInformation[y].memorySize)/serverInformation[y].hardwareCost;
     });
-    requireSum = 100000;
+    requireSum = 100000;*/
 //    cerr << "rs" << requireSum << endl;
 }
 

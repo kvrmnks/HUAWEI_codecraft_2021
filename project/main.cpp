@@ -32,6 +32,8 @@
 
 #endif
 
+const int randSeed = 0;
+
 
 void readData()
 {
@@ -84,7 +86,7 @@ Actions logger;
 Actions& winner_solver(vector<FUNCTYPE>& solvers, int T, bool isDebugging) {
     long long min_cost = INT64_MAX;
 
-    srand(0);
+    srand(randSeed);
 //    srand(19260817);  //683,830,557 + 702,452,646 = 1,386,283,203
     //srand(996251404); //687,231,808 + 705,445,429
     //srand(2019051301);//679, 094, 368+702,452,646
@@ -137,7 +139,7 @@ int main() {
 
 //    winner_solver(solvers).print();
 
-    Actions& final_answer = winner_solver(solvers, 1, false); // T 指rand几次
+    Actions& final_answer = winner_solver(solvers, 2, false); // T 指rand几次
 
 #ifdef DEBUG
     clock_t end_time_solver = clock();
