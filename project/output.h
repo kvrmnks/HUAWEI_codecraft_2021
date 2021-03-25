@@ -243,7 +243,7 @@ public:
 
     int get_rank_of_server_with_id(int id) {
         if (server_id_rank_map.count(id) == 0) {
-            cerr << "No such id yet" << endl;
+            //cerr << "No such id yet" << endl;
             exit(-999);
         }
         return server_id_rank_map[id].first;

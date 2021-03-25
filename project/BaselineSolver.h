@@ -7,7 +7,7 @@
 
 #include "output.h"
 #include "DataStructure.h"
-#include "SegmentTree.h"
+//#include "SegmentTree.h"
 
 
 long long base_solver(int seed, Actions &logger) {
@@ -442,6 +442,7 @@ long long base_solver_with_select_samll(int seed, Actions &logger) {
 
 //==========
 //文章中第一个方法
+/*
 int cntVmDuration[100010];
 std::pair<bool, bool> canAddVmToServer(VirtualMachine &vm, Server &server)
 {
@@ -479,7 +480,7 @@ std::pair<bool, bool> canAddVmToServer(VirtualMachine &vm, Server &server)
     }
 */
 
-    DataPackage ans = server.blo.query(vm.inAddReqRank, vm.inDelReqRank);
+   /* DataPackage ans = server.blo.query(vm.inAddReqRank, vm.inDelReqRank);
     ans.cu[0] = serInfor.coreNum/2 - ans.cu[0];
     ans.cu[1] = serInfor.coreNum/2 - ans.cu[1];
     ans.mm[0] = serInfor.memorySize/2 - ans.mm[0];
@@ -535,7 +536,7 @@ std::pair<bool, bool> canAddVmToServer(VirtualMachine &vm, Server &server)
     }
 
 
-    return re;
+    return re;*/
     /*
     ServerInformation& serInfor = serverInformation[server.type];
     int remainCoreA = (serInfor.coreNum >> 1), remainCoreB = (serInfor.coreNum >> 1);
@@ -621,8 +622,8 @@ std::pair<bool, bool> canAddVmToServer(VirtualMachine &vm, Server &server)
 
 
     return re;
-     */
-}
+
+}*/
 /*
 std::map<int, int> vmToServer;              //记录下标为i的虚拟机加入到了服务器vmToServerpi[中
 
@@ -636,6 +637,7 @@ void tmpAdd(int num, int& sumCoreA, int& sumCoreB, int& sumMA, int& sumMB)
 
 //=======
 */
+/*
 long long first_solver(int seed, Actions &logger){
     init();
     srand(seed);
@@ -665,8 +667,8 @@ long long first_solver(int seed, Actions &logger){
 
     for(int p = 0;p < virtualMachineNum;++ p)
     {
-        if(p % 10000 == 0)
-            cerr << p << " " << serverNum << " " << virtualMachineNum <<  endl;
+        //if(p % 10000 == 0)
+            //cerr << p << " " << serverNum << " " << virtualMachineNum <<  endl;
         bool hasSever = false;
         int i = cntVmDuration[p];
         for(int j = 0;j < serverNum;++ j)
@@ -701,7 +703,7 @@ long long first_solver(int seed, Actions &logger){
                 server[serverNum-1].addVirtualMachineForFirst(i, 1);
             //vmToServer[i] = serverNum-1;
         }
-    }
+    }*/
 /*
 //======check
     for(int i = 0;i < serverNum;++ i)
@@ -740,7 +742,7 @@ long long first_solver(int seed, Actions &logger){
 
 //==========
 */
-
+/*
     //printf("%d\n", serverNum);
 
     for(int i = 0;i < T;++ i)
@@ -774,7 +776,7 @@ long long first_solver(int seed, Actions &logger){
     }
 
     return sumCost;
-}
+}*/
 //==========
 
 int serverRemainValue(Server& server)

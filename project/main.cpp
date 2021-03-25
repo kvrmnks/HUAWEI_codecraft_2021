@@ -10,10 +10,10 @@
 #include <cstdlib>
 #include "output.h"
 #include "BaselineSolver.h"
-#include "SegmentTree.cpp"
+//#include "SegmentTree.cpp"
 #define DEBUG
 
-//#define ONLINE_JUDGE
+#define ONLINE_JUDGE
 #ifdef ONLINE_JUDGE
 #undef DEBUG
 #endif
@@ -116,8 +116,8 @@ int main() {
 
 #ifdef IO_DEBUG
 
-    freopen("training-2.txt", "r", stdin);
-    freopen("training-2-out.txt", "w", stdout);
+    freopen("training-1.txt", "r", stdin);
+    freopen("training-1-out.txt", "w", stdout);
 
 #endif
 
@@ -139,7 +139,7 @@ int main() {
 
 //    winner_solver(solvers).print();
 
-    Actions& final_answer = winner_solver(solvers, 2, false); // T 指rand几次
+    Actions& final_answer = winner_solver(solvers, 1, false); // T 指rand几次
 
 #ifdef DEBUG
     clock_t end_time_solver = clock();

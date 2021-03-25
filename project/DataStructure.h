@@ -11,8 +11,8 @@
 #include <list>
 #include <iostream>
 #include <algorithm>
-#include "SegmentTree.h"
-#include "BlockList.h"
+//#include "SegmentTree.h"
+//#include "BlockList.h"
 
 
 using namespace std;
@@ -134,7 +134,7 @@ struct Server								//已经购买的、使用中的服务器
 
     static int severNum;					//已经购买的服务器数量
 //    SegmentTree tree;
-    BlockList blo;
+    //BlockList blo;
     //检查是否能把下标为rank的虚拟机添加到该服务器
     //如果虚拟机是单核模式，core表示加载到哪一个内核。0表示内核A，1表示内核B
     bool canAddVirtualMachine(int rank, int core = 0)
@@ -237,7 +237,7 @@ struct Server								//已经购买的、使用中的服务器
             delta[d] = vmInfor.memorySizeNode;
             delta[d+2] = vmInfor.coreNumNode;
         }
-        this->blo.modify(vm.inAddReqRank, vm.inDelReqRank, DataPackage(delta));
+        //this->blo.modify(vm.inAddReqRank, vm.inDelReqRank, DataPackage(delta));
         vm.nodeNum = core;
         vmList.push_back(rank);
         vm.serverNum = this->rank;
