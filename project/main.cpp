@@ -32,8 +32,8 @@
 #endif
 
 const int randSeed = 19260817;
-const long long TIME_LIMIT = 90;
-const double DELTA_TIME = 5;
+const long long TIME_LIMIT = 60;
+const double DELTA_TIME = 3;
 
 
 void readData()

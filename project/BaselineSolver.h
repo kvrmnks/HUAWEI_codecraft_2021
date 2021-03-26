@@ -953,7 +953,7 @@ void hjc_add_server(int type){
 
 long long base_solver_with_migration(int seed, Actions &logger) {
     init();
-
+    bl.clear(); //qox
     srand(seed);
 
     for(int i = 0;i < T;++ i)
@@ -977,7 +977,7 @@ long long base_solver_with_migration(int seed, Actions &logger) {
                 int vmRank = virtualMachineNum;
                 addVirtualMachine(vmType, req.id);
                 bool hasServerUse = false;
-                for(int k = 0;k < serverNum ;++ k)
+                for(int k = serverNum - 1;k >= 0  ;-- k)
                 {
                     if(server[k].canAddVirtualMachine(vmRank, 0))
                     {

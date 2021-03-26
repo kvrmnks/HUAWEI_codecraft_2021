@@ -15,6 +15,7 @@ private:
     DataPackage delta[SIZE_PER_BLOCK];
     DataPackage maxV[SIZE_PER_BLOCK];
 public:
+    void clear();
     BlockList();
     void modify(int L, int R, DataPackage ds);
     DataPackage query(int L, int R);
@@ -173,6 +174,20 @@ std::pair<int, int> BlockList::search_by_restriction_single(int L, int R, DataPa
 
     }
     return std::pair<int, int>(-1, -1);
+}
+
+void BlockList::clear() {
+    for(auto &p : data){
+        for(auto &q:p){
+            q = DataPackage();
+        }
+    }
+    for(auto &p : maxV){
+        p = DataPackage();
+    }
+    for(auto &p : delta){
+        p = DataPackage();
+    }
 }
 
 #endif //PROJECT_BLOCKLIST_H
