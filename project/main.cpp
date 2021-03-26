@@ -10,6 +10,7 @@
 #include <cstdlib>
 #include "output.h"
 #include "BaselineSolver.h"
+#include <time.h>
 //#include "SegmentTree.cpp"
 #define DEBUG
 
@@ -19,8 +20,6 @@
 //#endif
 
 #ifdef DEBUG
-
-#include <time.h>
 
 //#define INOUT_DEBUG
 #define IO_DEBUG
@@ -33,12 +32,16 @@
 #endif
 
 const int randSeed = 19260817;
+const long long TIME_LIMIT = 90;
+const double DELTA_TIME = 5;
 
 
 void readData()
 {
     scanf("%d", &N);
     vector<ServerInformation> initial_server_information;
+    initial_server_information.reserve(N);
+
     for(int i=0;i<N;i++){
         initial_server_information.push_back(readOneServer());
     }
@@ -98,6 +101,29 @@ void readData()
 typedef long long int (*FUNCTYPE)(int, Actions&);
 Actions logger;
 
+map<FUNCTYPE, double> running_time;
+
+inline pair<long long, double> run(FUNCTYPE solver, Actions& logger) {
+    clock_t start_time = clock();
+
+    long long cost = solver(rand(), logger);
+
+    clock_t end_time = clock();
+    double cost_time = (double) (end_time - start_time) / CLOCKS_PER_SEC;
+
+#ifdef DEBUG
+    cerr << "cost time: " << cost_time << "s." << endl;
+#endif
+
+    if (running_time.find(solver) != running_time.end()) {
+        running_time[solver] = max(running_time[solver], cost_time);
+    } else {
+        running_time[solver] = cost_time;
+    }
+
+    return make_pair(cost, cost_time);
+}
+
 Actions& winner_solver(vector<FUNCTYPE>& solvers, int T, bool isDebugging) {
     long long min_cost = INT64_MAX;
 
@@ -106,17 +132,59 @@ Actions& winner_solver(vector<FUNCTYPE>& solvers, int T, bool isDebugging) {
     //srand(996251404); //687,231,808 + 705,445,429
     //srand(2019051301);//679, 094, 368+702,452,646
 
-    for(int i = 0; i < T; i++)
-        for(auto solver: solvers) {
+    double remaining_time = TIME_LIMIT;
+
+    bool flag;
+
+    for(int i = 0; i < T; i++) {
+        flag = false;
+        for (auto solver: solvers) {
+            if (running_time.find(solver) != running_time.end() && remaining_time - running_time[solver] < DELTA_TIME) {
+                continue;
+            }
+            flag = true;
             Actions logger_i(isDebugging);
 
-            long long cost = solver(rand(), logger_i);
+            auto status = run(solver, logger_i);
 
-            if (cost < min_cost) {
+            if (status.first < min_cost) {
+                min_cost = status.first;
                 logger = logger_i;
-                min_cost = cost;
             }
+
+            remaining_time -= status.second;
+
+            if (remaining_time < DELTA_TIME) return logger;
         }
+        if (!flag) break;
+    }
+
+    while(remaining_time >= DELTA_TIME) {
+        flag = false;
+        for (auto solver: solvers) {
+            if (running_time.find(solver) != running_time.end() && remaining_time - running_time[solver] < DELTA_TIME) {
+                continue;
+            }
+
+            flag = true;
+
+            Actions logger_i(isDebugging);
+
+            auto status = run(solver, logger_i);
+
+            if (status.first < min_cost) {
+                min_cost = status.first;
+                logger = logger_i;
+            }
+
+            remaining_time -= status.second;
+
+            if (remaining_time < DELTA_TIME) return logger;
+        }
+
+        if (!flag) break;
+    }
+
 #ifdef COST_DEBUG
     if(isDebugging) {
         cout << "total cost: " << min_cost << endl;

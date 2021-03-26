@@ -255,6 +255,21 @@ public:
         }
     }
 
+    void output_vmlist_of_server_with_id(int id) {
+        auto server_data = server_id_rank_map[id];
+
+        cout << "server id : " << id << ", server rank : " << server_data.first << ", server type: " << server_data.second << endl;
+
+        cout << "server vm list: " << endl;
+
+        auto list = server[server_data.first].vmList;
+
+        for (int vm_rank : list) {
+            VirtualMachine& vm = virtualMachine[vm_rank];
+
+            cout << "id: " << vm.id << ", rank: " << vm.rank << ", type: " << vm.type << ", node: " <<vm.nodeNum << endl;
+        }
+    }
 };
 
 #endif //PROJECT_OUTPUT_H
