@@ -141,6 +141,11 @@ class Action{
         realVirtualMachines.remove(vm_id);
     }
     public void addVirtualMachine(int vm_id, int machine_id, int cf, VirtualMachine vm){
+//        for(int x : belong.keySet()){
+//            if(belong.get(x) == 23){
+//                System.out.println(realVirtualMachines.get(x) + " node: " + config.get(x) + " id: " + x);
+//            }
+//        }
 //        System.out.println(cf);
 //        for(int x : belong.keySet()){
 //            if(belong.get(x) == 22){
@@ -177,12 +182,13 @@ class Action{
         }
         Machine tmp = realMachines.get(machine_id);
         if(tmp.coreA<0 || tmp.coreB<0 || tmp.mmA<0 || tmp.mmB<0) {
-
-                    for(int x : belong.keySet()){
+        for(int x : belong.keySet()){
             if(belong.get(x) == 23){
                 System.out.println(realVirtualMachines.get(x) + " node: " + config.get(x) + " id: " + x);
             }
         }
+
+
             System.out.println("服务器的资源溢出\n" + machine_id + "\n" + tmp);
             System.exit(-5);
 
@@ -252,8 +258,9 @@ public class Main {
                     System.exit(-6);
                 }
             }
-
+            System.out.println("尝试迁移");
             action.addVirtualMachine(vm_id, new_machine_id, nodeId, vm);
+            System.out.println("迁移结束");
         }
         int R = Integer.parseInt(sc.nextLine().trim());
         for(int i=0;i<R;i++){

@@ -11,12 +11,12 @@
 #include "output.h"
 #include "BaselineSolver.h"
 //#include "SegmentTree.cpp"
-#define DEBUG
+//#define DEBUG
 
-#define ONLINE_JUDGE
-#ifdef ONLINE_JUDGE
-#undef DEBUG
-#endif
+//#define ONLINE_JUDGE
+//#ifdef ONLINE_JUDGE
+//#undef DEBUG
+//#endif
 
 #ifdef DEBUG
 
@@ -24,7 +24,7 @@
 
 //#define INOUT_DEBUG
 #define IO_DEBUG
-//#define LOGIC_DEBUG
+#define LOGIC_DEBUG
 //#define BREAKPOINT_DEBUG
 //#define GRAMMAR_DEBUG
 #define COST_DEBUG
@@ -38,11 +38,26 @@ const int randSeed = 0;
 void readData()
 {
     scanf("%d", &N);
-    for(int i = 0; i < N; i ++)
-    {
-        serverInformation[i] = readOneServer();
-        mpSevere[string(serverInformation[i].typeName)] = i;
+    vector<ServerInformation> initial_server_information;
+    for(int i=0;i<N;i++){
+        initial_server_information.push_back(readOneServer());
     }
+    int cnt_N = 0;
+    for(int i=0;i<N;i++){
+        bool is_white = true;
+        auto x = initial_server_information[i];
+        for(int j=0;j<N;j++){
+            if(i == j) continue;
+            auto y = initial_server_information[j];
+            if(y.coreNum >= x.coreNum && y.memorySize >= x.memorySize && y.hardwareCost < x.hardwareCost)
+                is_white = false;
+        }
+        if(is_white){
+            serverInformation[cnt_N ++] = x;
+        }
+    }
+    N = cnt_N;
+
     scanf("%d", &M);
     for(int i = 0; i < M; i ++)
     {
@@ -116,8 +131,8 @@ int main() {
 
 #ifdef IO_DEBUG
 
-    freopen("training-1.txt", "r", stdin);
-    freopen("training-1-out.txt", "w", stdout);
+    freopen("training-2.txt", "r", stdin);
+    freopen("training-2-out.txt", "w", stdout);
 
 #endif
 

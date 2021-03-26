@@ -10,6 +10,7 @@
 #include <string>
 #include <list>
 #include <iostream>
+#include <vector>
 #include <algorithm>
 //#include "SegmentTree.h"
 //#include "BlockList.h"
