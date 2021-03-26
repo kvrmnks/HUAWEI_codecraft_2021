@@ -779,6 +779,9 @@ long long first_solver(int seed, Actions &logger){
 }*/
 //==========
 
+
+//begin============
+//带迁移
 int serverRemainValue(Server& server)
 {
     int tmpRemainCoreNodeA = server.remainCoreNodeA;
@@ -799,7 +802,7 @@ void migration(int maxMigrationTime, Actions &logger)
 
     int mid = /*serverNum / 2*/rand() % (serverNum/2) + 1;
     int cnt = 0;
-    for(int i = 0;i < mid;++ i)
+    for(int i = serverNum - 1;i >= 0 ;-- i)
     {
         auto tmpVmList = server[i].vmList;
         for(auto j : tmpVmList)
@@ -808,7 +811,7 @@ void migration(int maxMigrationTime, Actions &logger)
             int v2 = 0;
             VirtualMachine& vm = virtualMachine[j];
             VirtualMachineInformation& vmInfor = virtualMachineInformation[vm.type];
-            for(int k = mid;k < serverNum;++ k)
+            for(int k = i - 1;k >= 0;-- k)
             {
                 bool t1 = server[k].canAddVirtualMachine(j, 0);
                 bool t2 = false;
@@ -881,7 +884,7 @@ long long base_solver_with_migration(int seed, Actions &logger) {
                 addVirtualMachine(vmType, req.id);
 
                 bool hasServerUse = false;
-                for(int k = 0;k < serverNum;++ k)
+                for(int k = 0;k < serverNum ;++ k)
                 {
                     if(server[k].canAddVirtualMachine(vmRank, 0))
                     {
@@ -947,5 +950,227 @@ long long base_solver_with_migration(int seed, Actions &logger) {
 
     return sumCost;
 }
+//end====================
 
+
+//begin============
+//带迁移和服务器类型
+
+int serverNodeType[100000 + 10];                //服务器是放置单节点类型还是双节点类型
+int serverRemainValue_with_type(Server& server)
+{
+    int tmpRemainCoreNodeA = server.remainCoreNodeA;
+    int tmpRemainCoreNodeB = server.remainCoreNodeB;
+    int tmpRemainMemoryNodeA = server.remainMemoryNodeA;
+    int tmpRemainMemoryNodeB = server.remainMemoryNodeB;
+
+    if(serverNodeType[server.rank] == 1)
+        return std::min(tmpRemainCoreNodeA, tmpRemainCoreNodeB) + std::min(tmpRemainMemoryNodeA, tmpRemainMemoryNodeB);
+    else
+        return std::max(tmpRemainCoreNodeA, tmpRemainCoreNodeB) + std::max(tmpRemainMemoryNodeA, tmpRemainMemoryNodeB);
+}
+
+//maxMigrationTime:最大迁移次数
+void migration_with_type(int maxMigrationTime, Actions &logger)
+{
+    if(maxMigrationTime == 0) return;
+    //===========
+    //第一种方案：把前一半服务器中的虚拟机往后一半移动
+    //如果两个结点中的空余最小Core+最小Memory变大，则移动
+    //===========
+
+    int mid = /*serverNum / 2*/rand() % (serverNum/2) + 1;
+    int cnt = 0;
+    for(int i = 0;i < mid;++ i)
+    {
+        auto tmpVmList = server[i].vmList;
+        for(auto j : tmpVmList)
+        {
+            int v1 = 0;
+            int v2 = 0;
+            VirtualMachine& vm = virtualMachine[j];
+            VirtualMachineInformation& vmInfor = virtualMachineInformation[vm.type];
+            for(int k = mid;k < serverNum;++ k)
+            {
+                if(!(vmInfor.isDoubleNode ^ serverNodeType[k])) continue;
+                bool t1 = server[k].canAddVirtualMachine(j, 0);
+                bool t2 = false;
+                if(!vmInfor.isDoubleNode) t2 = server[k].canAddVirtualMachine(j, 1);
+                if(t1 || t2)
+                {
+                    int nodeNumi = vm.nodeNum;
+                    v2 = serverRemainValue_with_type(server[k]);
+                    server[i].delVirtualMachine(vm.id);
+                    if(t1)
+                    {
+                        server[k].addVirtualMachine(j, 0);
+                    }
+                    else if(t2)
+                    {
+                        server[k].addVirtualMachine(j, 1);
+                    }
+                    v1 = serverRemainValue_with_type(server[i]);
+                    if(v1 > v2)
+                    {
+                        if(vmInfor.isDoubleNode)
+                        {
+                            logger.log_a_migration(j, k);
+                            ++ cnt;
+                            if(cnt >= maxMigrationTime) return;
+                        }
+                        else
+                        {
+                            logger.log_a_migration(j, k, vm.nodeNum);
+                            ++ cnt;
+                            if(cnt >= maxMigrationTime) return;
+                        }
+                        break;
+                    }
+                    else
+                    {
+                        server[k].delVirtualMachine(vm.id);
+                        server[i].addVirtualMachine(j, nodeNumi);
+                    }
+                }
+            }
+        }
+    }
+}
+
+long long base_solver_with_migration_server_type(int seed, Actions &logger) {
+    init();
+
+    srand(seed);
+
+    for(int i = 0;i < T;++ i)
+    {
+        // cerr << i << " Day" << endl;
+        logger.start_a_brand_new_day();
+        /*int t = 5 * timeVirtualNum / 1000;
+        if(t == 0) migration(t, logger);
+        else migration(rand() % t, logger);*/
+        migration_with_type(5 * timeVirtualNum / 1000, logger);
+        int maxRank = requireRank[i] + requireNum[i];
+        for(int j = requireRank[i];j < maxRank; ++ j)
+        {
+            // cerr << j << " Require" << endl;
+            const Require& req = require[j];
+            int vmType = mpVirtualMachine[string(req.virtualMachineName)];
+
+            if(req.type == 0)
+            {
+                ++ timeVirtualNum;
+                int vmRank = virtualMachineNum;
+                addVirtualMachine(vmType, req.id);
+                VirtualMachine& vm = virtualMachine[vmRank];
+                VirtualMachineInformation& vmInfor = virtualMachineInformation[vm.type];
+
+                bool hasServerUse = false;
+                if(vmInfor.isDoubleNode)
+                {
+                    for(int k = serverNum - 1;k >= 0 ;-- k)
+                    {
+                        if(serverNodeType[k] == 0) continue;
+                        if(server[k].canAddVirtualMachine(vmRank, 0))
+                        {
+                            server[k].addVirtualMachine(vmRank, 0);
+                            hasServerUse = true;
+                            break;
+                        }
+                    }
+                    if(!hasServerUse)
+                    {
+                        int server_type;
+                        serverNodeType[serverNum] = 1;
+                        do
+                        {
+                            server_type = rand() % N;
+
+                        }while(!serverInformation[server_type].canAddVirtualMachine(vmRank, 0) && !serverInformation[server_type].canAddVirtualMachine(vmRank, 1));
+
+                        addServer(server_type);
+                        logger.log_a_server(serverNum - 1, server_type);
+
+                        if(server[serverNum-1].canAddVirtualMachine(vmRank, 0))
+                        {
+                            server[serverNum-1].addVirtualMachine(vmRank, 0);
+                        }
+                        else
+                        {
+                            server[serverNum-1].addVirtualMachine(vmRank, 1);
+                        }
+                    }
+                }
+                else
+                {
+                    for(int k = 0;k < serverNum ;++ k)
+                    {
+                        if(serverNodeType[k] == 1) continue;
+                        if(server[k].canAddVirtualMachine(vmRank, 0))
+                        {
+                            server[k].addVirtualMachine(vmRank, 0);
+                            hasServerUse = true;
+                            break;
+                        }
+                        else if(server[k].canAddVirtualMachine(vmRank, 1))
+                        {
+                            server[k].addVirtualMachine(vmRank, 1);
+                            hasServerUse = true;
+                            break;
+                        }
+                    }
+                    if(!hasServerUse)
+                    {
+                        int server_type;
+                        serverNodeType[serverNum] = 0;
+                        do
+                        {
+                            server_type = rand() % N;
+
+                        }while(!serverInformation[server_type].canAddVirtualMachine(vmRank, 0) && !serverInformation[server_type].canAddVirtualMachine(vmRank, 1));
+
+                        addServer(server_type);
+                        logger.log_a_server(serverNum - 1, server_type);
+
+                        if(server[serverNum-1].canAddVirtualMachine(vmRank, 0))
+                        {
+                            server[serverNum-1].addVirtualMachine(vmRank, 0);
+                        }
+                        else
+                        {
+                            server[serverNum-1].addVirtualMachine(vmRank, 1);
+                        }
+                    }
+                }
+
+                logger.log_a_vm_deployment(vmRank);
+            }
+            else if(req.type == 1)
+            {
+                -- timeVirtualNum;
+                if(vmIdToRank.count(req.id) == 0) continue;
+                int vmRank = vmIdToRank[req.id];
+                VirtualMachine vm = virtualMachine[vmRank];
+                server[vm.serverNum].delVirtualMachine(req.id);
+            }
+        }
+        for(int j = 0;j < serverNum;++ j)
+        {
+            if(server[j].open)
+            {
+                server[j].cost += server[j].dayCost;
+            }
+        }
+        logger.call_an_end_to_this_day();
+    }
+
+    long long sumCost = 0;
+    for(int i = 0;i < serverNum;++ i)
+    {
+        sumCost += server[i].cost;
+    }
+
+    return sumCost;
+}
+//end====================
 #endif //PROJECT_BASELINESOLVER_H
