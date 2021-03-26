@@ -11,7 +11,7 @@
 #include "output.h"
 #include "BaselineSolver.h"
 //#include "SegmentTree.cpp"
-//#define DEBUG
+#define DEBUG
 
 //#define ONLINE_JUDGE
 //#ifdef ONLINE_JUDGE
@@ -32,7 +32,7 @@
 
 #endif
 
-const int randSeed = 0;
+const int randSeed = 19260817;
 
 
 void readData()
@@ -154,7 +154,7 @@ int main() {
 
 //    winner_solver(solvers).print();
 
-    Actions& final_answer = winner_solver(solvers, 1, false); // T 指rand几次
+    Actions& final_answer = winner_solver(solvers, 10, false); // T 指rand几次
 
 #ifdef DEBUG
     clock_t end_time_solver = clock();

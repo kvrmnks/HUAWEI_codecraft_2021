@@ -2,6 +2,8 @@
 
 #include <utility>
 
+std::vector<long long> cost, migrate_num;
+
 struct Ser_t {
     int core, cpu, tot, day;
 };
@@ -225,9 +227,21 @@ void runJudger(std::string inputFile,std::string outputFile) {
     }
     std::cout << "total cost: " << cost << '\n';
     std::cout << "migration num: " << mi << '\n';
+    ::cost.push_back(cost);
+	migrate_num.push_back(mi);
 }
 
 int main(){
+    runJudger("training-1.txt","training-1-out.txt");
     runJudger("training-2.txt","training-2-out.txt");
+    long long sumCost = 0, sumMigrateNum = 0;
+    for(auto i : cost) {
+    	sumCost += i;
+	}
+	for(auto i : migrate_num) {
+		sumMigrateNum += i;
+	}
+    printf("All cost: %lld\n", sumCost);
+    printf("All migrate num: %lld\n", sumMigrateNum);
     return 0;
 }

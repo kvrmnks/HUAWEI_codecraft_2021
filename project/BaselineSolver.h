@@ -797,7 +797,7 @@ void migration(int maxMigrationTime, Actions &logger)
     //如果两个结点中的空余最小Core+最小Memory变大，则移动
     //===========
 
-    int mid = serverNum / 2/*rand() % (serverNum / 2) + 1*/;
+    int mid = /*serverNum / 2*/rand() % (serverNum/2) + 1;
     int cnt = 0;
     for(int i = 0;i < mid;++ i)
     {
