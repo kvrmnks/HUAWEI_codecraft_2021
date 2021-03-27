@@ -12,7 +12,7 @@
 #include "BaselineSolver.h"
 #include <time.h>
 //#include "SegmentTree.cpp"
-#define DEBUG
+// #define DEBUG
 
 //#define ONLINE_JUDGE
 //#ifdef ONLINE_JUDGE

@@ -958,7 +958,7 @@ long long base_solver_with_migration(int seed, Actions &logger) {
 
     for(int i = 0;i < T;++ i)
     {
-         cerr << i << " Day" << endl;
+        // cerr << i << " Day" << endl;
         logger.start_a_brand_new_day();
         /*int t = 5 * timeVirtualNum / 1000;
         if(t == 0) migration(t, logger);
